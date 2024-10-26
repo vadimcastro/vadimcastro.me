@@ -1,23 +1,36 @@
 // src/app/page.tsx
+import { ProjectPreviewCard } from "../components/projects/ProjectPreviewCard";
+import { ResumeSummary } from "./resume/ResumeSummary";
+import { getAllProjects } from "../lib/projects";
+
 export default function Home() {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-4xl font-bold">Welcome to My Digital Space</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <section className="p-6 border rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">Projects</h2>
-            <p>Explore my latest coding projects and experiments.</p>
-          </section>
-          <section className="p-6 border rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">Cloud Storage</h2>
-            <p>Access and manage your personal files securely.</p>
-          </section>
-          <section className="p-6 border rounded-lg">
-            <h2 className="text-2xl font-semibold mb-4">Work Catalog</h2>
-            <p>Browse through my professional portfolio and achievements.</p>
-          </section>
-        </div>
+  const projects = getAllProjects();
+
+  return (
+    <div className="min-h-screen space-y-6">
+      <h1 className="text-4xl font-bold">Welcome to My Digital Space</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <section className="h-[calc(100vh-12rem)] border rounded-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+          <div className="h-full flex flex-col">
+            <h2 className="text-2xl font-semibold p-6 pb-4">Projects</h2>
+            <div className="flex-1 p-6 pt-0">
+              {projects.length > 0 ? (
+                <ProjectPreviewCard project={projects[0]} />
+              ) : (
+                <p className="text-gray-500">No projects available</p>
+              )}
+            </div>
+          </div>
+        </section>
+        <section className="h-[calc(100vh-12rem)] border rounded-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+          <div className="h-full flex flex-col">
+            <h2 className="text-2xl font-semibold p-6 pb-4">Work Experience</h2>
+            <div className="flex-1 p-6 pt-0">
+              <ResumeSummary />
+            </div>
+          </div>
+        </section>
       </div>
-    )
-  }
-  
+    </div>
+  );
+}
