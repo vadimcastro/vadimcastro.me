@@ -1,17 +1,47 @@
-fastapi==0.109.0
-uvicorn==0.27.0
-sqlalchemy==2.0.25
-alembic==1.13.1
-psycopg2-binary==2.9.9
-python-jose==3.3.0
-passlib==1.7.4
-python-multipart==0.0.6
-python-dotenv==1.0.0
-pydantic==2.5.3
-pydantic-settings==2.1.0
-bcrypt==4.1.2
-python-jose[cryptography]==3.3.0
-minio==7.2.0
-redis==5.0.1
-aiofiles==23.2.1
-tenacity==8.2.3
+# backend/requirements.txt
+
+# FastAPI and Server
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+
+# Database
+sqlalchemy>=2.0.23
+alembic>=1.12.1
+psycopg2-binary>=2.9.9
+
+# Authentication and Security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.6
+
+# Environment and Settings
+python-dotenv>=1.0.0
+pydantic>=2.5.1
+pydantic-settings>=2.1.0
+pydantic[email]>=2.5.1
+
+# Storage and Caching
+minio>=7.2.0
+redis>=5.0.1
+
+# HTTP and Networking
+httpx>=0.25.1
+requests>=2.31.0
+
+# Date and Time
+python-dateutil>=2.8.2
+
+# Utilities
+typing-extensions>=4.8.0
+PyYAML>=6.0.1
+
+# Testing (Optional but recommended)
+pytest>=7.4.3
+pytest-asyncio>=0.21.1
+pytest-cov>=4.1.0
+
+# Development Tools (Optional)
+black>=23.11.0
+isort>=5.12.0
+flake8>=6.1.0
+mypy>=1.7.0

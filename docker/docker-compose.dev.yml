@@ -1,0 +1,35 @@
+# docker/docker-compose.dev.yml
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    command: npm run dev
+    # Add these for better development experience
+    stdin_open: true
+    tty: true
+    # Add healthcheck
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+
+  api:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=1

@@ -1,24 +1,30 @@
 // src/lib/auth/refreshToken.ts
+'use client';
+
 import { useAuth } from './AuthContext';
 
-const REFRESH_TOKEN_THRESHOLD = 5 * 60 * 1000; // 5 minutes in milliseconds
+interface RefreshOptions {
+  requireAuth?: boolean;
+  redirectTo?: string;
+}
 
-export const useRefreshToken = () => {
-  const { refreshToken } = useAuth();
+export async function refreshToken(options: RefreshOptions = {}) {
+  const auth = useAuth();
+  const { requireAuth = false, redirectTo = '/login' } = options;
 
-  const setupRefreshToken = (expiresIn: number) => {
-    // Calculate when to refresh the token
-    const refreshTime = expiresIn - REFRESH_TOKEN_THRESHOLD;
-    
-    // Set up timer to refresh token
-    setTimeout(async () => {
-      try {
-        await refreshToken();
-      } catch (error) {
-        console.error('Failed to refresh token:', error);
+  try {
+    if (!auth.refreshToken) {
+      if (requireAuth) {
+        window.location.href = redirectTo;
       }
-    }, refreshTime);
-  };
+      return null;
+    }
 
-  return { setupRefreshToken };
-};
+    return await auth.refreshAccessToken();
+  } catch (error) {
+    if (requireAuth) {
+      window.location.href = redirectTo;
+    }
+    return null;
+  }
+}

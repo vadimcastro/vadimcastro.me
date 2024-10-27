@@ -7,6 +7,10 @@ module.exports = {
     ],
     theme: {
       extend: {
+        fontFamily: {
+          sans: ['var(--font-inter)'],
+          mono: ['var(--font-roboto-mono)'],
+        },
         colors: {
           mint: {
             50: '#f2f9f6',

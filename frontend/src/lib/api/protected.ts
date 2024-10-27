@@ -1,37 +1,74 @@
 // src/lib/api/protected.ts
+'use client';
+
 import { useAuth } from '../../lib/auth/AuthContext';
 
 export const useProtectedApi = () => {
-  const { token } = useAuth();
+  const { accessToken, refreshAccessToken } = useAuth();
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   const fetchProtected = async <T>(
-    url: string,
+    endpoint: string,
     options: RequestInit = {}
   ): Promise<T> => {
-    if (!token) {
-      throw new Error('No authentication token available');
-    }
+    let currentToken = accessToken;
 
-    try {
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`API call failed: ${response.statusText}`);
+    // If no token, try to refresh
+    if (!currentToken) {
+      currentToken = await refreshAccessToken();
+      if (!currentToken) {
+        throw new Error('No access token available');
       }
-
-      return response.json();
-    } catch (error) {
-      console.error('API call error:', error);
-      throw error;
     }
+
+    const response = await fetch(`${baseUrl}${endpoint}`, {
+      ...options,
+      headers: {
+        ...options.headers,
+        'Authorization': `Bearer ${currentToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // If token expired, try refreshing once
+    if (response.status === 401) {
+      currentToken = await refreshAccessToken();
+      if (currentToken) {
+        const retryResponse = await fetch(`${baseUrl}${endpoint}`, {
+          ...options,
+          headers: {
+            ...options.headers,
+            'Authorization': `Bearer ${currentToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!retryResponse.ok) throw new Error('API request failed');
+        return retryResponse.json();
+      }
+    }
+
+    if (!response.ok) throw new Error('API request failed');
+    return response.json();
   };
 
-  return { fetchProtected };
+  return {
+    fetchProtected,
+    get: <T>(endpoint: string) => 
+      fetchProtected<T>(endpoint, { method: 'GET' }),
+    
+    post: <T>(endpoint: string, data: any) =>
+      fetchProtected<T>(endpoint, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    
+    put: <T>(endpoint: string, data: any) =>
+      fetchProtected<T>(endpoint, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }),
+    
+    delete: <T>(endpoint: string) =>
+      fetchProtected<T>(endpoint, { method: 'DELETE' }),
+  };
 };

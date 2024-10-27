@@ -1,98 +1,88 @@
 // src/lib/auth/AuthContext.tsx
-"use client";
-import { createContext, useContext, useReducer, useEffect } from 'react';
-import { User, AuthState } from './types';
-import { useRouter } from 'next/navigation';
-import { useToast } from '../../components/ui/use-toast';
+'use client';
 
-interface AuthContextType extends AuthState {
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+
+export interface User {
+  id: number;
+  email: string;
+  username: string;
+  name?: string;
+  role?: string;
+  is_active: boolean;
+  is_superuser: boolean;
+}
+
+export interface AuthContextType {
+  user: User | null;
+  accessToken: string | null;  // Changed from token to accessToken
+  refreshToken: string | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+  logout: () => void;
+  refreshAccessToken: () => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-type AuthAction =
-  | { type: 'SET_LOADING' }
-  | { type: 'SET_USER'; payload: { user: User; token: string } }
-  | { type: 'SET_ERROR'; payload: string }
-  | { type: 'LOGOUT' };
-
-const authReducer = (state: AuthState, action: AuthAction): AuthState => {
-  switch (action.type) {
-    case 'SET_LOADING':
-      return { ...state, isLoading: true, error: null };
-    case 'SET_USER':
-      return {
-        ...state,
-        isLoading: false,
-        user: action.payload.user,
-        token: action.payload.token,
-        error: null,
-      };
-    case 'SET_ERROR':
-      return { ...state, isLoading: false, error: action.payload };
-    case 'LOGOUT':
-      return { user: null, token: null, isLoading: false, error: null };
-    default:
-      return state;
-  }
-};
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(authReducer, {
-    user: null,
-    token: null,
-    isLoading: true,
-    error: null,
-  });
-  
+  const [user, setUser] = useState<User | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const { toast } = useToast();
+
+  const isAuthenticated = !!accessToken && !!user;
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      verifyToken(token);
+    // Check for tokens in localStorage on mount
+    const storedAccessToken = localStorage.getItem('accessToken');
+    const storedRefreshToken = localStorage.getItem('refreshToken');
+    
+    if (storedAccessToken && storedRefreshToken) {
+      setAccessToken(storedAccessToken);
+      setRefreshToken(storedRefreshToken);
+      fetchUser(storedAccessToken);
     } else {
-      dispatch({ type: 'SET_LOADING' });
+      setIsLoading(false);
     }
   }, []);
 
-  const verifyToken = async (token: string) => {
+  const fetchUser = async (token: string) => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/verify-token', {
+      const response = await fetch('http://localhost:8000/api/v1/auth/me', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-
+      
       if (response.ok) {
-        const data = await response.json();
-        dispatch({
-          type: 'SET_USER',
-          payload: { user: data.user, token }
-        });
+        const userData = await response.json();
+        setUser(userData);
       } else {
-        localStorage.removeItem('auth_token');
-        dispatch({ type: 'LOGOUT' });
+        throw new Error('Failed to fetch user');
       }
     } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: 'Authentication failed' });
+      console.error('Error fetching user:', error);
+      logout();
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const login = async (email: string, password: string) => {
-    dispatch({ type: 'SET_LOADING' });
     try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/token', {
+      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({
+        body: new URLSearchParams({
           username: email,
-          password,
+          password: password,
         }),
       });
 
@@ -101,59 +91,78 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json();
-      localStorage.setItem('auth_token', data.access_token);
-      dispatch({
-        type: 'SET_USER',
-        payload: { user: data.user, token: data.access_token }
-      });
-
-      toast({
-        title: "Welcome back!",
-        description: "Successfully logged in.",
-      });
-
-      router.push('/dashboard');
+      
+      localStorage.setItem('accessToken', data.access_token);
+      localStorage.setItem('refreshToken', data.refresh_token);
+      
+      setAccessToken(data.access_token);
+      setRefreshToken(data.refresh_token);
+      
+      await fetchUser(data.access_token);
+      router.push('/vadim');
     } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: 'Invalid credentials' });
-      toast({
-        title: "Error",
-        description: "Invalid email or password",
-        variant: "destructive",
-      });
+      console.error('Login error:', error);
       throw error;
     }
   };
 
-  const logout = async () => {
+  const logout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setUser(null);
+    setAccessToken(null);
+    setRefreshToken(null);
+    router.push('/');
+  };
+
+  const refreshAccessToken = async () => {
+    if (!refreshToken) {
+      logout();
+      return;
+    }
+
     try {
-      await fetch('http://localhost:8000/api/v1/auth/logout', {
+      const response = await fetch('http://localhost:8000/api/v1/auth/refresh', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${state.token}`
-        }
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
       });
-    } finally {
-      localStorage.removeItem('auth_token');
-      dispatch({ type: 'LOGOUT' });
-      router.push('/login');
-      toast({
-        title: "Logged out",
-        description: "Successfully logged out.",
-      });
+
+      if (!response.ok) {
+        throw new Error('Token refresh failed');
+      }
+
+      const data = await response.json();
+      localStorage.setItem('accessToken', data.access_token);
+      setAccessToken(data.access_token);
+      return data.access_token;
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      logout();
+      throw error;
     }
   };
 
-  return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value: AuthContextType = {
+    user,
+    accessToken,
+    refreshToken,
+    isLoading,
+    isAuthenticated,
+    login,
+    logout,
+    refreshAccessToken,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-};
+}
