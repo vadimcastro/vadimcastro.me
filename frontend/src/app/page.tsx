@@ -8,7 +8,7 @@ export default function Home() {
 
   return (
     <div className="max-w-[95%] mx-auto px-4 py-4 space-y-2">
-      <h1 className="text-3xl font-semibold text-gray-900">
+      <h1 className="px3 py-1.5 text-3xl font-semibold text-gray-900 ">
         Welcome to My Digital Space
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
