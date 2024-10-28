@@ -9,10 +9,9 @@ interface ProjectDetailPageProps {
 
 export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project }) => {
   return (
-    <div className="max-w-6xl mx-auto space-y-12 px-4">
-      <header className="space-y-6">
+    <div className="max-w-6xl mx-auto space-y-12 px-4 py-12">
+      <header className="space-y-8">
         <div className="flex items-center">
-          {/* Updated compass icon with green color and padding */}
           <svg 
             className="w-12 h-12 text-green-600 mr-6"
             fill="none" 
@@ -28,8 +27,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project })
         </p>
       </header>
 
-      {/* Updated image container for better display */}
-      <div className="relative h-[600px] rounded-xl overflow-hidden shadow-xl bg-gray-100">
+      <div className="relative h-[500px] rounded-xl overflow-hidden shadow-xl bg-gray-100">
         <Image
           src={project.imageUrl}
           alt={`${project.title} Showcase`}
@@ -39,10 +37,47 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project })
         />
       </div>
 
-      {/* Rest of the component remains the same */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* ... */}
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-2xl font-semibold mb-4">Key Features</h2>
+            <div className="space-y-6">
+              {project.features.map((feature) => (
+                <div key={feature.title} className="flex items-start">
+                  <div className="bg-green-100 p-3 rounded-lg mr-4">
+                    <span className="text-green-600">{feature.icon}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">{feature.title}</h3>
+                    <p className="text-gray-600">{feature.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">Technical Implementation</h2>
+          <div className="space-y-6">
+            {Object.entries(project.techStack).map(([category, technologies]) => (
+              <div key={category} className="bg-white rounded-lg p-6 shadow-sm border">
+                <h3 className="font-semibold text-lg mb-2">{category}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
-};
+}
