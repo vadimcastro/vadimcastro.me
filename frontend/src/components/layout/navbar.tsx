@@ -1,13 +1,20 @@
 // src/components/layout/navbar.tsx
 'use client';
 
+import { React, useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from 'next/image'
 import { useAuth } from '../../lib/auth/AuthContext';
-import AdminMenu from './AdminMenu';
+import ProfileDropdown from './ProfileDropdown';
 
 export default function Navbar() {
   const { user } = useAuth();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const profileButtonRef = useRef(null);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   return (
     <nav className="bg-white/80 backdrop-blur-sm shadow-sm">
@@ -26,19 +33,27 @@ export default function Navbar() {
             {user ? (
               <AdminMenu />
             ) : (
-              <Link
-                href="/login"
-                className="flex items-center hover:opacity-80 transition-opacity duration-200 pl-6"
-              >
-                <div className="relative w-8 h-8 rounded-full overflow-hidden">
-                  <Image
-                    src="/images/profile.jpg"
-                    alt="Login"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </Link>
+              <div className="relative">
+                <button
+                  ref={profileButtonRef}
+                  onClick={toggleDropdown}
+                  className="flex items-center hover:opacity-80 transition-opacity duration-200 pl-6"
+                >
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                    <Image
+                      src="/images/profile.jpg"
+                      alt="Profile"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </button>
+                <ProfileDropdown
+                  isOpen={isDropdownOpen}
+                  onClose={() => setIsDropdownOpen(false)}
+                  profileRef={profileButtonRef}
+                />
+              </div>
             )}
           </div>
         </div>

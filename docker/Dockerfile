@@ -1,26 +1,26 @@
-# docker/backend/Dockerfile
 FROM python:3.11-slim
 
+# Set the working directory
 WORKDIR /app
+
+# Set Python path
+ENV PYTHONPATH=/app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
-    netcat-traditional \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file
-COPY backend/requirements.txt .
-
-# Install Python dependencies
+# Copy only what we need
+COPY backend/requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the backend code
-COPY backend/ .
+# Create app directory
+RUN mkdir -p /app/app
 
-# Make sure the script is executable
-RUN chmod +x scripts/start.sh
+# Copy only the app code
+COPY backend/app/ /app/app/
 
-# Command will be overridden by docker-compose
-CMD ["./scripts/start.sh"]
+# Command to run the application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

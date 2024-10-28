@@ -3,16 +3,21 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files from frontend directory
+COPY ../../frontend/package.json ../../frontend/package-lock.json ./
+
 # Install dependencies
-COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 
 # Copy the rest of the frontend code
-COPY frontend/ .
+COPY ../../frontend .
 
 # Set environment variables
 ENV NODE_ENV=development
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# Install the missing packages
+RUN npm install clsx tailwind-merge
 
 # Start the development server
 CMD ["npm", "run", "dev"]

@@ -1,35 +1,36 @@
 // src/app/layout.tsx
-import '../styles/globals.css'
-import { Inter } from 'next/font/google'
-import Navbar from '../components/layout/navbar'
-import Footer from '../components/layout/footer'  // Make sure to import
-import { AuthProvider } from '../lib/auth/AuthContext'
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import '../styles/globals.css';
+import { Providers } from './providers';
+import Navbar from '../components/layout/navbar';
+import Footer from '../components/layout/footer';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Vadim Castro',
-  description: 'Personal website and portfolio',
-}
+  description: 'Personal website of Vadim Castro',
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className={`${inter.className} min-h-full bg-gray-50`}>
-        <AuthProvider>
-          <div className="min-h-screen flex flex-col">
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <Providers>
+          <div className="flex flex-col min-h-screen bg-background font-sans antialiased">
             <Navbar />
             <main className="flex-grow">
               {children}
             </main>
             <Footer />
           </div>
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
-  )
+  );
 }

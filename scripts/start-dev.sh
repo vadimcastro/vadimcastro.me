@@ -2,7 +2,11 @@
 #!/bin/bash
 set -e
 
-# Start all services in development mode
+echo "Starting development environment..."
+
+# Ensure we're in the right directory
+cd "$(dirname "$0")/.."
+
+# Start services with development configuration
 cd docker
-docker-compose down -v
-docker-compose up --build
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
