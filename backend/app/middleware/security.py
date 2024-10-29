@@ -6,20 +6,22 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from datetime import datetime
 import redis
+from app.core.config import settings
 
 # Initialize Redis for rate limiting
-redis_client = redis.from_url("redis://localhost")
+redis_client = redis.from_url(settings.REDIS_URL)
 
 limiter = Limiter(key_func=get_remote_address)
 
 def setup_security(app: FastAPI):
-    # CORS
+    # CORS configuration using settings
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:3000"],  # Add your frontend URL
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=settings.CORS_CREDENTIALS,
+        allow_methods=settings.CORS_METHODS,
+        allow_headers=settings.CORS_HEADERS,
+        max_age=settings.CORS_MAX_AGE
     )
 
     # Rate limiting

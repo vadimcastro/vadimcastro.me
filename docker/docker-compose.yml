@@ -1,64 +1,47 @@
-# docker/docker-compose.yml
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ..
-      dockerfile: docker/frontend/Dockerfile.dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ../frontend:/app
-      - /app/node_modules
-      - /app/.next
-    environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
-    command: npm run dev
-    stdin_open: true
-    tty: true
-      
   api:
     build:
       context: ..
-      dockerfile: docker/backend/Dockerfile
+      dockerfile: docker/Dockerfile
+      args:
+        - APP_PATH=backend/app
+    volumes:
+      - ../backend/app:/app/app
     ports:
       - "8000:8000"
-    volumes:
-      - ../backend:/app
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/vadimcastro
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
-      - MINIO_URL=minio:9000
-      - REDIS_URL=redis://redis:6379
-      - SECRET_KEY=your-development-secret-key-change-in-production
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
-      - ADMIN_EMAIL=your@email.com
-      - ADMIN_PASSWORD=your-secure-password
-      - ADMIN_NAME=Vadim Castro
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+      - redis
+
+  frontend:
+    build:
+      context: ..  
+      dockerfile: docker/frontend/Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
 
   db:
     image: postgres:15
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=vadimcastro
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
 
 volumes:
   postgres_data:

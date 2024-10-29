@@ -23,3 +23,22 @@ COPY backend/ .
 
 # Use the full path to the script
 CMD ["start-api.sh"]
+
+FROM python:3.11-slim
+WORKDIR /app
+# Add the app directory to PYTHONPATH
+ENV PYTHONPATH=/app
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+build-essential \
+libpq-dev \
+netcat-traditional \
+&& rm -rf /var/lib/apt/lists/*
+# Copy the backend code
+COPY backend/ .
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+# Make sure the script is executable
+RUN chmod +x scripts/start.sh
+# Command will be overridden by docker-compose
+CMD ["./scripts/start.sh"]

@@ -13,6 +13,7 @@ services:
       - /app/node_modules
       - /app/.next
     environment:
+      - PYTHONPATH=/app:/app/app
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=http://localhost:8000
     command: npm run dev

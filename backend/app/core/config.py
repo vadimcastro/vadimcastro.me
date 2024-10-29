@@ -1,18 +1,23 @@
-# app/core/config.py
 from typing import List
 from pydantic_settings import BaseSettings
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Settings(BaseSettings):
+    # Debug mode
+    DEBUG: bool = True
+
     # Database
-    DATABASE_URL: str
+    DATABASE_URL: str = "postgresql://postgres:password@db:5432/vadimcastro"
 
     # MinIO Settings
-    MINIO_ROOT_USER: str
-    MINIO_ROOT_PASSWORD: str
-    MINIO_URL: str
+    MINIO_ROOT_USER: str = "minioadmin"
+    MINIO_ROOT_PASSWORD: str = "minioadmin"
+    MINIO_URL: str = "localhost:9000"
 
     # Redis Settings
-    REDIS_URL: str
+    REDIS_URL: str = "redis://redis:6379"
 
     # Security
     SECRET_KEY: str = "7aeab0e978e6b0624570ad36a78d2baf0ea59902111cb3becfa92d0a9732fe0b"
@@ -20,26 +25,20 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # Admin settings
-    ADMIN_EMAIL: str
-    ADMIN_PASSWORD: str
-    ADMIN_NAME: str
+    ADMIN_EMAIL: str = "vadim@vadimcastro.pro"
+    ADMIN_PASSWORD: str = "meowmeow"
+    ADMIN_NAME: str = "Vadim Castro"
 
     # CORS Configuration
     CORS_ORIGINS: List[str] = [
+        "http://localhost:3000",
         "http://localhost:8000",
-        "http://localhost:3000",  # React development server
-        "https://vadimcastro.pro"  # Production domain
+        "https://vadimcastro.pro"
     ]
-    CORS_METHODS: List[str] = ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
-    CORS_HEADERS: List[str] = [
-        "Content-Type",
-        "Authorization",
-        "Accept",
-        "Origin",
-        "X-Requested-With",
-    ]
+    CORS_METHODS: List[str] = ["*"]
+    CORS_HEADERS: List[str] = ["*"]
     CORS_CREDENTIALS: bool = True
-    CORS_MAX_AGE: int = 600  # 10 minutes
+    CORS_MAX_AGE: int = 600
 
     class Config:
         env_file = ".env"

@@ -1,5 +1,3 @@
-// src/lib/projects.ts
-
 export interface Project {
     id: string;
     slug: string;
@@ -16,7 +14,7 @@ export interface Project {
     }>;
     imageUrl: string;
   }
-  
+
   // Define this as a constant first
   const projectsList: Project[] = [
     {
@@ -51,14 +49,14 @@ export interface Project {
       imageUrl: "/images/scenic_pic.png"
     }
   ];
-  
+
   // Export the functions and the projects array
   export const projects = projectsList;
-  
+
   export function getAllProjects(): Project[] {
     return projectsList;
   }
-  
+
   export function getProjectBySlug(slug: string): Project | undefined {
     return projectsList.find(project => project.slug === slug);
   }

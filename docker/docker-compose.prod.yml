@@ -11,5 +11,9 @@ services:
   api:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
     environment:
+      - PYTHONPATH=/app:/app/app
       - ENVIRONMENT=production
       - DEBUG=0
+    build:
+      dockerfile: docker/Dockerfile
+      context: ..

@@ -4,13 +4,13 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Install dependencies
-COPY frontend/package.json frontend/package-lock.json ./
+COPY ../frontend/package.json ../frontend/package-lock.json ./
 
 # Install npm packages
 RUN npm install
 
 # Copy the rest of the frontend code
-COPY frontend/ .
+COPY ../frontend/ .
 
 # Set environment variables
 ENV NODE_ENV=development

@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check for tokens in localStorage on mount
     const storedAccessToken = localStorage.getItem('accessToken');
     const storedRefreshToken = localStorage.getItem('refreshToken');
-    
+
     if (storedAccessToken && storedRefreshToken) {
       setAccessToken(storedAccessToken);
       setRefreshToken(storedRefreshToken);
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
@@ -91,13 +91,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json();
-      
+
       localStorage.setItem('accessToken', data.access_token);
       localStorage.setItem('refreshToken', data.refresh_token);
-      
+
       setAccessToken(data.access_token);
       setRefreshToken(data.refresh_token);
-      
+
       await fetchUser(data.access_token);
       router.push('/vadim');
     } catch (error) {

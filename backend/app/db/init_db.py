@@ -1,63 +1,47 @@
 # app/db/init_db.py
-from sqlalchemy.orm import Session
-from sqlalchemy import text
-from app.db.session import engine, SessionLocal
-from app.core.config import settings
 import logging
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from app.core.config import settings
+from app.db.models import Base, User
+from app.crud.crud_user import get_password_hash
 
 logger = logging.getLogger(__name__)
 
-def wait_for_db() -> bool:
+def init_db():
+    logger.info("Initializing database...")
+    
     try:
-        db = SessionLocal()
-        # Try to create session to check if DB is awake
-        db.execute(text("SELECT 1"))
-        return True
-    except Exception as e:
-        logger.error(f"DB not ready: {e}")
-        return False
-    finally:
-        db.close()
-
-def init_db() -> None:
-    try:
-        # Import here to avoid circular imports
-        from app.crud.crud_user import crud_user
-        from app.schemas.user import UserCreate
+        # Create engine
+        engine = create_engine(settings.DATABASE_URL)
         
-        # Create a new session
+        # Create all tables
+        logger.info("Creating database tables...")
+        Base.metadata.create_all(bind=engine)
+        
+        # Create SessionLocal
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
         db = SessionLocal()
-        try:
-            # Verify the users table exists by trying to query it
-            db.execute(text("SELECT 1 FROM users LIMIT 1"))
-            logger.info("Users table exists")
-            
-            # Check if admin user exists
-            existing_user = crud_user.get_by_email(db, email=settings.ADMIN_EMAIL)
-            
-            if not existing_user:
-                # Create admin user
-                user_in = UserCreate(
-                    email=settings.ADMIN_EMAIL,
-                    password=settings.ADMIN_PASSWORD,
-                    username=settings.ADMIN_EMAIL.split('@')[0],
-                    name=settings.ADMIN_NAME,
-                    is_superuser=True,
-                    is_active=True,
-                    role="Full Stack Developer"
-                )
-                crud_user.create(db, obj_in=user_in)
-                logger.info(f"Admin user created successfully: {settings.ADMIN_EMAIL}")
-            else:
-                logger.info(f"Admin user already exists: {settings.ADMIN_EMAIL}")
-                
+        
+        # Check if we need to create the admin user
+        if not db.query(User).filter(User.email == settings.ADMIN_EMAIL).first():
+            logger.info("Creating admin user...")
+            admin_user = User(
+                email=settings.ADMIN_EMAIL,
+                username=settings.ADMIN_EMAIL,  # Using email as username
+                hashed_password=get_password_hash(settings.ADMIN_PASSWORD),
+                name=settings.ADMIN_NAME,
+                is_active=True,
+                is_superuser=True,
+                role="admin"
+            )
+            db.add(admin_user)
             db.commit()
-        except Exception as e:
-            logger.error(f"Error during database initialization: {e}")
-            db.rollback()
-            raise
-        finally:
-            db.close()
+            logger.info("Admin user created successfully")
+        
+        db.close()
+        logger.info("Database initialization completed successfully")
+        
     except Exception as e:
-        logger.error(f"Failed to initialize database: {e}")
+        logger.error(f"Error initializing database: {str(e)}")
         raise

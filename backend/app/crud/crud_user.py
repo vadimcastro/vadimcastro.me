@@ -1,10 +1,9 @@
-# app/crud/crud_user.py
 from typing import Any, Dict, Optional, Union
 from sqlalchemy.orm import Session
-from app.core.security import get_password_hash, verify_password
 from app.crud.base import CRUDBase
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
+from app.core.hashing import get_password_hash, verify_password
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def get_by_email(self, db: Session, *, email: str) -> Optional[User]:
@@ -35,5 +34,4 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def is_superuser(self, user: User) -> bool:
         return user.is_superuser
 
-# Create crud_user instance
 crud_user = CRUDUser(User)
