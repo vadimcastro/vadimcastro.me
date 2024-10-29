@@ -9,7 +9,9 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "password"
     POSTGRES_DB: str = "vadimcastro"
-    CORS_ORIGINS: List[str] = ["http://localhost:3000"]
+    CORS_ORIGINS: List[str] = [ "http://localhost:3000",
+                                "http://localhost:8000",
+                                "https://vadimcastro.pro" ]
     
     class Config:
         case_sensitive = True

@@ -2,8 +2,8 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
+import { useRouter, usePathname } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 export interface User {
   id: number;
@@ -17,7 +17,7 @@ export interface User {
 
 export interface AuthContextType {
   user: User | null;
-  accessToken: string | null;  // Changed from token to accessToken
+  accessToken: string | null;
   refreshToken: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -31,51 +31,51 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   const isAuthenticated = !!accessToken && !!user;
 
-  useEffect(() => {
-    // Check for tokens in localStorage on mount
-    const storedAccessToken = localStorage.getItem('accessToken');
-    const storedRefreshToken = localStorage.getItem('refreshToken');
-
-    if (storedAccessToken && storedRefreshToken) {
-      setAccessToken(storedAccessToken);
-      setRefreshToken(storedRefreshToken);
-      fetchUser(storedAccessToken);
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
   const fetchUser = async (token: string) => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      console.log('Fetching user with token:', token.substring(0, 10) + '...');
+      
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/me`, {
+        method: 'GET',
+        headers,
+        credentials: 'same-origin',
       });
 
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      } else {
-        throw new Error('Failed to fetch user');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        if (response.status === 401) {
+          Cookies.remove('accessToken');
+          setAccessToken(null);
+        }
+        throw new Error(`Failed to fetch user: ${errorText}`);
       }
+
+      const userData = await response.json();
+      console.log('User data received:', userData);
+      setUser(userData);
+      return true;
     } catch (error) {
-      console.error('Error fetching user:', error);
-      logout();
-    } finally {
-      setIsLoading(false);
+      console.error('Error in fetchUser:', error);
+      return false;
     }
   };
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -83,22 +83,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: new URLSearchParams({
           username: email,
           password: password,
-        }),
+        }).toString(),
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        const errorText = await response.text();
+        throw new Error(errorText || 'Login failed');
       }
 
       const data = await response.json();
+      const newAccessToken = data.access_token;
+      
+      // Set cookie and state
+      Cookies.set('accessToken', newAccessToken, { 
+        expires: 7,
+        path: '/',
+        sameSite: 'strict'
+      });
+      setAccessToken(newAccessToken);
 
-      localStorage.setItem('accessToken', data.access_token);
-      localStorage.setItem('refreshToken', data.refresh_token);
+      // Fetch user data
+      const userFetched = await fetchUser(newAccessToken);
+      if (!userFetched) {
+        throw new Error('Failed to fetch user data after login');
+      }
 
-      setAccessToken(data.access_token);
-      setRefreshToken(data.refresh_token);
-
-      await fetchUser(data.access_token);
+      // Only redirect after everything is successful
       router.push('/vadim');
     } catch (error) {
       console.error('Login error:', error);
@@ -107,56 +117,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    Cookies.remove('accessToken');
     setUser(null);
     setAccessToken(null);
-    setRefreshToken(null);
     router.push('/');
   };
 
-  const refreshAccessToken = async () => {
-    if (!refreshToken) {
-      logout();
-      return;
-    }
-
-    try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/refresh', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refresh_token: refreshToken }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Token refresh failed');
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const storedToken = Cookies.get('accessToken');
+        console.log('Auth init - stored token:', !!storedToken);
+        console.log('Current pathname:', pathname);
+        
+        if (storedToken) {
+          setAccessToken(storedToken);
+          const userFetched = await fetchUser(storedToken);
+          
+          if (!userFetched && pathname.startsWith('/vadim')) {
+            console.log('User fetch failed, redirecting from protected route');
+            router.replace('/');
+          }
+        } else if (pathname.startsWith('/vadim')) {
+          console.log('No token found, redirecting from protected route');
+          router.replace('/');
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (pathname.startsWith('/vadim')) {
+          router.replace('/');
+        }
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      const data = await response.json();
-      localStorage.setItem('accessToken', data.access_token);
-      setAccessToken(data.access_token);
-      return data.access_token;
-    } catch (error) {
-      console.error('Token refresh error:', error);
-      logout();
-      throw error;
-    }
-  };
+    initAuth();
+  }, [pathname, router]);
 
-  const value: AuthContextType = {
-    user,
-    accessToken,
-    refreshToken,
-    isLoading,
-    isAuthenticated,
-    login,
-    logout,
-    refreshAccessToken,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        accessToken,
+        refreshToken: null,
+        isLoading,
+        isAuthenticated,
+        login,
+        logout,
+        refreshAccessToken: async () => null,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

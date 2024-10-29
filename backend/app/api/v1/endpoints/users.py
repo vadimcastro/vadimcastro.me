@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.api import deps
 from app.schemas import user as user_schemas
 from app.crud import crud_user
-from app.db.session import get_db
+from app.db.utils import get_db
 
 router = APIRouter()
 

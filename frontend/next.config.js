@@ -16,6 +16,10 @@ const nextConfig = {
   },
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    domains: ['localhost'],
+    unoptimized: true, // This will bypass image optimization
+  },
 }
 
 module.exports = nextConfig

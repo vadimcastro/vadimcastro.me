@@ -1,6 +1,5 @@
 # docker/docker-compose.dev.yml
 version: '3.8'
-
 services:
   frontend:
     build:
@@ -16,11 +15,12 @@ services:
       - PYTHONPATH=/app:/app/app
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_ADMIN_NAME=Vadim Castro
+      - NEXT_PUBLIC_ADMIN_ROLE=Administrator
+      - NEXT_PUBLIC_ADMIN_INITIALS=VC
     command: npm run dev
-    # Add these for better development experience
     stdin_open: true
     tty: true
-    # Add healthcheck
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:3000"]
       interval: 10s
@@ -28,9 +28,24 @@ services:
       retries: 3
       start_period: 30s
 
-
   api:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     environment:
       - ENVIRONMENT=development
       - DEBUG=1
+      - SECRET_KEY=your-secret-development-key-that-is-very-very-very-long-and-secure
+      - DATABASE_URL=postgresql://postgres:password@db:5432/vadimcastro
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image'
 import { useAuth } from '../../lib/auth/AuthContext';
 import ProfileDropdown from './ProfileDropdown';
+import AdminMenu from './AdminMenu';
 
 export default function Navbar() {
   const { user } = useAuth();

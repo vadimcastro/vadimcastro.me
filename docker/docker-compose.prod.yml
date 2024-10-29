@@ -1,6 +1,5 @@
 # docker/docker-compose.prod.yml
 version: '3.8'
-
 services:
   frontend:
     command: npm start
@@ -14,6 +13,16 @@ services:
       - PYTHONPATH=/app:/app/app
       - ENVIRONMENT=production
       - DEBUG=0
+      - REDIS_URL=redis://redis:6379/0
     build:
       dockerfile: docker/Dockerfile
       context: ..
+
+  redis:
+    image: redis:6
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
