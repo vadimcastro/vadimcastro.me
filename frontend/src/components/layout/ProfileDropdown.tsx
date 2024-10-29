@@ -53,10 +53,10 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
     
     try {
       await login(email, password);
+      // The redirection is handled in the login function
       handleClose();
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Invalid email or password');
-    } finally {
       setIsLoading(false);
     }
   };

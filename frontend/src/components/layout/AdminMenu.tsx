@@ -6,7 +6,12 @@ import { Menu, Transition } from '@headlessui/react';
 import { useAuth } from '../../lib/auth/AuthContext';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ADMIN_INFO } from '../../lib/auth/constants';
+
+interface AdminInfo {
+  name: string;
+  role: string;
+  initials: string;
+}
 
 export default function AdminMenu() {
   const { user, logout } = useAuth();
@@ -16,29 +21,28 @@ export default function AdminMenu() {
     return null;
   }
 
+  // Get admin info from environment variables with fallbacks
+  const adminInfo: AdminInfo = {
+    name: process.env.NEXT_PUBLIC_ADMIN_NAME || 'Vadim Castro',
+    role: process.env.NEXT_PUBLIC_ADMIN_ROLE || 'Administrator',
+    initials: process.env.NEXT_PUBLIC_ADMIN_INITIALS || 'VC'
+  };
+
   return (
     <Menu as="div" className="relative ml-3">
       <div>
         <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-mint-500 focus:ring-offset-2">
           <span className="sr-only">Open admin menu</span>
-          <div className="h-9 w-9 rounded-full overflow-hidden">
-            {ADMIN_INFO.avatar ? (
-              <Image
-                src={ADMIN_INFO.avatar}
-                alt={ADMIN_INFO.name}
-                width={36}
-                height={36}
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                }}
-              />
-            ) : (
-              <div className="h-full w-full rounded-full bg-mint-500 flex items-center justify-center text-white font-medium">
-                {ADMIN_INFO.initials}
-              </div>
-            )}
+          <div className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-mint-500">
+            <Image
+              src="/images/profile.jpg"  // Updated path
+              alt={adminInfo.name}
+              width={36}
+              height={36}
+              className="h-full w-full object-cover"
+              priority  // Added priority loading
+              unoptimized  // Added to bypass image optimization if needed
+            />
           </div>
         </Menu.Button>
       </div>
@@ -53,8 +57,8 @@ export default function AdminMenu() {
       >
         <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="px-4 py-3">
-            <p className="text-sm font-medium text-gray-900">{ADMIN_INFO.name}</p>
-            <p className="text-xs font-medium text-gray-500">{ADMIN_INFO.role}</p>
+            <p className="text-sm font-medium text-gray-900">{adminInfo.name}</p>
+            <p className="text-xs font-medium text-gray-500">{adminInfo.role}</p>
           </div>
           
           <div className="border-t border-gray-200">

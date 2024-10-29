@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from app.api.v1 import auth  # Changed to absolute import
+
+from app.api.v1 import auth  
+from app.api.v1.endpoints import metrics 
 
 api_router = APIRouter()
 
@@ -9,3 +11,4 @@ async def root():
 
 # Include other routers
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
+api_router.include_router(metrics.router, prefix="/metrics", tags=["metrics"])

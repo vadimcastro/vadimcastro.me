@@ -1,5 +1,5 @@
+# docker/docker-compose.yml
 version: '3.8'
-
 services:
   api:
     build:
@@ -17,7 +17,7 @@ services:
 
   frontend:
     build:
-      context: ..  
+      context: ..
       dockerfile: docker/frontend/Dockerfile.dev
     volumes:
       - ./frontend:/app
@@ -42,6 +42,14 @@ services:
     image: redis:6
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
 
 volumes:
   postgres_data:
+  redis_data:

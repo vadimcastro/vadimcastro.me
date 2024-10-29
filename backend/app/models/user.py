@@ -10,7 +10,7 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=True)
     role = Column(String, nullable=True)
-    avatar = Column(String, nullable=True)
+    #avatar = Column(String, nullable=True)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
