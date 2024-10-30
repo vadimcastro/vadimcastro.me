@@ -20,7 +20,7 @@ export const useProtectedApi = () => {
       }
     }
 
-    const response = await fetch(`${baseUrl}${endpoint}`, {
+    const fetchConfig: RequestInit = {
       ...options,
       headers: {
         ...options.headers,
@@ -29,22 +29,20 @@ export const useProtectedApi = () => {
         'Accept': 'application/json',
       },
       mode: 'cors',
-      credentials: 'include',
-    });
+      credentials: 'include' as RequestCredentials,
+    };
+
+    const response = await fetch(`${baseUrl}${endpoint}`, fetchConfig);
 
     if (response.status === 401) {
       currentToken = await refreshAccessToken();
       if (currentToken) {
         const retryResponse = await fetch(`${baseUrl}${endpoint}`, {
-          ...options,
+          ...fetchConfig,
           headers: {
-            ...options.headers,
+            ...fetchConfig.headers,
             'Authorization': `Bearer ${currentToken}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          mode: 'cors',
-          credentials: 'same-origin',
+          }
         });
         if (!retryResponse.ok) throw new Error('API request failed');
         return retryResponse.json();
@@ -55,7 +53,6 @@ export const useProtectedApi = () => {
     return response.json();
   };
 
-  // Return the API client object with the methods
   return {
     get: <T>(endpoint: string) => fetchProtected<T>(endpoint, { method: 'GET' }),
     post: <T>(endpoint: string, data: any) => 

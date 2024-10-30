@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     
     # Admin user settings
     ADMIN_EMAIL: str = "vadim@vadimcastro.pro"
-    ADMIN_PASSWORD: str = "password"  # Change this in production
+    ADMIN_PASSWORD: str = "meow"  # Now correctly using your password
     ADMIN_USERNAME: str = "vadimcastro"
     ADMIN_NAME: str = "Vadim Castro"
     
@@ -35,22 +35,14 @@ class Settings(BaseSettings):
     
     # CORS Settings
     CORS_ORIGINS: List[str] = [
-        # Frontend URLs
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://frontend:3000",
         "http://0.0.0.0:3000",
-        
-        # Backend URLs
         "http://localhost:8000",
         "http://127.0.0.1:8000",
         "http://0.0.0.0:8000",
         "http://api:8000",
-        
-        # Production URLs
-        "https://vadimcastro.pro",
-        "https://www.vadimcastro.pro",
-        "https://api.vadimcastro.pro"
     ]
     CORS_CREDENTIALS: bool = True
     CORS_METHODS: List[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"]
@@ -60,8 +52,6 @@ class Settings(BaseSettings):
         "Accept",
         "Origin",
         "X-Requested-With",
-        "Access-Control-Request-Method",
-        "Access-Control-Request-Headers"
     ]
     CORS_MAX_AGE: int = 3600
 
@@ -70,8 +60,4 @@ class Settings(BaseSettings):
         env_file = ".env"
         extra = "allow"
 
-@lru_cache
-def get_settings() -> Settings:
-    return Settings()
-
-settings = get_settings()
+settings = Settings()
