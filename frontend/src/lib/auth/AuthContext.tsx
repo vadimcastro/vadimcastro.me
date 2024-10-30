@@ -73,48 +73,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          username: email,
-          password: password,
-        }).toString(),
+  // src/lib/auth/AuthContext.tsx
+const login = async (email: string, password: string) => {
+  try {
+    console.log('Attempting login to:', process.env.NEXT_PUBLIC_API_URL);
+    
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+      },
+      body: new URLSearchParams({
+        username: email,
+        password: password,
+      }).toString(),
+      credentials: 'include',  // Add this
+      mode: 'cors',           // Add this
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error('Login failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Login failed');
-      }
-
-      const data = await response.json();
-      const newAccessToken = data.access_token;
-      
-      // Set cookie and state
-      Cookies.set('accessToken', newAccessToken, { 
-        expires: 7,
-        path: '/',
-        sameSite: 'strict'
-      });
-      setAccessToken(newAccessToken);
-
-      // Fetch user data
-      const userFetched = await fetchUser(newAccessToken);
-      if (!userFetched) {
-        throw new Error('Failed to fetch user data after login');
-      }
-
-      // Only redirect after everything is successful
-      router.push('/vadim');
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+      throw new Error(errorData || 'Login failed');
     }
-  };
+
+    const data = await response.json();
+    const newAccessToken = data.access_token;
+    
+    // Set cookie and state
+    Cookies.set('accessToken', newAccessToken, { 
+      expires: 7,
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+    setAccessToken(newAccessToken);
+
+    // Fetch user data
+    const userFetched = await fetchUser(newAccessToken);
+    if (!userFetched) {
+      throw new Error('Failed to fetch user data after login');
+    }
+
+    router.push('/vadim');
+  } catch (error) {
+    console.error('Login error:', error);
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error('An unexpected error occurred during login');
+    }
+  }
+};
 
   const logout = () => {
     Cookies.remove('accessToken');

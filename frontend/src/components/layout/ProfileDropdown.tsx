@@ -44,6 +44,12 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
     onClose();
   };
 
+  useEffect(() => {
+    if (isSigningIn) {
+      setError('');
+    }
+  }, [isSigningIn]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -53,13 +59,19 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
     
     try {
       await login(email, password);
-      // The redirection is handled in the login function
       handleClose();
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Invalid email or password');
-      setIsLoading(false);
+      console.error('Login submission error:', error);
+      setError(
+        error instanceof Error 
+          ? error.message 
+          : 'Unable to connect to the server. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);  // Ensure loading state is always cleared
     }
   };
+
 
   if (!isOpen) return null;
 
@@ -160,7 +172,11 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 py-1.5 px-4 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center gap-2"
+              className={`flex-1 py-1.5 px-4 ${
+                isLoading 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-gray-900 hover:bg-gray-800'
+              } text-white rounded-md transition-colors duration-200 flex items-center justify-center gap-2`}
             >
               {isLoading ? (
                 <>

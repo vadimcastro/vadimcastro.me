@@ -18,6 +18,8 @@ async def login(
     db: Session = Depends(get_db)
 ):
     logger.info(f"Login attempt for user: {form_data.username}")
+    logger.info(f"Received password: {form_data.password}")  # Be careful with this in production!
+    
     try:
         user = crud_user.authenticate(
             db, 
@@ -31,11 +33,14 @@ async def login(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect email or password"
             )
-
+           
+        logger.info(f"User found: {user.email}")  # Add this
         access_token = create_access_token(data={"sub": user.email})
         
         # Verify token immediately
         test_payload = decode_token(access_token)
+        logger.info(f"Token created and verified: {test_payload}")  # Add this
+        
         if not test_payload:
             logger.error("Token creation verification failed")
             raise HTTPException(
@@ -56,26 +61,32 @@ async def login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=str(e)
         )
-
+    
 @router.get("/me")
 async def get_current_user(
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme)
 ):
     try:
-        logger.debug(f"Accessing /me endpoint with token: {token[:10]}...")
         user = get_user_from_token(token, db)
         if not user:
-            logger.warning("Invalid token or user not found")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials"
             )
             
-        logger.debug(f"Successfully retrieved user data for: {user.email}")
-        return user
+        return {
+            "id": user.id,
+            "email": user.email,
+            "username": user.username,
+            "name": user.name,
+            "role": user.role,
+            "is_active": user.is_active,
+            "is_superuser": user.is_superuser
+        }
+        
     except Exception as e:
-        logger.error(f"Error in /me endpoint: {str(e)}", exc_info=True)
+        logger.error(f"Error in /me endpoint: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials"

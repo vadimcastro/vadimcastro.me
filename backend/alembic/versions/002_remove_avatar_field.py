@@ -1,27 +1,25 @@
-# alembic/versions/002_remove_avatar_field.py
+# backend/alembic/versions/002_remove_avatar_field.py
 """remove avatar field
 
 Revision ID: 002
-Revises: previous_revision_id
-Create Date: 2024-10-29
-
+Revises: 001
+Create Date: 2024-01-29 00:00:00.000000
 """
 from alembic import op
 import sqlalchemy as sa
 
-# revision identifiers, used by Alembic.
 revision = '002'
-down_revision = '001' # create users table
+down_revision = '001'  # Points to create_users_table
 branch_labels = None
 depends_on = None
 
-def upgrade():
-    # Remove the avatar column if it doesn't exist
-    try:
+def upgrade() -> None:
+    # Use op.get_bind to check if column exists before trying to drop it
+    conn = op.get_bind()
+    inspector = sa.inspect(conn)
+    columns = inspector.get_columns('users')
+    if any(col['name'] == 'avatar' for col in columns):
         op.drop_column('users', 'avatar')
-    except Exception as e:
-        pass  # Column might not exist
 
-def downgrade():
-    # Add back the avatar column if needed
+def downgrade() -> None:
     op.add_column('users', sa.Column('avatar', sa.String(), nullable=True))

@@ -27,22 +27,34 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
-
+      
   api:
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: >
+      sh -c '
+        echo "Running migrations..." &&
+        /app/scripts/migrate.sh &&
+        echo "Initializing database..." &&
+        python3 /app/scripts/init_db.py &&
+        echo "Starting server..." &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      '
     environment:
       - ENVIRONMENT=development
       - DEBUG=1
-      - SECRET_KEY=your-secret-development-key-that-is-very-very-very-long-and-secure
+      - SECRET_KEY=v_zCh3CsteyB7qxN_0vUuFpEZpvGLxeCKgzLXXr4HsE
       - DATABASE_URL=postgresql://postgres:password@db:5432/vadimcastro
       - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - redis
+      
+    volumes:
+      - ../backend/.env:/app/.env
 
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+        
   redis:
-    image: redis:6
-    ports:
-      - "6379:6379"
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
