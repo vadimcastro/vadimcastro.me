@@ -11,7 +11,7 @@ from sqlalchemy.dialects.postgresql import JSON
 
 # revision identifiers, used by Alembic
 revision = '004'
-down_revision = '003'  # Points to your user_sessions migration
+down_revision = '003'  # Points to user_sessions
 branch_labels = None
 depends_on = None
 
@@ -27,15 +27,17 @@ def upgrade() -> None:
         sa.Column('features', JSON, nullable=False),
         sa.Column('image_url', sa.String(), nullable=False),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
-        sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
+        sa.Column('updated_at', sa.DateTime(timezone=True), onupdate=sa.text('now()')),
         sa.PrimaryKeyConstraint('id')
     )
     
     # Add indexes
     op.create_index(op.f('ix_projects_slug'), 'projects', ['slug'], unique=True)
-    op.create_index(op.f('ix_projects_title'), 'projects', ['title'], unique=False)
+    op.create_index(op.f('ix_projects_title'), 'projects', ['title'])
+    op.create_index(op.f('ix_projects_created_at'), 'projects', ['created_at'])
 
 def downgrade() -> None:
+    op.drop_index(op.f('ix_projects_created_at'))
     op.drop_index(op.f('ix_projects_title'))
     op.drop_index(op.f('ix_projects_slug'))
     op.drop_table('projects')
