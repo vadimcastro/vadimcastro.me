@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Activity, Users, FileText, BarChart3 } from 'lucide-react';
 import { useProtectedApi } from '../../lib/api/protected';
+import { MetricCard } from './MetricCard';
+import { DashboardHeader } from './DashboardHeader';
+import { CryptoPrice } from './CryptoPrice';
+import { Notepad } from './Notepad';
 
 interface DashboardMetrics {
   visitors: {
@@ -110,111 +114,29 @@ const DashboardComponent = () => {
 
   return (
     <div className="max-w-[95%] mx-auto px-4 py-4 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-semibold text-gray-900">
-          Welcome to Your Dashboard
-        </h1>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">
-            Last updated {formatLastUpdated()}
-          </span>
-          <button
-            onClick={fetchDashboardMetrics}
-            disabled={isRefreshing}
-            className={`px-4 py-2 rounded-md text-sm flex items-center gap-2 ${
-              isRefreshing 
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-            }`}
-          >
-            {isRefreshing ? (
-              <div className="animate-spin rounded-full h-4 w-4 border border-gray-400 border-t-transparent"/>
-            ) : (
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            )}
-            Refresh
-          </button>
-        </div>
-      </div>
+      <DashboardHeader
+        lastUpdated={formatLastUpdated()}
+        onRefresh={fetchDashboardMetrics}
+        isRefreshing={isRefreshing}
+      />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <div 
-              key={index}
-              className="bg-white rounded-lg border shadow-sm p-6 hover:shadow-md transition-shadow duration-200"
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-medium text-gray-600">
-                  {stat.title}
-                </h3>
-                <Icon className="h-4 w-4 text-gray-600" />
-              </div>
-              <div className="space-y-2">
-                <p className="text-2xl font-bold text-gray-900">
-                  {stat.value}
-                </p>
-                <div className="flex items-center text-sm">
-                  <span className={`${
-                    stat.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                  }`}>
-                    {stat.change}
-                  </span>
-                  <span className="ml-2 text-gray-600">
-                    {stat.description}
-                  </span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {stats.map((stat, index) => (
+          <MetricCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            change={stat.change}
+            icon={stat.icon}
+            description={stat.description}
+            trend={stat.trend}
+          />
+        ))}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border shadow-sm">
-          <div className="border-b px-6 py-4">
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <BarChart3 className="w-5 h-5" />
-              Recent Activity
-            </h2>
-          </div>
-          <div className="p-6 space-y-4">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full" />
-                <span>New project published</span>
-              </div>
-              <span className="text-sm text-gray-500">2 hours ago</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                <span>Profile updated</span>
-              </div>
-              <span className="text-sm text-gray-500">5 hours ago</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg border shadow-sm">
-          <div className="border-b px-6 py-4">
-            <h2 className="text-lg font-semibold">Quick Actions</h2>
-          </div>
-          <div className="p-6 space-y-3">
-            <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-              Create New Project
-            </button>
-            <button className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
-              Update Profile
-            </button>
-            <button className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
-              View Analytics
-            </button>
-          </div>
-        </div>
+        <CryptoPrice />
+        <Notepad />
       </div>
     </div>
   );
