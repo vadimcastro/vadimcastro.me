@@ -44,7 +44,7 @@ export const ResumeSummary = () => {
                   <p className="text-gray-700">Stickshift AI</p>
                 </div>
                 <div className="text-sm text-gray-500 whitespace-nowrap ml-2">
-                  Dec 2023 - Present
+                  Dec 2023 - Oct 2024
                 </div>
               </div>
               <ul className="mt-1 text-sm text-gray-600 space-y-1">

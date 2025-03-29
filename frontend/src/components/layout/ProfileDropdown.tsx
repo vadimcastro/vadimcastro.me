@@ -84,7 +84,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
         <>
           <div className="grid grid-cols-4 gap-2">
             <a
-              href="mailto:vadim@vadimcastro.pro?subject=Hey%20Vadim!"
+              href="mailto:vadimcastro1@gmail.com?subject=Hey%20Vadim!"
               className="flex items-center justify-center p-2 rounded-md hover:bg-gray-100 transition-colors duration-200"
               title="Send Email"
             >

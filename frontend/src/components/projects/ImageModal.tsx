@@ -26,21 +26,26 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
       onClick={onClose}
     >
       <div 
-        className="relative max-w-7xl w-full max-h-[90vh] bg-white rounded-lg overflow-hidden"
+        className="relative max-w-7xl w-full max-h-[90vh] rounded-lg overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
-        <div className="relative h-[85vh]">
-          <Image
-            src={src}
-            alt={alt}
-            fill
-            className="object-contain"
-            priority
-          />
+        <div className="flex items-center justify-center h-[85vh]">
+          <div className="relative w-full h-full">
+            <Image
+              src={src}
+              alt={alt}
+              fill
+              style={{ objectFit: 'scale-down' }}
+              sizes="(max-width: 1200px) 100vw, 1200px"
+              priority
+            />
+          </div>
         </div>
+        
+        {/* Repositioned close button - now fully inside the modal */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 bg-white rounded-full p-2"
+          className="absolute top-4 right-8 text-white hover:text-gray-200 bg-black/50 rounded-full p-2 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
