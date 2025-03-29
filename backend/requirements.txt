@@ -4,7 +4,7 @@ annotated-types==0.7.0
 anyio==4.6.2.post1
 argon2-cffi==23.1.0
 argon2-cffi-bindings==21.2.0
-bcrypt==4.1.2
+bcrypt==4.0.1
 boto3==1.34.14
 botocore==1.34.162
 certifi==2024.8.30
@@ -50,3 +50,4 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 uvicorn==0.27.0
 slowapi>=0.1.5
+fastapi-cache2==0.2.1

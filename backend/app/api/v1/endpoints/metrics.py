@@ -1,65 +1,75 @@
 # app/api/v1/endpoints/metrics.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import Dict
-from app.db.utils import get_db
+from typing import Dict, List
+from app.db.session import SessionLocal
 from app.core.security import get_user_from_token
 from fastapi.security import OAuth2PasswordBearer
-from app.crud import crud_metrics  # Keep this for future implementation
+from app.crud import crud_metrics
+from fastapi_cache.decorator import cache
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
-@router.get("/visitors", response_model=Dict)
-def get_visitor_metrics(
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@router.get("/visitors")
+@cache(expire=300)  # Cache for 5 minutes
+async def get_visitor_metrics(
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme)
-):
-    # Verify user is authenticated
+) -> Dict:
     user = get_user_from_token(token, db)
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_visitor_metrics(db)
 
-    # Temporary mock data until crud_metrics is implemented
-    return {
-        "total": 2854,
-        "percentageChange": 15.5
-    }
-    # Future implementation:
-    # return crud_metrics.get_visitor_metrics(db)
-
-@router.get("/projects", response_model=Dict)
-def get_project_metrics(
+@router.get("/sessions")
+@cache(expire=60)  # Cache for 1 minute
+async def get_session_metrics(
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme)
-):
-    # Verify user is authenticated
+) -> Dict:
     user = get_user_from_token(token, db)
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_session_metrics(db)
 
-    # Temporary mock data until crud_metrics is implemented
-    return {
-        "total": 42,
-        "newThisMonth": 5
-    }
-    # Future implementation:
-    # return crud_metrics.get_project_metrics(db)
-
-@router.get("/sessions", response_model=Dict)
-def get_session_metrics(
+@router.get("/users")
+@cache(expire=300)
+async def get_user_metrics(
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme)
-):
-    # Verify user is authenticated
+) -> Dict:
     user = get_user_from_token(token, db)
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_user_metrics(db)
 
-    # Temporary mock data until crud_metrics is implemented
-    return {
-        "active": 127,
-        "percentageChange": 8.3
-    }
-    # Future implementation:
-    # return crud_metrics.get_session_metrics(db)
+@router.get("/recent-activity")
+@cache(expire=60)
+async def get_recent_activity(
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme),
+    limit: int = 5
+) -> List:
+    user = get_user_from_token(token, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_recent_activity(db, limit)
+
+@router.get("/projects")
+@cache(expire=300)  # Cache for 5 minutes
+async def get_project_metrics(
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+) -> Dict:
+    user = get_user_from_token(token, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_project_metrics(db)

@@ -14,7 +14,7 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <section className="h-[750px] border rounded-lg bg-white shadow-sm">
           <div className="h-full flex flex-col">
-            <h2 className="text-2xl font-semibold px-6 py-4 border-b">Projects</h2>
+            <h2 className="text-2xl font-semibold px-6 py-4 border-b">Pinned Project</h2>
             <div className="flex-1 p-4">
               {projects.length > 0 ? (
                 <div className="h-full flex items-stretch">
@@ -28,7 +28,7 @@ export default function Home() {
         </section>
         <section className="h-[750px] border rounded-lg bg-white shadow-sm">
           <div className="h-full flex flex-col">
-            <h2 className="text-2xl font-semibold px-6 py-4 border-b">Work Experience</h2>
+            <h2 className="text-2xl font-semibold px-6 py-4 border-b">Work Experience Overview</h2>
             <div className="flex-1 p-4 overflow-y-auto">
               <ResumeSummary />
             </div>

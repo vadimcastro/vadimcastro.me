@@ -17,7 +17,7 @@ const experiences: Experience[] = [
     company: "Stickshift AI",
     logo: "/images/companies/stickshift-logo.png",
     role: "Senior Software Engineer, UI/UX",
-    period: "Dec 2023 - Current",
+    period: "Dec 2023 - Oct 2024",
     location: "Austin, Texas",
     description: [
       "Added integration for GPT-4 Turbo and Claude 3 Haiku based search assistant",

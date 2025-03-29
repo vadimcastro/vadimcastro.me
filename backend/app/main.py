@@ -10,6 +10,9 @@ from app.db.session import SessionLocal
 from app.db.init_db import init_db
 from app.db.utils import test_db_connection
 from app.middleware.security import setup_security
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+from contextlib import asynccontextmanager
 
 # Configure logging
 logging.basicConfig(
@@ -42,11 +45,27 @@ else:  # production
 
 logger.info(f"Configured CORS origins: {CORS_ORIGINS}")
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Setup
+    logger.info("Initializing cache backend...")
+    cache_backend = InMemoryBackend()
+    FastAPICache.init(cache_backend, prefix="fastapi-cache")
+    logger.info("Cache backend initialized")
+    
+    yield
+    
+    # Cleanup
+    logger.info("Clearing cache...")
+    await FastAPICache.clear()
+    logger.info("Cache cleared")
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="Backend API for personal website and cloud storage",
     version="1.0.0",
-    debug=settings.DEBUG
+    debug=settings.DEBUG,
+    lifespan=lifespan
 )
 
 # Custom CORS middleware configuration
@@ -72,30 +91,35 @@ setup_security(app)
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
 
-@app.get("/test-cors")
-async def test_cors(request: Request):
-    logger.info("Test CORS endpoint called")
-    logger.debug(f"Request origin: {request.headers.get('origin')}")
-    return {
-        "message": "CORS test successful",
-        "origin": request.headers.get("origin"),
-        "environment": ENVIRONMENT
-    }
-
 
 @app.on_event("startup")
 async def startup_event():
     logger.info(f"Starting up application in {ENVIRONMENT} environment...")
     try:
+        # Initialize cache first
+        logger.info("Initializing cache backend...")
+        FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
+        logger.info("Cache backend initialized")
+
+        # Database initialization
         logger.info("Testing database connection...")
         if test_db_connection():
             logger.info("Database connection successful")
-            # Create a new database session
             db = SessionLocal()
             try:
-                # Initialize the database with the session
+                # Initialize database with admin user
+                from app.db.init_db import init_db
+                logger.info("Initializing admin user...")
                 init_db(db)
                 logger.info("Database initialization completed")
+                
+                # Verify admin user was created
+                from app.models.user import User
+                admin = db.query(User).filter(User.email == settings.ADMIN_EMAIL).first()
+                if admin:
+                    logger.info(f"Admin user verified: {admin.email}")
+                else:
+                    logger.warning("Admin user not found after initialization!")
             finally:
                 db.close()
         else:
@@ -109,13 +133,32 @@ async def startup_event():
         if not settings.DEBUG:
             raise
 
+@app.on_event("shutdown")
+async def shutdown_event():
+    logger.info("Shutting down application...")
+    await FastAPICache.clear()
+    logger.info("Cache cleared")
+
+
+@app.get("/test-cors")
+async def test_cors(request: Request):
+    logger.info("Test CORS endpoint called")
+    logger.debug(f"Request origin: {request.headers.get('origin')}")
+    return {
+        "message": "CORS test successful",
+        "origin": request.headers.get("origin"),
+        "environment": ENVIRONMENT
+    }
 
 @app.get("/health")
 async def health_check(request: Request):
     db_healthy = test_db_connection()
+    cache_initialized = FastAPICache.get_cache() is not None
+    
     return {
-        "status": "healthy" if db_healthy else "unhealthy",
+        "status": "healthy" if (db_healthy and cache_initialized) else "unhealthy",
         "database": "connected" if db_healthy else "disconnected",
+        "cache": "initialized" if cache_initialized else "not initialized",
         "environment": ENVIRONMENT,
         "debug": settings.DEBUG,
         "client_host": request.client.host if request.client else None
