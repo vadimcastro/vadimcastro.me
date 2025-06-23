@@ -6,3 +6,4 @@ infrastructure/
 .gitignore
 package*.json
 amplify.yml
+Dockerfile*
