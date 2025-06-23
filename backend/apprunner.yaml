@@ -11,9 +11,5 @@ run:
   env:
     - name: ENVIRONMENT
       value: production
-    - name: DATABASE_URL
-      value: postgresql://postgres:U4pGYVqxsNJqrfoM3Q7C@vadimcastro-db.cfo2q8hx7oi7.us-east-2.rds.amazonaws.com:5432/postgres
-    - name: REDIS_URL
-      value: redis://vadimcastro-valkey-xn3y9y.serverless.use2.cache.amazonaws.com:6379/0
-    - name: SECRET_KEY
-      value: v_zCh3CsteyB7qxN_0vUuFpEZpvGLxeCKgzLXXr4HsE
+    - name: AWS_DEFAULT_REGION
+      value: us-east-2

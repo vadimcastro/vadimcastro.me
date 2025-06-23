@@ -3,6 +3,8 @@ from pydantic_settings import BaseSettings
 from typing import List
 from functools import lru_cache
 import secrets
+import os
+from .parameters import parameter_store
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Vadim Castro API"
@@ -17,6 +19,9 @@ class Settings(BaseSettings):
     
     @property
     def DATABASE_URL(self) -> str:
+        # Try Parameter Store first, fallback to constructed URL
+        if os.getenv('ENVIRONMENT') == 'production':
+            return parameter_store.get_database_url()
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
     
     # Admin user settings
@@ -26,10 +31,18 @@ class Settings(BaseSettings):
     ADMIN_NAME: str = "Vadim Castro"
     
     # Redis settings
-    REDIS_URL: str = "redis://redis:6379/0"
+    @property
+    def REDIS_URL(self) -> str:
+        if os.getenv('ENVIRONMENT') == 'production':
+            return parameter_store.get_redis_url()
+        return "redis://redis:6379/0"
     
     # JWT Settings
-    SECRET_KEY: str = secrets.token_urlsafe(32)
+    @property
+    def SECRET_KEY(self) -> str:
+        if os.getenv('ENVIRONMENT') == 'production':
+            return parameter_store.get_secret_key()
+        return secrets.token_urlsafe(32)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
