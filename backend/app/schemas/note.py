@@ -5,6 +5,7 @@ from typing import Optional
 
 class NoteBase(BaseModel):
     content: str
+    title: Optional[str] = None
 
 class NoteCreate(NoteBase):
     pass
