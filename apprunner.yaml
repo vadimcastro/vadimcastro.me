@@ -3,12 +3,10 @@ runtime: python3
 build:
   commands:
     build:
-      - cd backend
       - python3 -m ensurepip --upgrade
-      - python3 -m pip install -r requirements-minimal.txt
+      - python3 -m pip install -r backend/requirements-minimal.txt
 run:
-  runtime: python3
-  command: cd backend && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8080
+  command: python3 -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8080
   network:
     port: 8080
   env:
@@ -16,3 +14,5 @@ run:
       value: production
     - name: AWS_DEFAULT_REGION
       value: us-east-2
+    - name: PYTHONPATH
+      value: /app
