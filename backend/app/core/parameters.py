@@ -1,5 +1,4 @@
 # app/core/parameters.py
-import boto3
 import os
 from functools import lru_cache
 from typing import Optional
@@ -8,11 +7,26 @@ class ParameterStore:
     def __init__(self):
         # Auto-detect AWS region or default to us-east-2
         self.region = os.getenv('AWS_DEFAULT_REGION', 'us-east-2')
-        self.ssm = boto3.client('ssm', region_name=self.region)
+        self.ssm = None
+        
+    def _init_boto3(self):
+        """Lazy initialization of boto3 client"""
+        if self.ssm is None:
+            try:
+                import boto3
+                self.ssm = boto3.client('ssm', region_name=self.region)
+            except Exception as e:
+                print(f"Failed to initialize boto3: {e}")
+                self.ssm = False
     
     @lru_cache(maxsize=128)
     def get_parameter(self, name: str, decrypt: bool = True) -> Optional[str]:
         """Get parameter from AWS Parameter Store with caching"""
+        self._init_boto3()
+        
+        if self.ssm is False:
+            return None
+            
         try:
             response = self.ssm.get_parameter(
                 Name=name,
