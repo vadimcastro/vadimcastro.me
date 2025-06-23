@@ -1,0 +1,8 @@
+docker/
+frontend/
+infrastructure/
+*.md
+.git/
+.gitignore
+package*.json
+amplify.yml
