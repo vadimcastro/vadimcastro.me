@@ -10,11 +10,43 @@ class ParameterStore:
         self.ssm = None
         
     def _init_boto3(self):
-        """Lazy initialization of boto3 client"""
+        """Lazy initialization of boto3 client with Parameter Store credentials"""
         if self.ssm is None:
             try:
                 import boto3
-                self.ssm = boto3.client('ssm', region_name=self.region)
+                
+                # Try to get AWS credentials from Parameter Store
+                # For initial bootstrap, use environment/IAM role credentials
+                session = boto3.Session()
+                temp_ssm = session.client('ssm', region_name=self.region)
+                
+                try:
+                    # Try to get stored AWS credentials
+                    access_key = temp_ssm.get_parameter(
+                        Name='/vadimcastro/aws/access-key-id',
+                        WithDecryption=True
+                    )['Parameter']['Value']
+                    
+                    secret_key = temp_ssm.get_parameter(
+                        Name='/vadimcastro/aws/secret-access-key',
+                        WithDecryption=True
+                    )['Parameter']['Value']
+                    
+                    # Create new session with stored credentials
+                    self.ssm = boto3.client(
+                        'ssm',
+                        region_name=self.region,
+                        aws_access_key_id=access_key,
+                        aws_secret_access_key=secret_key
+                    )
+                    print("Successfully initialized boto3 with Parameter Store credentials")
+                    
+                except Exception as param_error:
+                    # Fallback to default credentials (IAM role, environment, etc.)
+                    print(f"Could not load credentials from Parameter Store: {param_error}")
+                    print("Falling back to default credential chain")
+                    self.ssm = temp_ssm
+                    
             except Exception as e:
                 print(f"Failed to initialize boto3: {e}")
                 self.ssm = False
