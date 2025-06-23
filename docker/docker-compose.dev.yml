@@ -45,7 +45,8 @@ services:
       - REDIS_URL=redis://redis:6379/0
       
     volumes:
-      - ../backend/.env:/app/.env
+      - ../backend:/app/backend
+      - ../backend/.env:/app/.env:ro
 
     depends_on:
       db:
