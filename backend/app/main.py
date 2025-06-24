@@ -10,8 +10,8 @@ from app.db.session import SessionLocal
 from app.db.init_db import init_db
 from app.db.utils import test_db_connection
 from app.middleware.security import setup_security
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.inmemory import InMemoryBackend
+# from fastapi_cache import FastAPICache
+# from fastapi_cache.backends.inmemory import InMemoryBackend
 from contextlib import asynccontextmanager
 
 # Configure logging
@@ -48,17 +48,12 @@ logger.info(f"Configured CORS origins: {CORS_ORIGINS}")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Setup
-    logger.info("Initializing cache backend...")
-    cache_backend = InMemoryBackend()
-    FastAPICache.init(cache_backend, prefix="fastapi-cache")
-    logger.info("Cache backend initialized")
+    logger.info("App startup - cache disabled for deployment")
     
     yield
     
     # Cleanup
-    logger.info("Clearing cache...")
-    await FastAPICache.clear()
-    logger.info("Cache cleared")
+    logger.info("App shutdown")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -96,10 +91,8 @@ app.include_router(api_router, prefix="/api/v1")
 async def startup_event():
     logger.info(f"Starting up application in {ENVIRONMENT} environment...")
     try:
-        # Initialize cache first
-        logger.info("Initializing cache backend...")
-        FastAPICache.init(InMemoryBackend(), prefix="fastapi-cache")
-        logger.info("Cache backend initialized")
+        # Cache disabled for deployment
+        logger.info("Cache disabled for deployment")
 
         # Database initialization
         logger.info("Testing database connection...")
@@ -136,8 +129,6 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     logger.info("Shutting down application...")
-    await FastAPICache.clear()
-    logger.info("Cache cleared")
 
 
 @app.get("/test-cors")
@@ -153,7 +144,7 @@ async def test_cors(request: Request):
 @app.get("/health")
 async def health_check(request: Request):
     db_healthy = test_db_connection()
-    cache_initialized = FastAPICache.get_cache() is not None
+    cache_initialized = True  # Cache disabled for deployment
     
     return {
         "status": "healthy" if (db_healthy and cache_initialized) else "unhealthy",
