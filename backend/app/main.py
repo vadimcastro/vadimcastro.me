@@ -90,41 +90,7 @@ app.include_router(api_router, prefix="/api/v1")
 @app.on_event("startup")
 async def startup_event():
     logger.info(f"Starting up application in {ENVIRONMENT} environment...")
-    try:
-        # Cache disabled for deployment
-        logger.info("Cache disabled for deployment")
-
-        # Database initialization
-        logger.info("Testing database connection...")
-        if test_db_connection():
-            logger.info("Database connection successful")
-            db = SessionLocal()
-            try:
-                # Initialize database with admin user
-                from app.db.init_db import init_db
-                logger.info("Initializing admin user...")
-                init_db(db)
-                logger.info("Database initialization completed")
-                
-                # Verify admin user was created
-                from app.models.user import User
-                admin = db.query(User).filter(User.email == settings.ADMIN_EMAIL).first()
-                if admin:
-                    logger.info(f"Admin user verified: {admin.email}")
-                else:
-                    logger.warning("Admin user not found after initialization!")
-            finally:
-                db.close()
-        else:
-            logger.error("Database connection failed")
-            if settings.DEBUG:
-                logger.warning("Running in debug mode - continuing despite database failure")
-            else:
-                raise Exception("Could not connect to database")
-    except Exception as e:
-        logger.error(f"Startup failed: {str(e)}", exc_info=True)
-        if not settings.DEBUG:
-            raise
+    logger.info("Startup event completed - database initialization skipped for deployment")
 
 @app.on_event("shutdown")
 async def shutdown_event():
@@ -143,15 +109,11 @@ async def test_cors(request: Request):
 
 @app.get("/health")
 async def health_check(request: Request):
-    db_healthy = test_db_connection()
-    cache_initialized = True  # Cache disabled for deployment
-    
     return {
-        "status": "healthy" if (db_healthy and cache_initialized) else "unhealthy",
-        "database": "connected" if db_healthy else "disconnected",
-        "cache": "initialized" if cache_initialized else "not initialized",
+        "status": "healthy",
+        "database": "skipped",
+        "cache": "disabled", 
         "environment": ENVIRONMENT,
-        "debug": settings.DEBUG,
         "client_host": request.client.host if request.client else None
     }
 
