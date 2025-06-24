@@ -10,6 +10,7 @@ run:
   command: python3 test_server.py
   network:
     port: 8080
+  runtime-version: "3.11"
   env:
     - name: ENVIRONMENT
       value: production
