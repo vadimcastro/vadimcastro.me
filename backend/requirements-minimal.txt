@@ -12,4 +12,4 @@ python-jose==3.3.0
 redis==5.0.1
 boto3==1.34.14
 python-dotenv==1.0.0
-fastapi-cache2==0.2.1
+fastapi-cache2[redis]==0.2.1
