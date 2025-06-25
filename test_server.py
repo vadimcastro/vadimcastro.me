@@ -18,6 +18,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(b'OK\n')
         print(f"Responded OK to {self.path}", flush=True)
     
+    def do_HEAD(self):
+        print(f"HEAD {self.path}", flush=True)
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/plain')
+        self.end_headers()
+        print(f"Responded OK to HEAD {self.path}", flush=True)
+    
     def log_message(self, format, *args):
         print(f"HTTP: {format % args}", flush=True)
 
