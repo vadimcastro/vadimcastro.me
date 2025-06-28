@@ -14,15 +14,15 @@ redis_client = redis.from_url(settings.REDIS_URL)
 limiter = Limiter(key_func=get_remote_address)
 
 def setup_security(app: FastAPI):
-    # CORS configuration using settings
+    # CORS configuration - temporary wildcard for debugging
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.CORS_ORIGINS,
-        allow_credentials=settings.CORS_CREDENTIALS,
-        allow_methods=settings.CORS_METHODS,
-        allow_headers=settings.CORS_HEADERS,
-        expose_headers=["*"],  # Added to expose all headers
-        max_age=settings.CORS_MAX_AGE
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+        max_age=3600
     )
 
     # Rate limiting
