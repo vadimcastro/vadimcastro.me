@@ -13,6 +13,12 @@ prod:
 prod-rebuild:
 	@echo "Rebuilding and starting production environment..."
 	docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d
+deploy:
+	@echo "Pulling latest code and deploying..."
+	git pull origin master && make down && make prod
+deploy-rebuild:
+	@echo "Pulling latest code and rebuilding..."
+	git pull origin master && make prod-rebuild
 # Database commands
 migrate:
 	@echo "Running migrations..."

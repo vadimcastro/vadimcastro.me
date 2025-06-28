@@ -54,12 +54,10 @@ Currently deployed on DigitalOcean Droplet:
 
 To deploy updates:
 ```bash
-git pull origin master
-make down && make prod
+make deploy
 ```
 
 For full rebuild:
 ```bash
-git pull origin master  
-make prod-rebuild
+make deploy-rebuild
 ```
