@@ -16,7 +16,15 @@ services:
     build:
       dockerfile: docker/Dockerfile
       context: ..
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    command: >
+      sh -c '
+        echo "Running migrations..." &&
+        /app/scripts/migrate.sh &&
+        echo "Initializing database..." &&
+        python3 /app/scripts/init_db.py &&
+        echo "Starting server..." &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000
+      '
     ports:
       - "8000:8000"
     environment:
@@ -25,9 +33,12 @@ services:
       - DEBUG=0
       - DATABASE_URL=postgresql://postgres:password@db:5432/vadimcastro
       - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=v_zCh3CsteyB7qxN_0vUuFpEZpvGLxeCKgzLXXr4HsE
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
     image: postgres:15
