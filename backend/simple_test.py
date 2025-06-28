@@ -6,6 +6,8 @@ from fastapi import FastAPI
 import uvicorn
 import logging
 import sys
+import socket
+import time
 
 # Set up logging to see what's happening
 logging.basicConfig(
@@ -14,6 +16,18 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)]
 )
 logger = logging.getLogger(__name__)
+
+# Test if port 8080 is available
+def test_port():
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(('0.0.0.0', 8080))
+        sock.close()
+        logger.info("✅ Port 8080 is available")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Port 8080 not available: {e}")
+        return False
 
 # Create the simplest possible FastAPI app
 app = FastAPI(title="Test App", debug=False)
@@ -38,7 +52,13 @@ async def startup():
 
 if __name__ == "__main__":
     logger.info("=== STARTING UVICORN SERVER ===")
-    logger.info("Binding to 0.0.0.0:8080")
+    logger.info("Testing port availability...")
+    
+    if not test_port():
+        logger.error("Cannot bind to port 8080, exiting...")
+        sys.exit(1)
+    
+    logger.info("Starting uvicorn server...")
     
     # Try to start the server
     try:
@@ -53,3 +73,8 @@ if __name__ == "__main__":
     except Exception as e:
         logger.error(f"Failed to start server: {e}")
         sys.exit(1)
+
+# Also run when imported as module
+logger.info("=== MODULE LOADED ===")
+logger.info("FastAPI app created successfully")
+test_port()
