@@ -55,6 +55,11 @@ Currently deployed on DigitalOcean Droplet:
 To deploy updates:
 ```bash
 git pull origin master
-docker compose -f docker/docker-compose.prod.yml down
-docker compose -f docker/docker-compose.prod.yml up -d
+make down && make prod
+```
+
+For full rebuild:
+```bash
+git pull origin master  
+make prod-rebuild
 ```

@@ -9,7 +9,10 @@ dev-debug:
 # Production commands
 prod:
 	@echo "Starting production environment..."
-	cd docker && docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+	docker compose -f docker/docker-compose.prod.yml up --build -d
+prod-rebuild:
+	@echo "Rebuilding and starting production environment..."
+	docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d
 # Database commands
 migrate:
 	@echo "Running migrations..."
@@ -24,7 +27,7 @@ migrate-create:
 # Cleanup commands
 down:
 	@echo "Stopping containers..."
-	cd docker && docker compose down
+	docker compose -f docker/docker-compose.prod.yml down
 clean: down
 	@echo "Cleaning up development environment..."
 	rm -rf frontend/.next
