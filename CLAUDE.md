@@ -46,11 +46,16 @@ This single command will:
 - `infrastructure/` - Terraform and AWS configuration
 
 ## Production Deployment
-Currently deployed on DigitalOcean Droplet:
-- **Frontend**: http://206.81.2.168:3000
-- **API**: http://206.81.2.168:8000
-- **API Documentation**: http://206.81.2.168:8000/docs
+Currently deployed on DigitalOcean Droplet with Cloudflare SSL:
+- **Frontend**: https://vadimcastro.pro (or http://206.81.2.168:3000 direct)
+- **API**: https://api.vadimcastro.pro (or http://206.81.2.168:8000 direct)
+- **API Documentation**: https://api.vadimcastro.pro/docs
 - **Admin Login**: vadim@vadimcastro.pro / meow
+
+### Cloudflare Configuration
+- SSL Mode: Flexible (free tier)
+- Proxy enabled for all subdomains
+- Automatic HTTPS redirects enabled
 
 To deploy updates:
 ```bash
