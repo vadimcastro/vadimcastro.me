@@ -54,6 +54,7 @@ export const useProtectedApi = () => {
   };
 
   return {
+    fetchProtected,
     get: <T>(endpoint: string) => fetchProtected<T>(endpoint, { method: 'GET' }),
     post: <T>(endpoint: string, data: any) => 
       fetchProtected<T>(endpoint, { 
