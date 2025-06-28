@@ -10,7 +10,11 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(docker build:*)",
+      "Bash(docker tag:*)",
+      "Bash(claude --doctor)",
+      "Bash(claude doctor)"
     ],
     "deny": []
   }
