@@ -50,7 +50,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/me`, {
         method: 'GET',
         headers,
-        credentials: 'same-origin',
+        credentials: 'include',
+        mode: 'cors',
       });
 
       if (!response.ok) {

@@ -38,6 +38,7 @@ if ENVIRONMENT == "development":
     ]
 else:  # production
     CORS_ORIGINS = [
+        "*",  # Temporary wildcard for debugging
         "https://vadimcastro.pro",
         "https://www.vadimcastro.pro", 
         "https://api.vadimcastro.pro",
