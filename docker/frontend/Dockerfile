@@ -14,11 +14,14 @@ RUN npm install
 COPY frontend/ .
 
 # Set environment variables
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# Build for production
+RUN npm run build
 
 # Expose port
 EXPOSE 3000
 
-# Start the development server
-CMD ["npm", "run", "dev"]
+# Start production server
+CMD ["npm", "start"]

@@ -14,7 +14,10 @@
       "Bash(docker build:*)",
       "Bash(docker tag:*)",
       "Bash(claude --doctor)",
-      "Bash(claude doctor)"
+      "Bash(claude doctor)",
+      "Bash(echo)",
+      "Bash(pkill:*)",
+      "Bash(docker logs:*)"
     ],
     "deny": []
   }
