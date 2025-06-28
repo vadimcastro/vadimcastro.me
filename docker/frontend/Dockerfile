@@ -18,12 +18,11 @@ COPY frontend/tailwind.config.js ./
 COPY frontend/postcss.config.js ./
 COPY frontend/tsconfig.json ./
 
-# Set environment variables
+# Set environment variables for build
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-
-# Copy environment files
-COPY frontend/.env.production ./
+ARG NEXT_PUBLIC_API_URL=http://206.81.2.168:8000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Build for production
 RUN npm run build
