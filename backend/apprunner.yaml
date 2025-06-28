@@ -6,7 +6,7 @@ build:
       - python3 -m pip install fastapi uvicorn
       - echo "Build completed"
 run:
-  command: python3 -m uvicorn simple_app:app --host 0.0.0.0 --port 8080
+  command: python3 test_server.py
   network:
     port: 8080
   runtime-version: "3.11"
