@@ -25,6 +25,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Build for production
 RUN npm run build
 
+# Verify build was successful
+RUN ls -la .next/
+
 # Expose port
 EXPOSE 3000
 
