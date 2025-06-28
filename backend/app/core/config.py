@@ -21,7 +21,11 @@ class Settings(BaseSettings):
     def DATABASE_URL(self) -> str:
         # Try Parameter Store first, fallback to constructed URL
         if os.getenv('ENVIRONMENT') == 'production':
-            return parameter_store.get_database_url()
+            try:
+                return parameter_store.get_database_url()
+            except:
+                # Fallback to environment variables or defaults for production
+                return os.getenv('DATABASE_URL', f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}")
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
     
     # Admin user settings
@@ -34,14 +38,20 @@ class Settings(BaseSettings):
     @property
     def REDIS_URL(self) -> str:
         if os.getenv('ENVIRONMENT') == 'production':
-            return parameter_store.get_redis_url()
+            try:
+                return parameter_store.get_redis_url()
+            except:
+                return os.getenv('REDIS_URL', "redis://redis:6379/0")
         return "redis://redis:6379/0"
     
     # JWT Settings
     @property
     def SECRET_KEY(self) -> str:
         if os.getenv('ENVIRONMENT') == 'production':
-            return parameter_store.get_secret_key()
+            try:
+                return parameter_store.get_secret_key()
+            except:
+                return os.getenv('SECRET_KEY', secrets.token_urlsafe(32))
         return secrets.token_urlsafe(32)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
