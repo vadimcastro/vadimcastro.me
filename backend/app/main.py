@@ -135,21 +135,4 @@ async def initialize_database():
         logger.error(f"Manual database initialization failed: {str(e)}")
         return {"status": "error", "message": f"Database initialization failed: {str(e)}"}
 
-# Handle OPTIONS requests explicitly
-@app.options("/{full_path:path}")
-async def options_handler(request: Request):
-    origin = request.headers.get("origin", "")
-    
-    # Check if origin is allowed
-    if origin in CORS_ORIGINS:
-        return {
-            "status": "ok",
-            "allowed_origin": origin,
-            "allowed_methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
-        }
-    else:
-        logger.warning(f"Rejected CORS preflight from origin: {origin}")
-        return {
-            "status": "rejected",
-            "reason": "origin not allowed"
-        }
+# FastAPI CORSMiddleware handles OPTIONS requests automatically
