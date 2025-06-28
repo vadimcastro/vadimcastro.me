@@ -70,16 +70,10 @@ app = FastAPI(
 # Custom CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
-    allow_credentials=True,
+    allow_origins=["*"],  # Temporary wildcard to debug
+    allow_credentials=False,  # Disable credentials temporarily
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allow_headers=[
-        "Content-Type",
-        "Authorization",
-        "Accept",
-        "Origin",
-        "X-Requested-With",
-    ],
+    allow_headers=["*"],
     expose_headers=["*"],
     max_age=3600,
 )
