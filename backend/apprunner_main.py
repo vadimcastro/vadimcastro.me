@@ -51,7 +51,8 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "VadimCastro API is running", "status": "healthy"}
+    logger.info("Root endpoint called (AppRunner health check)")
+    return {"message": "VadimCastro API is running", "status": "healthy", "version": "1.0.0"}
 
 @app.get("/health")
 async def health_check():
