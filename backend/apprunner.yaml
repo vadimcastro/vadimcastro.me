@@ -5,7 +5,7 @@ build:
     build:
       - pip install -r requirements.txt
 run:
-  command: python3 -m uvicorn apprunner_main:app --host 0.0.0.0 --port 8080
+  command: python3 -m uvicorn simple_test:app --host 0.0.0.0 --port 8080 --log-level info
   network:
     port: 8080
   env:
