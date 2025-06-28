@@ -22,6 +22,9 @@ COPY frontend/tsconfig.json ./
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Copy environment files
+COPY frontend/.env.production ./
+
 # Build for production
 RUN npm run build
 
