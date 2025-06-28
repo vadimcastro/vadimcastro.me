@@ -60,7 +60,14 @@ app = FastAPI(
 )
 
 # Use security setup (includes CORS configuration)
-setup_security(app)
+print("About to call setup_security...")
+try:
+    setup_security(app)
+    print("setup_security completed successfully")
+except Exception as e:
+    print(f"Error in setup_security: {e}")
+    import traceback
+    traceback.print_exc()
 
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
