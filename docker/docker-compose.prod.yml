@@ -1,22 +1,22 @@
 # docker/docker-compose.prod.yml
+version: '3.8'
 services:
   frontend:
     build:
       context: ..
       dockerfile: docker/frontend/Dockerfile
-    volumes: []  # Override dev volumes that would overwrite built files
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=https://api.vadimcastro.pro
+    # Explicitly no volumes - use built files only
 
   api:
     build:
       dockerfile: docker/Dockerfile
       context: ..
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
-    volumes: []  # Override dev volumes
     ports:
       - "8000:8000"
     environment:
@@ -29,11 +29,35 @@ services:
       - db
       - redis
 
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=vadimcastro
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
   redis:
     image: redis:6
     command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
 
 volumes:
+  postgres_data:
   redis_data:
