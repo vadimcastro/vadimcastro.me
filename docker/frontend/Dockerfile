@@ -13,7 +13,10 @@ RUN npm install
 # Copy the rest of the frontend code (excluding node_modules)
 COPY frontend/src ./src
 COPY frontend/public ./public
-COPY frontend/next.config.js frontend/tailwind.config.js frontend/postcss.config.js frontend/tsconfig.json frontend/next-env.d.ts ./
+COPY frontend/next.config.js ./
+COPY frontend/tailwind.config.js ./
+COPY frontend/postcss.config.js ./
+COPY frontend/tsconfig.json ./
 
 # Set environment variables
 ENV NODE_ENV=production
