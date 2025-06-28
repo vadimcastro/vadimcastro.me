@@ -1,7 +1,7 @@
 // src/components/layout/navbar.tsx
 'use client';
 
-import { React, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image'
 import { useAuth } from '../../lib/auth/AuthContext';

@@ -10,14 +10,19 @@ interface DashboardMetrics {
   visitors: {
     total: number;
     percentageChange: number;
+    lastMonthTotal: number;
   };
   projects: {
     total: number;
     newThisMonth: number;
+    percentageChange: number;
+    lastMonthTotal: number;
   };
   sessions: {
     active: number;
     percentageChange: number;
+    previousHourActive: number;
+    totalToday: number;
   };
 }
 
@@ -35,9 +40,9 @@ const DashboardComponent = () => {
       setError(null);
 
       const [visitorsData, projectsData, sessionsData] = await Promise.all([
-        api.get('/api/v1/metrics/visitors'),
-        api.get('/api/v1/metrics/projects'),
-        api.get('/api/v1/metrics/sessions'),
+        api.get<DashboardMetrics['visitors']>('/api/v1/metrics/visitors'),
+        api.get<DashboardMetrics['projects']>('/api/v1/metrics/projects'),
+        api.get<DashboardMetrics['sessions']>('/api/v1/metrics/sessions'),
       ]);
 
       setMetrics({
@@ -92,15 +97,15 @@ const DashboardComponent = () => {
       change: formatPercentage(metrics.visitors.percentageChange),
       icon: Users,
       description: "vs. last month",
-      trend: metrics.visitors.percentageChange >= 0 ? "up" : "down"
+      trend: metrics.visitors.percentageChange >= 0 ? "up" as const : "down" as const
     },
     {
       title: "Projects Published",
       value: formatNumber(metrics.projects.total),
-      change: `+${metrics.projects.newThisMonth}`,
+      change: formatPercentage(metrics.projects.percentageChange),
       icon: FileText,
-      description: "new this month",
-      trend: "up"
+      description: "vs. last month",
+      trend: metrics.projects.percentageChange >= 0 ? "up" as const : "down" as const
     },
     {
       title: "Active Sessions",
@@ -108,7 +113,7 @@ const DashboardComponent = () => {
       change: formatPercentage(metrics.sessions.percentageChange),
       icon: Activity,
       description: "vs. last hour",
-      trend: metrics.sessions.percentageChange >= 0 ? "up" : "down"
+      trend: metrics.sessions.percentageChange >= 0 ? "up" as const : "down" as const
     }
   ] : [];
 
