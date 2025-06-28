@@ -3,12 +3,8 @@ runtime: python3
 build:
   commands:
     build:
-      - echo "Starting build..."
-      - ls -la
-      - pwd
-      - python3 --version
-      - echo "Build complete"
+      - python3 -m pip install fastapi uvicorn
 run:
-  command: python3 -c "import sys,os,socketserver,http.server; print('SERVER STARTING', flush=True); print(f'Python: {sys.version}', flush=True); class H(http.server.BaseHTTPRequestHandler): def do_GET(self): print(f'GET {self.path}', flush=True); self.send_response(200); self.send_header('Content-Type', 'text/plain'); self.end_headers(); self.wfile.write(b'OK'); def log_message(self,f,*a): pass; print('Creating server...', flush=True); s=socketserver.TCPServer(('0.0.0.0',8080),H); print('SERVER READY', flush=True); s.serve_forever()"
+  command: python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8080
   network:
     port: 8080
