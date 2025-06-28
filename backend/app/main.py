@@ -117,6 +117,20 @@ async def health_check(request: Request):
         "client_host": request.client.host if request.client else None
     }
 
+@app.post("/admin/init-db")
+async def initialize_database():
+    """Initialize database with admin user - call this manually if automatic init fails"""
+    try:
+        db = SessionLocal()
+        try:
+            init_db(db)
+            return {"status": "success", "message": "Database initialized successfully"}
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error(f"Manual database initialization failed: {str(e)}")
+        return {"status": "error", "message": f"Database initialization failed: {str(e)}"}
+
 # Handle OPTIONS requests explicitly
 @app.options("/{full_path:path}")
 async def options_handler(request: Request):
