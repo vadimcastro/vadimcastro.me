@@ -73,6 +73,11 @@ app.add_middleware(
 )
 print("CORS middleware added directly")
 
+# Check middleware stack
+print(f"Total middleware count: {len(app.user_middleware)}")
+for i, middleware in enumerate(app.user_middleware):
+    print(f"Middleware {i}: {middleware}")
+
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
 
