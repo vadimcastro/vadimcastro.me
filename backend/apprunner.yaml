@@ -9,25 +9,6 @@ build:
       - python3 --version
       - echo "Build complete"
 run:
-  command: python3 -c "
-import sys, os, socketserver, http.server
-print('=== INLINE SERVER STARTING ===', flush=True)
-print(f'Python: {sys.version}', flush=True)
-print(f'Working dir: {os.getcwd()}', flush=True)
-print(f'Files: {os.listdir(\".\")}', flush=True)
-class Handler(http.server.BaseHTTPRequestHandler):
-    def do_GET(self):
-        print(f'GET {self.path}', flush=True)
-        self.send_response(200)
-        self.send_header('Content-Type', 'text/plain')
-        self.end_headers()
-        self.wfile.write(b'OK from inline server\n')
-    def log_message(self, format, *args): pass
-PORT = 8080
-print(f'Creating server on 0.0.0.0:{PORT}', flush=True)
-httpd = socketserver.TCPServer(('0.0.0.0', PORT), Handler)
-print('=== SERVER READY ===', flush=True)
-httpd.serve_forever()
-"
+  command: python3 -c "import sys,os,socketserver,http.server; print('SERVER STARTING', flush=True); print(f'Python: {sys.version}', flush=True); class H(http.server.BaseHTTPRequestHandler): def do_GET(self): print(f'GET {self.path}', flush=True); self.send_response(200); self.send_header('Content-Type', 'text/plain'); self.end_headers(); self.wfile.write(b'OK'); def log_message(self,f,*a): pass; print('Creating server...', flush=True); s=socketserver.TCPServer(('0.0.0.0',8080),H); print('SERVER READY', flush=True); s.serve_forever()"
   network:
     port: 8080
