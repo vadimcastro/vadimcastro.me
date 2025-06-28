@@ -3,9 +3,18 @@ runtime: python3
 build:
   commands:
     build:
+      - echo "=== BUILD PHASE DEBUG ==="
+      - pwd
+      - ls -la
+      - echo "=== Python version ==="
+      - python3 --version
+      - echo "=== Installing requirements ==="
       - pip install -r requirements.txt
+      - echo "=== Checking files after install ==="
+      - ls -la
+      - echo "=== BUILD PHASE COMPLETE ==="
 run:
-  command: python3 debug_server.py
+  command: python3 bulletproof.py
   network:
     port: 8000
   env:
