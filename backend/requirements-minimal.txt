@@ -11,3 +11,4 @@ passlib[bcrypt]
 boto3
 fastapi-cache2
 email-validator
+slowapi
