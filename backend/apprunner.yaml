@@ -5,9 +5,11 @@ build:
     build:
       - pip install -r requirements.txt
 run:
-  command: python3 basic_server.py
+  command: python3 debug_server.py
   network:
-    port: 8080
+    port: 8000
   env:
     - name: ENVIRONMENT
       value: production
+    - name: PYTHONUNBUFFERED
+      value: "1"
