@@ -23,6 +23,18 @@ deploy-rebuild:
 droplet:
 	@echo "Connecting to DigitalOcean Droplet..."
 	ssh root@206.81.2.168
+droplet-logs:
+	@echo "Viewing API logs on droplet..."
+	ssh root@206.81.2.168 "docker logs docker-api-1 | tail -20"
+droplet-cors-test:
+	@echo "Testing CORS on droplet..."
+	ssh root@206.81.2.168 'curl -v -H "Origin: http://206.81.2.168:3000" -H "Access-Control-Request-Method: GET" -X OPTIONS http://206.81.2.168:8000/health'
+droplet-force-rebuild:
+	@echo "Force rebuilding on droplet..."
+	ssh root@206.81.2.168 "cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml down && docker system prune -f && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d"
+droplet-debug:
+	@echo "Running debug commands on droplet..."
+	ssh root@206.81.2.168 "cd vadimcastro.me && echo '=== Container Status ===' && docker ps && echo '=== API Logs ===' && docker logs docker-api-1 | tail -10 && echo '=== Environment Check ===' && docker exec -it docker-api-1 printenv | grep -E '(ENVIRONMENT|POSTGRES_DB)' && echo '=== CORS Middleware ===' && docker logs docker-api-1 | grep -i 'Adding CORS middleware'"
 # Database commands
 migrate:
 	@echo "Running migrations..."
@@ -75,3 +87,10 @@ help:
 	@echo "  make frontend-logs   - Show frontend container logs"
 	@echo "  make api-logs        - Show API container logs"
 	@echo "  make format          - Format code"
+	@echo ""
+	@echo "Droplet commands:"
+	@echo "  make droplet         - SSH into droplet"
+	@echo "  make droplet-logs    - View API logs on droplet"
+	@echo "  make droplet-cors-test - Test CORS on droplet"
+	@echo "  make droplet-force-rebuild - Force rebuild on droplet"
+	@echo "  make droplet-debug   - Run all debug commands on droplet"
