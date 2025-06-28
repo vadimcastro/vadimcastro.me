@@ -2,6 +2,20 @@
 #!/bin/bash
 cd /app
 
+# Check if alembic directory exists
+if [ ! -d "alembic" ]; then
+    echo "Alembic directory not found, creating tables directly..."
+    python3 -c "
+from app.db.base import Base
+from app.db.session import engine
+print('Creating all tables...')
+Base.metadata.create_all(bind=engine)
+print('Tables created successfully!')
+"
+    echo "Migration complete!"
+    exit 0
+fi
+
 # Function to check if a migration has been applied
 check_migration() {
     local revision=$1
