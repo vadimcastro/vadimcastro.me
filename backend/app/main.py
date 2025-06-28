@@ -59,15 +59,19 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Use security setup (includes CORS configuration)
-print("About to call setup_security...")
-try:
-    setup_security(app)
-    print("setup_security completed successfully")
-except Exception as e:
-    print(f"Error in setup_security: {e}")
-    import traceback
-    traceback.print_exc()
+# Add CORS directly to debug
+from fastapi.middleware.cors import CORSMiddleware
+print("Adding CORS middleware directly...")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
+)
+print("CORS middleware added directly")
 
 # Include API routes
 app.include_router(api_router, prefix="/api/v1")
