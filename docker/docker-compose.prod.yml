@@ -5,20 +5,29 @@ services:
       context: ..
       dockerfile: docker/frontend/Dockerfile
     volumes: []  # Override dev volumes that would overwrite built files
+    ports:
+      - "3000:3000"
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=https://api.vadimcastro.pro
 
   api:
+    build:
+      dockerfile: docker/Dockerfile
+      context: ..
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes: []  # Override dev volumes
+    ports:
+      - "8000:8000"
     environment:
       - PYTHONPATH=/app:/app/app
       - ENVIRONMENT=production
       - DEBUG=0
+      - DATABASE_URL=postgresql://postgres:password@db:5432/vadimcastro
       - REDIS_URL=redis://redis:6379/0
-    build:
-      dockerfile: docker/Dockerfile
-      context: ..
+    depends_on:
+      - db
+      - redis
 
   redis:
     image: redis:6

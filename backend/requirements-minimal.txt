@@ -8,3 +8,5 @@ redis
 python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
+boto3
+fastapi-cache2
