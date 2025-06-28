@@ -37,15 +37,7 @@ if ENVIRONMENT == "development":
         "http://0.0.0.0:3000",
     ]
 else:  # production
-    CORS_ORIGINS = [
-        "*",  # Temporary wildcard for debugging
-        "https://vadimcastro.pro",
-        "https://www.vadimcastro.pro", 
-        "https://api.vadimcastro.pro",
-        "http://206.81.2.168:3000",  # Temporary Droplet IP frontend
-        "http://206.81.2.168:8000",  # Temporary API IP
-        "http://206.81.2.168",       # Droplet IP without port
-    ]
+    CORS_ORIGINS = ["*"]  # Temporary wildcard for debugging
 
 logger.info(f"Configured CORS origins: {CORS_ORIGINS}")
 
