@@ -1,0 +1,11 @@
+# Railway deployment configuration
+# This file is optional - Railway auto-detects most settings
+
+# Build settings
+build:
+  command: pip install -r requirements.txt
+
+# Start command  
+start: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
+# Environment variables will be set in Railway dashboard
