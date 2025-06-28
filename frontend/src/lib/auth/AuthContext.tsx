@@ -109,7 +109,7 @@ const login = async (email: string, password: string) => {
     Cookies.set('accessToken', newAccessToken, { 
       expires: 7,
       path: '/',
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Set to false for HTTP, will be true when we have HTTPS
       sameSite: 'lax'
     });
     setAccessToken(newAccessToken);
