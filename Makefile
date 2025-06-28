@@ -19,6 +19,10 @@ deploy:
 deploy-rebuild:
 	@echo "Pulling latest code and rebuilding..."
 	git pull origin master && make prod-rebuild
+# Droplet management
+droplet:
+	@echo "Connecting to DigitalOcean Droplet..."
+	ssh root@206.81.2.168
 # Database commands
 migrate:
 	@echo "Running migrations..."
