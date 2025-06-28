@@ -32,4 +32,4 @@ RUN ls -la .next/
 EXPOSE 3000
 
 # Start production server
-CMD ["npm", "start"]
+CMD ["sh", "-c", "ls -la .next/ && npm start"]
