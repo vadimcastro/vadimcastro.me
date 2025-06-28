@@ -1,6 +1,9 @@
 # docker/docker-compose.prod.yml
 services:
   frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend/Dockerfile
     command: npm start
     environment:
       - NODE_ENV=production
