@@ -19,6 +19,10 @@ deploy:
 deploy-rebuild:
 	@echo "Pulling latest code and rebuilding..."
 	git pull origin master && make prod-rebuild
+# Git commands
+pull:
+	@echo "Pulling latest code from origin/master..."
+	git pull origin master
 # Droplet management
 droplet:
 	@echo "Connecting to DigitalOcean Droplet..."
@@ -87,6 +91,9 @@ help:
 	@echo "  make frontend-logs   - Show frontend container logs"
 	@echo "  make api-logs        - Show API container logs"
 	@echo "  make format          - Format code"
+	@echo ""
+	@echo "Git commands:"
+	@echo "  make pull            - Pull latest code from origin/master"
 	@echo ""
 	@echo "Droplet commands:"
 	@echo "  make droplet         - SSH into droplet"
