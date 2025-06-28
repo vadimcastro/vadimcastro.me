@@ -11,11 +11,11 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     
     # Database settings
-    POSTGRES_USER: str = "postgres"
-    POSTGRES_PASSWORD: str = "password"
-    POSTGRES_DB: str = "vadimcastro"
-    POSTGRES_HOST: str = "db"
-    POSTGRES_PORT: int = 5432
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "vadimcastro")
+    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "db")
+    POSTGRES_PORT: int = int(os.getenv("POSTGRES_PORT", "5432"))
     
     @property
     def DATABASE_URL(self) -> str:
@@ -29,10 +29,10 @@ class Settings(BaseSettings):
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
     
     # Admin user settings
-    ADMIN_EMAIL: str = "vadim@vadimcastro.pro"
-    ADMIN_PASSWORD: str = "meow"  # Now correctly using your password
-    ADMIN_USERNAME: str = "vadimcastro"
-    ADMIN_NAME: str = "Vadim Castro"
+    ADMIN_EMAIL: str = os.getenv("ADMIN_EMAIL", "vadim@vadimcastro.pro")
+    ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "meow")
+    ADMIN_USERNAME: str = os.getenv("ADMIN_USERNAME", "vadimcastro")
+    ADMIN_NAME: str = os.getenv("ADMIN_NAME", "Vadim Castro")
     
     # Redis settings
     @property
