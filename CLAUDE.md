@@ -44,3 +44,17 @@ This single command will:
 - `backend/` - FastAPI application
 - `docker/` - Docker configuration files
 - `infrastructure/` - Terraform and AWS configuration
+
+## Production Deployment
+Currently deployed on DigitalOcean Droplet:
+- **Frontend**: http://206.81.2.168:3000
+- **API**: http://206.81.2.168:8000
+- **API Documentation**: http://206.81.2.168:8000/docs
+- **Admin Login**: vadim@vadimcastro.pro / meow
+
+To deploy updates:
+```bash
+git pull origin master
+docker compose -f docker/docker-compose.prod.yml down
+docker compose -f docker/docker-compose.prod.yml up -d
+```

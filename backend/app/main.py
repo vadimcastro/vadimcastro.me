@@ -39,8 +39,10 @@ if ENVIRONMENT == "development":
 else:  # production
     CORS_ORIGINS = [
         "https://vadimcastro.pro",
-        "https://www.vadimcastro.pro",
+        "https://www.vadimcastro.pro", 
         "https://api.vadimcastro.pro",
+        "http://206.81.2.168:3000",  # Temporary Droplet IP
+        "http://206.81.2.168:8000",  # Temporary API IP
     ]
 
 logger.info(f"Configured CORS origins: {CORS_ORIGINS}")
