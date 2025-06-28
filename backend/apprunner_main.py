@@ -31,6 +31,13 @@ app = FastAPI(
     debug=False
 )
 
+# Add startup event for logging
+@app.on_event("startup")
+async def startup_event():
+    logger.info("FastAPI app started successfully!")
+    logger.info(f"Environment: {ENVIRONMENT}")
+    logger.info("Health check endpoint available at /health")
+
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -48,10 +55,12 @@ async def root():
 
 @app.get("/health")
 async def health_check():
+    logger.info("Health check endpoint called")
     return {
         "status": "healthy",
         "environment": ENVIRONMENT,
-        "message": "AppRunner deployment successful"
+        "message": "AppRunner deployment successful",
+        "timestamp": "2025-06-28"
     }
 
 @app.get("/test-cors")

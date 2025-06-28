@@ -11,3 +11,8 @@ run:
   env:
     - name: ENVIRONMENT
       value: production
+  healthcheck:
+    path: /health
+    interval: 10
+    timeout: 5
+    retries: 3
