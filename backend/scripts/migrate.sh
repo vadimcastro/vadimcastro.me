@@ -6,7 +6,15 @@ cd /app
 if [ ! -d "alembic" ] || [ ! -f "alembic/env.py" ]; then
     echo "Alembic not properly configured, creating tables directly..."
     python3 -c "
-from app.db.base import Base
+import sys
+import os
+sys.path.append('/app')
+
+# Import models to register them with Base
+from app.models.user import User
+from app.models.project import Project  
+from app.models.user_session import UserSession
+from app.db.base_class import Base
 from app.db.session import engine, SessionLocal
 import logging
 
@@ -14,23 +22,28 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 print('Creating all tables...')
+# Force table creation
+Base.metadata.drop_all(bind=engine)  # Clean slate
 Base.metadata.create_all(bind=engine)
 
 # Test connection and ensure tables are visible
 db = SessionLocal()
 try:
-    # Check if we can query the metadata
-    result = db.execute('SELECT 1')
-    logger.info('Database connection successful')
-    
     # List all tables to verify creation
     tables_result = db.execute(\"\"\"
         SELECT table_name 
         FROM information_schema.tables 
         WHERE table_schema = 'public'
+        ORDER BY table_name
     \"\"\")
     tables = [row[0] for row in tables_result]
     logger.info(f'Created tables: {tables}')
+    
+    # Verify the users table exists specifically
+    if 'user' in tables or 'users' in tables:
+        logger.info('Users table confirmed to exist')
+    else:
+        logger.error(f'Users table not found in: {tables}')
     
     db.commit()
 finally:

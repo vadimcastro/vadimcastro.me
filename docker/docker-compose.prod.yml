@@ -21,7 +21,7 @@ services:
         echo "Running migrations..." &&
         /app/scripts/migrate.sh &&
         echo "Waiting for tables to be ready..." &&
-        sleep 2 &&
+        sleep 5 &&
         echo "Initializing database..." &&
         python3 /app/scripts/init_db.py || echo "Database init failed, continuing..." &&
         echo "Starting server..." &&
