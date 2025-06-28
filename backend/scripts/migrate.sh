@@ -2,9 +2,9 @@
 #!/bin/bash
 cd /app
 
-# Check if alembic directory exists
-if [ ! -d "alembic" ]; then
-    echo "Alembic directory not found, creating tables directly..."
+# Check if alembic directory and env.py exist
+if [ ! -d "alembic" ] || [ ! -f "alembic/env.py" ]; then
+    echo "Alembic not properly configured, creating tables directly..."
     python3 -c "
 from app.db.base import Base
 from app.db.session import engine
