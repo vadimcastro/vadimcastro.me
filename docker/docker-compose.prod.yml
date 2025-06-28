@@ -4,6 +4,7 @@ services:
     build:
       context: ..
       dockerfile: docker/frontend/Dockerfile
+    volumes: []  # Override dev volumes that would overwrite built files
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=https://api.vadimcastro.pro
