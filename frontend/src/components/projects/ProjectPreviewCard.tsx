@@ -11,31 +11,29 @@ export function ProjectPreviewCard({ project }: ProjectPreviewCardProps) {
   return (
     <Link 
       href={`/projects/${project.slug}`} 
-      className="w-full h-full rounded-lg overflow-hidden bg-white border transition-all duration-200 hover:shadow-lg"
+      className="block w-full rounded-lg md:rounded-xl overflow-hidden bg-white border-0 md:border md:border-gray-100 transition-all duration-300 hover:shadow-md hover:scale-[1.02]"
     >
-      <div className="h-full flex flex-col">
-        <div className="w-full" style={{ height: '65%' }}>
-          <div className="w-full h-full bg-white overflow-hidden">
-            <img
-              src={project.imageUrl}
-              alt={project.title}
-              className="w-full h-full object-cover"
-              style={{ objectPosition: 'top' }}
-            />
-          </div>
+      <div className="flex flex-col">
+        <div className="w-full h-40 md:h-48 overflow-hidden">
+          <img
+            src={project.imageUrl}
+            alt={project.title}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: 'top' }}
+          />
         </div>
-        <div className="flex-1 p-4 flex flex-col">
-          <h3 className="text-xl font-semibold mb-1 text-gray-900 group-hover:text-mint-500">
+        <div className="p-3">
+          <h3 className="text-base md:text-lg font-semibold mb-1 text-gray-900 group-hover:text-mint-500">
             {project.title}
           </h3>
-          <p className="text-gray-600 mb-1">
+          <p className="text-gray-600 mb-2 text-xs md:text-sm leading-tight">
             {project.shortDescription}
           </p>
-          <div className="mt-auto">
+          <div className="space-y-0.5">
             {Object.entries(project.techStack).map(([category, technologies]) => (
-              <div key={category} className="text-sm mb-1">
+              <div key={category} className="text-xs">
                 <span className="font-medium text-gray-900">{category}:</span>
-                <span className="text-gray-600 ml-2">
+                <span className="text-gray-600 ml-1">
                   {technologies.join(', ')}
                 </span>
               </div>

@@ -11,38 +11,35 @@ export default function Footer() {
   // ... keeping the same scroll and animation logic ...
 
   return (
-    <footer className="bg-white/80 backdrop-blur-sm border-t">
-      <div className="max-w-[95%] mx-auto px-4 py-3">
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-gray-600">
-            © {new Date().getFullYear()} Vadim Castro
-          </div>
-          <div className="space-x-6">
+    <footer className="bg-white/60 md:bg-white/80 backdrop-blur-sm border-t border-gray-50">
+      <div className="max-w-[95%] mx-auto px-2 md:px-4 py-2">
+        <div className="flex flex-col gap-1">
+          <div className="w-full max-w-xs md:max-w-none mx-auto md:mx-0 md:ml-auto flex justify-between md:justify-end md:gap-6 text-sm md:text-base">
             <motion.a 
               href="/resume.pdf" 
               animate={controls}
-              className="text-gray-600 hover:text-gray-900 transition-colors duration-200 px-2"
+              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 py-2 font-semibold"
               target="_blank"
               rel="noopener noreferrer"
             >
-              View Resume PDF
+              <span className="md:hidden">Resume</span>
+              <span className="hidden md:inline">View Resume PDF</span>
             </motion.a>
             <a 
               href="https://github.com/vadimcastro" 
-              className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
-              target="_blank"
-              rel="noopener noreferrer"
+              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 py-2 font-semibold"
             >
               GitHub
             </a>
             <a 
               href="https://www.linkedin.com/in/vadimcastro" 
-              className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
-              target="_blank"
-              rel="noopener noreferrer"
+              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 py-2 font-semibold"
             >
               LinkedIn
             </a>
+          </div>
+          <div className="text-xs text-gray-400 text-center">
+            © {new Date().getFullYear()} Vadim Castro
           </div>
         </div>
       </div>
