@@ -17,7 +17,7 @@ services:
       - NEXT_PUBLIC_ADMIN_NAME=Vadim Castro
       - NEXT_PUBLIC_ADMIN_ROLE=Administrator
       - NEXT_PUBLIC_ADMIN_INITIALS=VC
-    command: npm run dev
+    command: sh -c "npm ci && npm run dev"
     stdin_open: true
     tty: true
     healthcheck:
