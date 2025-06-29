@@ -6,6 +6,7 @@ import { ImageModal } from '../../../components/projects/ImageModal';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { Github } from 'lucide-react';
 
 interface ProjectPageProps {
   params: {
@@ -52,17 +53,30 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       <div className="max-w-6xl mx-auto px-2 md:px-4 space-y-3 md:space-y-6 py-2 md:py-6">
         {/* Project Header */}
         <header className="space-y-2 md:space-y-4">
-          <div className="flex items-center space-x-3 md:space-x-6">
-            <div className="relative w-8 h-8 md:w-12 md:h-12">
-              <Image 
-                src="/images/compass.svg"
-                alt="Project Icon"
-                fill
-                className="object-contain"
-                priority
-              />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 md:space-x-6">
+              <div className="relative w-8 h-8 md:w-12 md:h-12">
+                <Image 
+                  src="/images/compass.svg"
+                  alt="Project Icon"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <h1 className="text-3xl md:text-6xl font-heading font-bold text-gray-900">{project.title}</h1>
             </div>
-            <h1 className="text-3xl md:text-6xl font-heading font-bold text-gray-900">{project.title}</h1>
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 md:p-2 bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm border hover:shadow-md transition-all duration-200 group flex-shrink-0"
+                title="View on GitHub"
+              >
+                <Github className="w-4 h-4 md:w-5 md:h-5 text-gray-600 group-hover:text-gray-900" />
+              </a>
+            )}
           </div>
           <p className="text-lg md:text-2xl text-gray-600 w-full font-medium">
             {project.longDescription}
@@ -217,8 +231,8 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   
                   <div className="space-y-4 md:space-y-5">
                     {project.technicalImplementation.algorithm.steps.map((step, index) => (
-                      <div key={index} className="flex items-start space-x-4 md:space-x-6">
-                        <span className="flex-shrink-0 w-4 h-4 md:w-5 md:h-5 rounded bg-gray-200 flex items-center justify-center text-gray-600 font-medium text-xs mt-8">
+                      <div key={index} className="flex items-start space-x-3 md:space-x-4">
+                        <span className="flex-shrink-0 w-6 h-6 md:w-7 md:h-7 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium text-xs md:text-sm mt-8 md:mt-2">
                           {index + 1}
                         </span>
                         <p className="text-sm md:text-base leading-relaxed">{step}</p>

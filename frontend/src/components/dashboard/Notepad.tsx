@@ -245,7 +245,7 @@ export const Notepad = () => {
               </div>
             </div>
             
-            <div className="flex items-center justify-between w-full gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-shrink-0 lg:justify-end w-full lg:w-auto">
               {/* Quick note selector for mobile */}
               <select
                 value={selectedNote?.id || ''}
@@ -268,7 +268,7 @@ export const Notepad = () => {
                 ))}
               </select>
               
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ml-auto lg:ml-0">
                 {/* Auto-saved timer */}
                 {lastSaved && (
                   <span className={`text-xs hidden lg:inline px-2 py-1 rounded-full ${isMaximized ? 'text-amber-600 bg-amber-100' : 'text-gray-500 bg-gray-100'}`}>
@@ -302,7 +302,7 @@ export const Notepad = () => {
 
                 <button
                   onClick={() => setIsMaximized(!isMaximized)}
-                  className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center gap-1 ${isMaximized ? 'bg-amber-600 hover:bg-amber-700' : 'bg-gray-600 hover:bg-gray-700'}`}
+                  className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center justify-center gap-1 ${isMaximized ? 'bg-amber-600 hover:bg-amber-700' : 'bg-gray-600 hover:bg-gray-700'}`}
                   title={isMaximized ? 'Exit Focus Mode' : 'Enter Focus Mode'}
                 >
                   {isMaximized ? (
@@ -321,7 +321,7 @@ export const Notepad = () => {
                 <button
                   onClick={saveNote}
                   disabled={saving || (!content.trim() && title === 'New Note')}
-                  className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center gap-1 disabled:opacity-50 ${isMaximized ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+                  className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center justify-center gap-1 disabled:opacity-50 ${isMaximized ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'}`}
                 >
                 {saving ? (
                   <>
