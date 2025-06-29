@@ -25,21 +25,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Determine environment and set up CORS first
+# Determine environment
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-CORS_ORIGINS = []
-
-if ENVIRONMENT == "development":
-    CORS_ORIGINS = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://frontend:3000",  # Docker service name
-        "http://0.0.0.0:3000",
-    ]
-else:  # production
-    CORS_ORIGINS = ["*"]  # Temporary wildcard for debugging
-
-logger.info(f"Configured CORS origins: {CORS_ORIGINS}")
+logger.info(f"Environment: {ENVIRONMENT}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
