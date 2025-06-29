@@ -13,16 +13,52 @@ prod:
 prod-rebuild:
 	@echo "Rebuilding and starting production environment..."
 	docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d
+# Branch configuration - can be set via environment variable or command line
+DEPLOY_BRANCH ?= $(if $(branch),$(branch),$(if $(DEPLOY_BRANCH_ENV),$(DEPLOY_BRANCH_ENV),$$(git branch --show-current)))
+
 deploy:
 	@echo "Pulling latest code and deploying..."
-	git pull origin master && make down && make prod
+	@echo "Using branch: $(DEPLOY_BRANCH)"
+	git pull origin $(DEPLOY_BRANCH)
+	make down && make prod
 deploy-rebuild:
 	@echo "Pulling latest code and rebuilding..."
-	git pull origin master && make prod-rebuild
+	@echo "Using branch: $(DEPLOY_BRANCH)"
+	git pull origin $(DEPLOY_BRANCH)
+	make prod-rebuild
 # Git commands
 pull:
-	@echo "Pulling latest code from origin/master..."
-	git pull origin master
+	@echo "Pulling latest code..."
+	@echo "Using branch: $(DEPLOY_BRANCH)"
+	git pull origin $(DEPLOY_BRANCH)
+# Branch management (works locally or on droplet)
+set-branch:
+	@if [ -z "$(branch)" ]; then \
+		echo "Error: Please specify a branch. Usage: make set-branch branch=your-branch"; \
+		exit 1; \
+	fi
+	@echo "Setting deployment branch to: $(branch)"
+	@echo "export DEPLOY_BRANCH_ENV=$(branch)" >> ~/.bashrc
+	@echo "Branch set! Run 'source ~/.bashrc' or start a new shell session."
+
+show-branch:
+	@echo "Current deployment branch configuration:"
+	@if [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
+		echo "  Environment variable: $$DEPLOY_BRANCH_ENV"; \
+	else \
+		echo "  Environment variable: not set"; \
+	fi
+	@echo "  Current git branch: $$(git branch --show-current)"
+	@echo "  Effective deploy branch: $(DEPLOY_BRANCH)"
+
+deploy-current:
+	@echo "Deploying current branch..."
+	DEPLOY_BRANCH_ENV=$$(git branch --show-current) make deploy
+
+deploy-master:
+	@echo "Deploying master branch..."
+	DEPLOY_BRANCH_ENV=master make deploy
+
 # Droplet management
 droplet:
 	@echo "Connecting to DigitalOcean Droplet..."
@@ -101,8 +137,18 @@ help:
 	@echo "  make api-logs        - Show API container logs"
 	@echo "  make format          - Format code"
 	@echo ""
-	@echo "Git commands:"
-	@echo "  make pull            - Pull latest code from origin/master"
+	@echo "Git & Deployment commands:"
+	@echo "  make pull            - Pull latest code (respects DEPLOY_BRANCH_ENV)"
+	@echo "  make deploy          - Pull and deploy (respects DEPLOY_BRANCH_ENV)"
+	@echo "  make deploy-rebuild  - Pull and rebuild (respects DEPLOY_BRANCH_ENV)"
+	@echo ""
+	@echo "Branch Management:"
+	@echo "  make set-branch branch=NAME                - Set default deployment branch"
+	@echo "  make show-branch                           - Show current branch configuration"
+	@echo ""
+	@echo "Quick Deployment:"
+	@echo "  make deploy-current                        - Deploy current branch"
+	@echo "  make deploy-master                         - Deploy master branch"
 	@echo ""
 	@echo "Droplet commands:"
 	@echo "  make droplet         - SSH into droplet"
