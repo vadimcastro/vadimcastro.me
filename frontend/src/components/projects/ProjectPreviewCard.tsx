@@ -11,7 +11,7 @@ export function ProjectPreviewCard({ project }: ProjectPreviewCardProps) {
   return (
     <Link 
       href={`/projects/${project.slug}`} 
-      className="block w-full rounded-lg md:rounded-xl overflow-hidden bg-white border-0 md:border md:border-gray-100 transition-all duration-300 hover:shadow-md hover:scale-[1.02]"
+      className="block w-full rounded-lg overflow-hidden bg-white border-0 md:border md:border-gray-200 transition-all duration-300 hover:shadow-md hover:scale-[1.02]"
     >
       <div className="flex flex-col">
         <div className="w-full h-40 md:h-48 overflow-hidden">

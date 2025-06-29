@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const ResumeSummary = () => {
   return (
     <Link href="/resume" className="block h-full group cursor-pointer">
-      <div className="h-full flex flex-col bg-white rounded-lg md:rounded-xl overflow-hidden border-0 md:border md:border-gray-100 transition-all duration-300 hover:shadow-md hover:scale-[1.02] hover:bg-gray-50">
+      <div className="h-full flex flex-col bg-white rounded-lg overflow-hidden border-0 md:border md:border-gray-200 transition-all duration-300 hover:shadow-md hover:scale-[1.02] hover:bg-gray-50">
         {/* Skills section */}
         <div className="shrink-0 pb-2">
           <h3 className="text-base md:text-lg font-medium text-gray-900 mb-1">

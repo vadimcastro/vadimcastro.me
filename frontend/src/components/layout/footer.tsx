@@ -11,7 +11,7 @@ export default function Footer() {
   // ... keeping the same scroll and animation logic ...
 
   return (
-    <footer className="bg-white/60 md:bg-white/80 backdrop-blur-sm border-t border-gray-50">
+    <footer className="bg-white/60 md:bg-white/80 backdrop-blur-sm border-t border-gray-50 md:border-gray-200">
       <div className="max-w-[95%] mx-auto px-2 md:px-4 py-2">
         <div className="flex flex-col gap-1">
           <div className="w-full max-w-xs md:max-w-none mx-auto md:mx-0 md:ml-auto flex justify-between md:justify-end md:gap-6 text-sm md:text-base">
