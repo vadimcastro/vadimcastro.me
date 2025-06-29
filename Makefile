@@ -39,6 +39,12 @@ droplet-force-rebuild:
 droplet-debug:
 	@echo "Running debug commands on droplet..."
 	ssh root@206.81.2.168 "cd vadimcastro.me && echo '=== Container Status ===' && docker ps && echo '=== API Logs ===' && docker logs docker-api-1 | tail -10 && echo '=== Environment Check ===' && docker exec -it docker-api-1 printenv | grep -E '(ENVIRONMENT|POSTGRES_DB)' && echo '=== CORS Middleware ===' && docker logs docker-api-1 | grep -i 'Adding CORS middleware'"
+droplet-env-check:
+	@echo "Checking environment file on droplet..."
+	ssh root@206.81.2.168 "cd vadimcastro.me && echo '=== PWD ===' && pwd && echo '=== ENV FILE EXISTS ===' && ls -la .env.production.local && echo '=== ENV FILE CONTENT ===' && head -5 .env.production.local && echo '=== DOCKER COMPOSE PATH ===' && ls -la docker/docker-compose.prod.yml"
+setup-prod-env:
+	@echo "Setting up production environment..."
+	./scripts/setup-production-env.sh
 # Database commands
 migrate:
 	@echo "Running migrations..."
