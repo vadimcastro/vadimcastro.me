@@ -1,6 +1,7 @@
 // src/app/resume/page.tsx
 "use client";
 import Image from 'next/image';
+import { Mail, Github, Linkedin, Phone } from 'lucide-react';
 
 interface Experience {
   company: string;
@@ -75,61 +76,101 @@ const experiences: Experience[] = [
 
 export default function ResumePage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-      <header className="text-center space-y-4">
-        <div className="flex justify-center mb-4">
-          <div className="relative w-24 h-24 rounded-full overflow-hidden">
-            <Image
-              src="/images/profile.jpg"
-              alt="Vadim Castro"
-              fill
-              className="object-cover"
-            />
+    <div className="max-w-4xl mx-auto px-2 md:px-4 py-2 md:py-6 space-y-3 md:space-y-6">
+      <section className="bg-white rounded-lg shadow-sm p-3 md:p-4 hover:shadow-md transition-all duration-200">
+        <div className="text-center space-y-3">
+          <div className="hidden md:flex justify-center">
+            <div className="relative w-20 h-20 rounded-full overflow-hidden">
+              <Image
+                src="/images/profile.jpg"
+                alt="Vadim Castro"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+          <div>
+            <h2 className="text-xl md:text-2xl font-heading font-semibold text-gray-900 mb-1">Software Engineer</h2>
+            <p className="text-base md:text-lg text-gray-700 mb-4">Platform & Data</p>
+            <div className="flex justify-center">
+              <div className="grid grid-cols-4 gap-3">
+                <a
+                  href="tel:914-222-0975"
+                  className="flex items-center justify-center p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
+                  title="Call"
+                >
+                  <Phone className="w-6 h-6 text-gray-700 hover:text-gray-900" />
+                </a>
+                <a
+                  href="mailto:vadimcastro1@gmail.com?subject=Hey%20Vadim!"
+                  className="flex items-center justify-center p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
+                  title="Send Email"
+                >
+                  <Mail className="w-6 h-6 text-gray-700 hover:text-gray-900" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/vadimcastro"
+                  className="flex items-center justify-center p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="LinkedIn"
+                >
+                  <Linkedin className="w-6 h-6 text-gray-700 hover:text-gray-900" />
+                </a>
+                <a
+                  href="https://github.com/vadimcastro"
+                  className="flex items-center justify-center p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="GitHub"
+                >
+                  <Github className="w-6 h-6 text-gray-700 hover:text-gray-900" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-        <h1 className="text-3xl font-bold">Vadim R. Castro</h1>
-        <p className="text-lg text-gray-600">Software Engineer — Platform & Data</p>
-        <div className="flex justify-center space-x-6 text-sm text-emerald-600">
-          <a href="mailto:vadimcastro1@gmail.com" className="hover:text-emerald-700 transition-colors duration-200">
-            vadimcastro1@gmail.com
-          </a>
-          <a href="tel:516-509-0993" className="hover:text-emerald-700 transition-colors duration-200">
-            516-509-0993
-          </a>
-        </div>
-      </header>
+      </section>
 
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold border-b border-gray-200 pb-2">Professional Experience</h2>
+      <section className="space-y-3 md:space-y-4">
+        <h2 className="text-xl md:text-2xl font-bold border-b border-gray-200 pb-2 uppercase tracking-widest ml-2">PROFESSIONAL EXPERIENCE</h2>
         {experiences.map((exp) => (
           <ExperienceCard key={exp.company} experience={exp} />
         ))}
       </section>
 
-      <section className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-200">
-        <h2 className="text-2xl font-semibold mb-4">Education</h2>
-        <div className="flex items-start space-x-4">
-          <div className="relative w-16 h-16 flex-shrink-0">
-            <Image
-              src="/images/companies/ualbany-logo.png"
-              alt="University at Albany logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium">University at Albany, SUNY</h3>
-            <p className="text-emerald-600">B.S. Computer Science and Applied Mathematics</p>
-            <p className="text-gray-600">August 2015 — May 2019</p>
-            <p className="text-gray-600">Albany, NY</p>
-            <div className="mt-4">
-              <p className="font-medium">Relevant Coursework:</p>
-              <p className="text-gray-600 mt-1">
-                Distributed and Parallel Computing (Graduate), Number Theory, Systems Programming,
-                Automata & Formal Languages, Algorithms & Data Structures, Discrete Probability, 
-                Introduction to Combinatorics, Honors Calculus of Several Variables, Object Oriented 
-                Programming, Linear Algebra
-              </p>
+      <section className="space-y-3 md:space-y-4">
+        <h2 className="text-xl md:text-2xl font-bold border-b border-gray-200 pb-2 pt-4 uppercase tracking-widest ml-2">EDUCATION</h2>
+        <div className="bg-white rounded-lg shadow-sm p-3 md:p-4 hover:shadow-md transition-all duration-200">
+          <div className="flex flex-col md:flex-row md:items-start space-y-3 md:space-y-0 md:space-x-4">
+            <div className="relative w-16 h-16 flex-shrink-0 mx-auto md:mx-0">
+              <Image
+                src="/images/companies/ualbany-logo.png"
+                alt="University at Albany logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <div className="space-y-2 text-center md:text-left">
+              <h3 className="text-lg font-medium">University at Albany, SUNY</h3>
+              <p className="text-emerald-600">B.S. Computer Science and Applied Mathematics</p>
+              <p className="text-gray-600">August 2015 — May 2019</p>
+              <p className="text-gray-600">Albany, NY</p>
+              <div className="mt-4">
+                <p className="font-medium mb-2">Relevant Coursework:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-gray-600">
+                  <span>Distributed and Parallel Computing (Graduate)</span>
+                  <span>Algorithms & Data Structures</span>
+                  <span>Systems Programming</span>
+                  <span>Object Oriented Programming</span>
+                  <span>Automata & Formal Languages</span>
+                  <span>Linear Algebra</span>
+                  <span>Discrete Probability</span>
+                  <span>Honors Calculus of Several Variables</span>
+                  <span>Introduction to Combinatorics</span>
+                  <span>Number Theory</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -140,9 +181,9 @@ export default function ResumePage() {
 
 const ExperienceCard = ({ experience }: { experience: Experience }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-200">
-      <div className="flex items-start space-x-4">
-        <div className="relative w-16 h-16 flex-shrink-0">
+    <div className="bg-white rounded-lg shadow-sm p-3 md:p-4 hover:shadow-md transition-all duration-200">
+      <div className="flex flex-col md:flex-row md:items-start space-y-3 md:space-y-0 md:space-x-4">
+        <div className="relative w-16 h-16 flex-shrink-0 mx-auto md:mx-0">
           <Image
             src={experience.logo}
             alt={`${experience.company} logo`}
@@ -151,17 +192,17 @@ const ExperienceCard = ({ experience }: { experience: Experience }) => {
           />
         </div>
         <div className="flex-grow">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="text-xl font-semibold">{experience.company}</h3>
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start space-y-1 md:space-y-0">
+            <div className="text-center md:text-left">
+              <h3 className="text-lg md:text-xl font-semibold">{experience.company}</h3>
               <p className="text-emerald-600 font-medium">{experience.role}</p>
             </div>
-            <div className="text-right text-sm text-gray-600">
+            <div className="text-center md:text-right text-sm text-gray-600">
               <p>{experience.period}</p>
               <p>{experience.location}</p>
             </div>
           </div>
-          <ul className="mt-3 space-y-1.5">
+          <ul className="mt-2 space-y-1">
             {experience.description.map((item, i) => (
               <li key={i} className="flex items-start">
                 <span className="mr-2 text-emerald-500">•</span>
@@ -170,7 +211,7 @@ const ExperienceCard = ({ experience }: { experience: Experience }) => {
             ))}
           </ul>
           {experience.technologies && (
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               {experience.technologies.map((tech, i) => (
                 <span 
                   key={i}
