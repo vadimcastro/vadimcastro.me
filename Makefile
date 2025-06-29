@@ -39,7 +39,8 @@ set-branch:
 	fi
 	@echo "Setting deployment branch to: $(branch)"
 	@echo "export DEPLOY_BRANCH_ENV=$(branch)" >> ~/.bashrc
-	@echo "Branch set! Run 'source ~/.bashrc' or start a new shell session."
+	@source ~/.bashrc
+	@echo "Branch set and activated! Future deployments will use: $(branch)"
 
 show-branch:
 	@echo "Current deployment branch configuration:"
