@@ -171,6 +171,22 @@ ENVEOF
 echo "✅ alembic env.py created successfully!"
 echo
 
+echo "🗄️ Running database migrations..."
+
+# Check if containers are running and run migrations
+if docker ps | grep -q "docker-api-1"; then
+    echo "API container found, running migrations..."
+    docker exec docker-api-1 bash -c "cd /app && alembic upgrade head" || echo "Migrations failed, run manually after deployment"
+    echo "Initializing database with admin user..."
+    docker exec docker-api-1 python3 /app/scripts/init_db.py || echo "Database init failed, run manually after deployment"
+    echo "✅ Database setup complete!"
+else
+    echo "⚠️  API container not running. After deployment, run:"
+    echo "   docker exec docker-api-1 bash -c 'cd /app && alembic upgrade head'"
+    echo "   docker exec docker-api-1 python3 /app/scripts/init_db.py"
+fi
+echo
+
 # Security reminders
 echo "🛡️  Security Reminders:"
 echo "• Your .env.production.local file is git-ignored (secure)"
@@ -183,7 +199,8 @@ echo
 echo "🚀 Next Steps:"
 echo "1. Save the passwords above in your password manager"
 echo "2. Deploy your application: make deploy"
-echo "3. Test login at: http://206.81.2.168:3000"
+echo "3. If migrations didn't run automatically, run them manually after deployment"
+echo "4. Test login at: http://206.81.2.168:3000"
 echo
 
 # Offer to show the file
