@@ -64,12 +64,8 @@ from fastapi.middleware.cors import CORSMiddleware
 print("Adding CORS middleware directly...")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://206.81.2.168:3000",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000"
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
     expose_headers=["*"],
