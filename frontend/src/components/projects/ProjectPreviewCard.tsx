@@ -11,18 +11,17 @@ export function ProjectPreviewCard({ project }: ProjectPreviewCardProps) {
   return (
     <Link 
       href={`/projects/${project.slug}`} 
-      className="block w-full rounded-lg overflow-hidden bg-white border-0 md:border md:border-gray-200 transition-all duration-300 hover:shadow-md hover:scale-[1.02]"
+      className="block w-full h-full rounded-lg overflow-hidden bg-white border-0 md:border md:border-gray-200 transition-all duration-300 hover:shadow-md hover:scale-[1.01]"
     >
-      <div className="flex flex-col">
-        <div className="w-full h-40 md:h-48 overflow-hidden">
+      <div className="flex flex-col h-full">
+        <div className="w-full flex-1 overflow-hidden flex items-center justify-center">
           <img
             src={project.imageUrl}
             alt={project.title}
-            className="w-full h-full object-cover"
-            style={{ objectPosition: 'top' }}
+            className="w-full h-full object-contain"
           />
         </div>
-        <div className="p-3 md:p-4">
+        <div className="p-3 shrink-0">
           <h3 className="text-base md:text-lg font-semibold mb-1 text-gray-900 group-hover:text-mint-500">
             {project.title}
           </h3>

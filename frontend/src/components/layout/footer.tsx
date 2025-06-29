@@ -12,13 +12,13 @@ export default function Footer() {
 
   return (
     <footer className="bg-white/60 md:bg-white/80 backdrop-blur-sm border-t border-gray-50 md:border-gray-200">
-      <div className="max-w-[95%] mx-auto px-2 md:px-4 py-2">
-        <div className="flex flex-col gap-1">
-          <div className="w-full max-w-xs md:max-w-none mx-auto md:mx-0 md:ml-auto flex justify-between md:justify-end md:gap-6 text-sm md:text-base">
+      <div className="max-w-[95%] mx-auto px-0 py-3">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+          <div className="flex justify-start gap-4 md:gap-6 text-sm md:text-base order-2 md:order-1 ml-4">
             <motion.a 
               href="/resume.pdf" 
               animate={controls}
-              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 py-2 font-semibold"
+              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 font-medium"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -27,18 +27,18 @@ export default function Footer() {
             </motion.a>
             <a 
               href="https://github.com/vadimcastro" 
-              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 py-2 font-semibold"
+              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 font-medium"
             >
               GitHub
             </a>
             <a 
               href="https://www.linkedin.com/in/vadimcastro" 
-              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 py-2 font-semibold"
+              className="text-gray-700 hover:text-gray-900 transition-colors duration-200 font-medium"
             >
               LinkedIn
             </a>
           </div>
-          <div className="text-xs text-gray-400 text-center">
+          <div className="text-xs text-gray-400 text-center md:text-right order-1 md:order-2">
             © {new Date().getFullYear()} Vadim Castro
           </div>
         </div>

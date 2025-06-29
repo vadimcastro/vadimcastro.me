@@ -19,14 +19,13 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white/60 md:bg-white/80 backdrop-blur-sm shadow-none md:shadow-sm border-b border-gray-50 md:border-gray-200">
-      <div className="max-w-[95%] mx-auto px-2 sm:px-4">
+      <div className="w-full px-2 md:px-4">
         <div className="flex justify-between h-14 sm:h-12 items-center">
-          <Link href="/" className="font-bold text-lg sm:text-xl flex items-center gap-2">
-            <span>Vadim Castro</span>
-            <span className="md:hidden bg-blue-100 text-blue-600 text-xs px-1.5 py-0.5 rounded-full font-normal">
-              m
-            </span>
-          </Link>
+          <div className="flex items-center">
+            <Link href="/" className="font-bold text-lg sm:text-xl ml-4">
+              Vadim Castro
+            </Link>
+          </div>
           <div className="flex items-center">
             <Link href="/resume" className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base">
               Resume
