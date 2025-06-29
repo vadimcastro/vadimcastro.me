@@ -8,9 +8,14 @@ export default function Home() {
 
   return (
     <div className="max-w-[95%] mx-auto px-4 py-4 space-y-2">
-      <h1 className="px3 py-1.5 text-3xl font-semibold text-gray-900 ">
-        Welcome to My Digital Space
-      </h1>
+      <div className="space-y-1">
+        <h1 className="px3 py-1.5 text-3xl font-semibold text-gray-900 ">
+          Welcome to My Digital Space
+        </h1>
+        <p className="px-3 text-sm text-blue-600 font-medium md:hidden">
+          📱 Mobile-Optimized Version
+        </p>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <section className="h-[750px] border rounded-lg bg-white shadow-sm">
           <div className="h-full flex flex-col">
