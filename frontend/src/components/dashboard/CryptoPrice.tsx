@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { BarChart3, TrendingUp, TrendingDown } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 
 interface CryptoData {
   price: number;
@@ -58,22 +58,22 @@ export const CryptoPrice = () => {
   }, []);
 
   const renderCrypto = (crypto: CryptoData) => (
-    <div key={crypto.symbol} className="flex items-center space-x-3">
-      <div className="flex items-center space-x-2">
-        <span className="font-semibold text-gray-700">{crypto.symbol}</span>
-        <span className="text-lg font-bold text-gray-900">
+    <div key={crypto.symbol} className="flex items-center space-x-2 md:space-x-3">
+      <div className="flex items-center space-x-1 md:space-x-2">
+        <span className="text-xs md:text-sm font-semibold text-gray-700">{crypto.symbol}</span>
+        <span className="text-sm md:text-lg font-bold text-gray-900">
           ${crypto.price.toLocaleString()}
         </span>
       </div>
-      <div className={`flex items-center space-x-1 ${
+      <div className={`flex items-center space-x-0.5 md:space-x-1 ${
         crypto.change24h >= 0 ? 'text-green-600' : 'text-red-600'
       }`}>
         {crypto.change24h >= 0 ? (
-          <TrendingUp className="w-4 h-4" />
+          <TrendingUp className="w-3 h-3 md:w-4 md:h-4" />
         ) : (
-          <TrendingDown className="w-4 h-4" />
+          <TrendingDown className="w-3 h-3 md:w-4 md:h-4" />
         )}
-        <span className="text-sm font-medium">
+        <span className="text-xs md:text-sm font-medium">
           {crypto.change24h.toFixed(2)}%
         </span>
       </div>
@@ -81,16 +81,13 @@ export const CryptoPrice = () => {
   );
 
   return (
-    <section className="border rounded-lg bg-white bg-opacity-80 backdrop-blur-sm shadow-sm">
-      <div className="px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <BarChart3 className="w-5 h-5 text-gray-600" />
-          <h3 className="text-lg font-semibold text-gray-800">Crypto Prices</h3>
-        </div>
+    <section className="border rounded-lg bg-white shadow-sm">
+      <div className="px-3 md:px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+        <Wallet className="w-5 h-5 text-gray-600" />
         
-        <div className="flex items-center space-x-8">
+        <div className="flex items-center gap-3 md:gap-6 overflow-x-auto">
           {loading ? (
-            <div className="animate-pulse flex space-x-8">
+            <div className="animate-pulse flex gap-3 md:gap-6">
               <div className="flex items-center space-x-3">
                 <div className="h-4 w-12 bg-gray-200 rounded"></div>
                 <div className="h-4 w-16 bg-gray-200 rounded"></div>
@@ -110,9 +107,7 @@ export const CryptoPrice = () => {
           )}
         </div>
         
-        <div className="text-xs text-gray-500">
-          Updated: {new Date().toLocaleTimeString()}
-        </div>
+        <div className="w-5"></div>
       </div>
     </section>
   );

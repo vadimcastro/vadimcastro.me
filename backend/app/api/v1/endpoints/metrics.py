@@ -73,3 +73,33 @@ async def get_project_metrics(
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
     return crud_metrics.get_project_metrics(db)
+
+@router.get("/system")
+@cache(expire=60)  # Cache for 1 minute
+async def get_system_metrics(
+    token: str = Depends(oauth2_scheme)
+) -> Dict:
+    user = get_user_from_token(token, get_db().__next__())
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_system_metrics()
+
+@router.get("/network")
+@cache(expire=60)  # Cache for 1 minute
+async def get_network_metrics(
+    token: str = Depends(oauth2_scheme)
+) -> Dict:
+    user = get_user_from_token(token, get_db().__next__())
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_network_metrics()
+
+@router.get("/health")
+@cache(expire=30)  # Cache for 30 seconds
+async def get_application_health(
+    token: str = Depends(oauth2_scheme)
+) -> Dict:
+    user = get_user_from_token(token, get_db().__next__())
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_application_health()

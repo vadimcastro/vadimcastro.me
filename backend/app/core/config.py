@@ -61,7 +61,7 @@ class Settings(BaseSettings):
             except:
                 pass
             return os.getenv('SECRET_KEY', secrets.token_urlsafe(32))
-        return secrets.token_urlsafe(32)
+        return os.getenv('SECRET_KEY', secrets.token_urlsafe(32))
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     

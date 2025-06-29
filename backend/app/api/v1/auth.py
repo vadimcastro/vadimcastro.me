@@ -34,19 +34,9 @@ async def login(
                 detail="Incorrect email or password"
             )
            
-        logger.info(f"User found: {user.email}")  # Add this
+        logger.info(f"User found: {user.email}")
         access_token = create_access_token(data={"sub": user.email})
-        
-        # Verify token immediately
-        test_payload = decode_token(access_token)
-        logger.info(f"Token created and verified: {test_payload}")  # Add this
-        
-        if not test_payload:
-            logger.error("Token creation verification failed")
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Token creation failed"
-            )
+        logger.info("Access token created successfully")
             
         logger.info(f"Login successful for user: {form_data.username}")
         

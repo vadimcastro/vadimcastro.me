@@ -110,6 +110,9 @@ droplet-quick-check:
 setup-prod-env:
 	@echo "Setting up production environment..."
 	./scripts/setup-production-env.sh
+setup-local-auth:
+	@echo "Setting up local development authentication..."
+	./scripts/setup-local-auth.sh
 # Database commands
 migrate:
 	@echo "Running migrations..."

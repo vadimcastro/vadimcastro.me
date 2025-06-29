@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useProtectedApi } from '../../lib/api/protected';
-import { Save, Loader2, Plus, FileText, Trash2, Maximize2, Minimize2 } from 'lucide-react';
+import { Save, Loader2, Plus, FileText, Trash2, Maximize2, Minimize2, Edit3 } from 'lucide-react';
 
 interface Note {
   id: number;
@@ -128,16 +128,29 @@ export const Notepad = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+    
+    if (diffInHours < 24) {
+      return date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+    } else if (diffInHours < 168) { // Less than a week
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short'
+      });
+    } else {
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      });
+    }
   };
 
   const getPreview = (content: string) => {
-    return content.length > 50 ? content.substring(0, 50) + '...' : content || 'Empty note';
+    return content.length > 40 ? content.substring(0, 40) + '...' : content || 'Empty note';
   };
 
   const getNoteDisplayTitle = (note: Note) => {
@@ -153,50 +166,62 @@ export const Notepad = () => {
   }
 
   return (
-    <section className={`${isMaximized ? 'fixed inset-0 z-50 h-screen' : 'h-[400px] max-w-full'} border rounded-lg bg-white shadow-sm overflow-hidden`}>
-      <div className="h-full flex min-w-0">
-        {/* Notes List Sidebar - Hidden when maximized */}
+    <section className={`${isMaximized ? 'fixed inset-0 z-50 h-screen' : 'h-[600px] md:h-[450px] max-w-full'} border rounded-lg bg-white shadow-sm overflow-hidden`}>
+      <div className="h-full flex flex-col lg:flex-row min-w-0">
+        {/* Notes List Sidebar - Hidden when maximized, stacked on mobile */}
         {!isMaximized && (
-          <div className="w-1/3 border-r border-gray-200 flex flex-col bg-gray-50">
-            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Notes</h3>
+          <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col bg-gray-50 max-h-40 lg:max-h-none">
+            <div className="px-4 lg:px-6 py-3 lg:py-4 border-b border-gray-200 flex items-center justify-between">
+              <Edit3 className="w-5 h-5 text-gray-700" />
+              <button
+                onClick={createNewNote}
+                className="px-3 py-1.5 bg-green-600 text-white rounded text-xs hover:bg-green-700 transition-colors flex items-center gap-1.5"
+                title="New Note"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>New</span>
+              </button>
             </div>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">
               {notes.length === 0 ? (
-                <div className="p-4 text-center text-gray-500 text-sm">
-                  No notes yet
+                <div className="p-4 lg:p-6 text-center text-gray-500 text-sm">
+                  <FileText className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                  <p>No notes yet</p>
+                  <p className="text-xs mt-1">Create your first note to get started</p>
                 </div>
               ) : (
-                notes.map((note) => (
-                  <div
-                    key={note.id}
-                    onClick={() => selectNote(note)}
-                    className={`p-3 border-b border-gray-200 cursor-pointer hover:bg-white ${
-                      selectedNote?.id === note.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                    }`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {getNoteDisplayTitle(note)}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {formatDate(note.created_at)}
-                        </p>
+                <div className="flex lg:flex-col gap-2 lg:gap-0 px-2 lg:px-0 py-2 lg:py-0 overflow-x-auto lg:overflow-x-visible">
+                  {notes.map((note) => (
+                    <div
+                      key={note.id}
+                      onClick={() => selectNote(note)}
+                      className={`p-3 lg:p-4 border lg:border-b lg:border-l-0 lg:border-r-0 lg:border-t-0 border-gray-200 rounded lg:rounded-none cursor-pointer hover:bg-white transition-colors flex-shrink-0 lg:flex-shrink min-w-[140px] lg:min-w-0 ${
+                        selectedNote?.id === note.id ? 'bg-blue-50 lg:border-l-4 border-l-blue-500 shadow-sm lg:shadow-none' : 'bg-white lg:bg-transparent border-gray-300 lg:border-gray-200'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate leading-tight">
+                            {getNoteDisplayTitle(note)}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1.5">
+                            {formatDate(note.created_at)}
+                          </p>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteNote(note.id);
+                          }}
+                          className="ml-2 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          title="Delete Note"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteNote(note.id);
-                        }}
-                        className="ml-2 p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-                        title="Delete Note"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
                     </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
           </div>
@@ -204,49 +229,48 @@ export const Notepad = () => {
 
         {/* Note Editor */}
         <div className={`flex-1 flex flex-col min-w-0 ${isMaximized ? 'bg-amber-50' : 'bg-white'}`}>
-          <div className={`px-4 py-3 border-b flex items-center justify-between min-w-0 ${isMaximized ? 'border-amber-200 bg-amber-100' : 'border-gray-200 bg-white'}`}>
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              <FileText className={`w-5 h-5 flex-shrink-0 ${isMaximized ? 'text-amber-800' : 'text-gray-600'}`} />
+          <div className={`px-6 lg:px-6 py-4 lg:py-5 border-b flex flex-col lg:flex-row lg:items-center justify-between gap-3 lg:gap-4 min-w-0 ${isMaximized ? 'border-amber-200 bg-amber-100' : 'border-gray-200 bg-white'}`}>
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <FileText className={`w-5 h-5 flex-shrink-0 hidden lg:block ${isMaximized ? 'text-amber-800' : 'text-gray-600'}`} />
               
-              {/* Combined note selector and title editor */}
-              <div className="flex items-center gap-2 flex-1 min-w-0">
-                <select
-                  value={selectedNote?.id || ''}
-                  onChange={(e) => {
-                    const noteId = parseInt(e.target.value);
-                    const note = notes.find(n => n.id === noteId);
-                    if (note) {
-                      selectNote(note);
-                    } else {
-                      createNewNote();
-                    }
-                  }}
-                  className={`text-sm border rounded px-2 py-1 focus:outline-none focus:ring-2 min-w-[140px] max-w-[180px] ${isMaximized ? 'border-amber-300 bg-amber-50 text-amber-800 focus:ring-amber-500' : 'border-gray-300 bg-white text-gray-800 focus:ring-blue-500'}`}
-                >
-                  <option value="">New Note</option>
-                  {notes.map((note) => (
-                    <option key={note.id} value={note.id}>
-                      {getNoteDisplayTitle(note)}
-                    </option>
-                  ))}
-                </select>
-                
-                <span className={`${isMaximized ? 'text-amber-600' : 'text-gray-400'}`}>|</span>
-                
+              {/* Note title editor */}
+              <div className="flex-1 min-w-0">
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className={`text-lg font-semibold bg-transparent border-none focus:outline-none focus:ring-0 px-0 flex-1 min-w-0 truncate ${isMaximized ? 'text-amber-900' : 'text-gray-900'}`}
-                  placeholder="Note title..."
+                  className={`text-lg lg:text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 px-0 w-full font-heading ${isMaximized ? 'text-amber-900' : 'text-gray-900'} ${title === 'New Note' ? 'lg:block hidden' : ''}`}
+                  placeholder="Untitled Note"
                 />
               </div>
             </div>
             
-            <div className="flex items-center gap-2 flex-shrink-0">
-              {/* Auto-saved timer moved before New button */}
+            <div className="flex items-center gap-2 flex-shrink-0 pr-2 lg:pr-0">
+              {/* Quick note selector for mobile */}
+              <select
+                value={selectedNote?.id || ''}
+                onChange={(e) => {
+                  const noteId = parseInt(e.target.value);
+                  const note = notes.find(n => n.id === noteId);
+                  if (note) {
+                    selectNote(note);
+                  } else {
+                    createNewNote();
+                  }
+                }}
+                className={`lg:hidden text-sm border rounded px-3 py-1.5 focus:outline-none focus:ring-2 min-w-[120px] mr-3 ${isMaximized ? 'border-amber-300 bg-amber-50 text-amber-800 focus:ring-amber-500' : 'border-gray-300 bg-white text-gray-800 focus:ring-blue-500'}`}
+              >
+                <option value="">New Note</option>
+                {notes.map((note) => (
+                  <option key={note.id} value={note.id}>
+                    {getNoteDisplayTitle(note)}
+                  </option>
+                ))}
+              </select>
+              
+              {/* Auto-saved timer */}
               {lastSaved && (
-                <span className={`text-xs hidden sm:inline px-3 py-1 rounded-full ${isMaximized ? 'text-amber-600 bg-amber-100' : 'text-gray-500 bg-gray-100'}`}>
+                <span className={`text-xs hidden lg:inline px-3 py-1 rounded-full ${isMaximized ? 'text-amber-600 bg-amber-100' : 'text-gray-500 bg-gray-100'}`}>
                   Auto-saved: {lastSaved.toLocaleTimeString()}
                 </span>
               )}
@@ -255,85 +279,75 @@ export const Notepad = () => {
               {isMaximized && (
                 <button
                   onClick={createNewNote}
-                  className="px-3 py-1 bg-green-700 text-white rounded text-sm hover:bg-green-800 transition-colors flex items-center gap-1"
+                  className="px-3 py-1.5 bg-green-700 text-white rounded text-sm hover:bg-green-800 transition-colors hidden lg:flex items-center gap-1.5"
                   title="New Note"
                 >
-                  <Plus className="w-3 h-3" />
-                  New
+                  <Plus className="w-3.5 h-3.5 hidden lg:inline" />
+                  <span className="hidden lg:inline">New</span>
                 </button>
               )}
 
-              {/* Delete button - only show in maximized view when note has content */}
-              {isMaximized && selectedNote && (content.trim() || title !== 'New Note') && (
+              {/* Delete button - only show when note has content */}
+              {selectedNote && (content.trim() || title !== 'New Note') && (
                 <button
                   onClick={() => deleteNote(selectedNote.id)}
-                  className="px-2 py-1 bg-red-700 text-white rounded text-sm hover:bg-red-800 transition-colors flex items-center gap-1"
+                  className="px-3 py-1.5 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors flex items-center gap-1.5"
                   title="Delete Note"
                 >
-                  <Trash2 className="w-3 h-3" />
-                  <span className="hidden sm:inline">Delete</span>
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Delete</span>
                 </button>
               )}
 
               <button
                 onClick={() => setIsMaximized(!isMaximized)}
-                className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center gap-1 ${isMaximized ? 'bg-amber-700 hover:bg-amber-800' : 'bg-gray-600 hover:bg-gray-700'}`}
-                title={isMaximized ? 'Minimize' : 'Maximize'}
+                className={`px-3 py-1.5 text-white rounded text-sm transition-colors flex items-center gap-1.5 ${isMaximized ? 'bg-amber-600 hover:bg-amber-700' : 'bg-gray-600 hover:bg-gray-700'}`}
+                title={isMaximized ? 'Exit Focus Mode' : 'Enter Focus Mode'}
               >
                 {isMaximized ? (
                   <>
-                    <Minimize2 className="w-3 h-3" />
-                    <span className="hidden sm:inline">Exit</span>
+                    <Minimize2 className="w-3.5 h-3.5" />
+                    <span className="hidden lg:inline">Exit Focus</span>
                   </>
                 ) : (
                   <>
-                    <Maximize2 className="w-3 h-3" />
-                    <span className="hidden sm:inline">Expand</span>
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span className="hidden lg:inline">Focus Mode</span>
                   </>
                 )}
               </button>
 
-              {!isMaximized && (
-                <button
-                  onClick={createNewNote}
-                  className="px-2 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors flex items-center gap-1"
-                  title="New Note"
-                >
-                  <Plus className="w-3 h-3" />
-                  <span className="hidden sm:inline">New</span>
-                </button>
-              )}
 
               <button
                 onClick={saveNote}
                 disabled={saving || (!content.trim() && title === 'New Note')}
-                className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center gap-1 disabled:opacity-50 ${isMaximized ? 'bg-amber-600 hover:bg-amber-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+                className={`px-3 py-1.5 text-white rounded text-sm transition-colors flex items-center gap-1.5 disabled:opacity-50 mr-0 ${isMaximized ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'}`}
               >
                 {saving ? (
                   <>
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                    <span className="hidden sm:inline">Saving...</span>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span className="hidden lg:inline">Saving...</span>
                   </>
                 ) : (
                   <>
-                    <Save className="w-3 h-3" />
-                    <span className="hidden sm:inline">Save</span>
+                    <Save className="w-3.5 h-3.5" />
+                    <span className="hidden lg:inline">Save</span>
                   </>
                 )}
               </button>
             </div>
           </div>
           
-          <div className={`flex-1 ${isMaximized ? 'p-8' : 'p-6'}`}>
+          <div className={`flex-1 ${isMaximized ? 'p-6 lg:p-12' : 'p-4 lg:p-6'}`}>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className={`w-full h-full p-4 rounded-md resize-none focus:outline-none focus:ring-2 ${
+              className={`w-full h-full p-4 lg:p-6 rounded-lg resize-none focus:outline-none focus:ring-2 text-base leading-relaxed ${
                 isMaximized 
-                  ? 'border border-amber-200 bg-amber-50 text-amber-950 placeholder-amber-400 focus:ring-amber-500 focus:border-amber-500 text-lg leading-relaxed font-serif shadow-inner' 
-                  : 'border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500'
+                  ? 'border border-amber-200 bg-amber-50 text-amber-950 placeholder-amber-400 focus:ring-amber-500 focus:border-amber-500 lg:text-lg shadow-inner' 
+                  : 'border border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 focus:bg-white'
               }`}
-              placeholder="Type your notes here..."
+              placeholder="Start writing your thoughts..."
             />
           </div>
         </div>
