@@ -13,24 +13,45 @@ prod:
 prod-rebuild:
 	@echo "Rebuilding and starting production environment..."
 	docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d
-# Branch configuration - can be set via environment variable or command line
-DEPLOY_BRANCH ?= $(if $(branch),$(branch),$(if $(DEPLOY_BRANCH_ENV),$(DEPLOY_BRANCH_ENV),$$(git branch --show-current)))
-
 deploy:
 	@echo "Pulling latest code and deploying..."
-	@echo "Using branch: $(DEPLOY_BRANCH)"
-	git pull origin $(DEPLOY_BRANCH)
+	@if [ -n "$(branch)" ]; then \
+		echo "Using branch: $(branch)"; \
+		git pull origin $(branch); \
+	elif [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
+		echo "Using branch: $$DEPLOY_BRANCH_ENV"; \
+		git pull origin $$DEPLOY_BRANCH_ENV; \
+	else \
+		echo "Using branch: $$(git branch --show-current)"; \
+		git pull origin $$(git branch --show-current); \
+	fi
 	make down && make prod
 deploy-rebuild:
 	@echo "Pulling latest code and rebuilding..."
-	@echo "Using branch: $(DEPLOY_BRANCH)"
-	git pull origin $(DEPLOY_BRANCH)
+	@if [ -n "$(branch)" ]; then \
+		echo "Using branch: $(branch)"; \
+		git pull origin $(branch); \
+	elif [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
+		echo "Using branch: $$DEPLOY_BRANCH_ENV"; \
+		git pull origin $$DEPLOY_BRANCH_ENV; \
+	else \
+		echo "Using branch: $$(git branch --show-current)"; \
+		git pull origin $$(git branch --show-current); \
+	fi
 	make prod-rebuild
 # Git commands
 pull:
 	@echo "Pulling latest code..."
-	@echo "Using branch: $(DEPLOY_BRANCH)"
-	git pull origin $(DEPLOY_BRANCH)
+	@if [ -n "$(branch)" ]; then \
+		echo "Using branch: $(branch)"; \
+		git pull origin $(branch); \
+	elif [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
+		echo "Using branch: $$DEPLOY_BRANCH_ENV"; \
+		git pull origin $$DEPLOY_BRANCH_ENV; \
+	else \
+		echo "Using branch: $$(git branch --show-current)"; \
+		git pull origin $$(git branch --show-current); \
+	fi
 # Branch management (works locally or on droplet)
 set-branch:
 	@if [ -z "$(branch)" ]; then \
@@ -50,7 +71,11 @@ show-branch:
 		echo "  Environment variable: not set"; \
 	fi
 	@echo "  Current git branch: $$(git branch --show-current)"
-	@echo "  Effective deploy branch: $(DEPLOY_BRANCH)"
+	@if [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
+		echo "  Effective deploy branch: $$DEPLOY_BRANCH_ENV"; \
+	else \
+		echo "  Effective deploy branch: $$(git branch --show-current)"; \
+	fi
 
 deploy-current:
 	@echo "Deploying current branch..."
