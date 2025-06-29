@@ -22,7 +22,7 @@ export default function Navbar() {
       <div className="w-full px-2 md:px-4">
         <div className="flex justify-between h-14 sm:h-12 items-center">
           <div className="flex items-center">
-            <Link href="/" className="font-bold text-lg sm:text-xl ml-4">
+            <Link href="/" className="font-bold text-lg sm:text-xl ml-2 md:ml-4">
               Vadim Castro
             </Link>
           </div>
