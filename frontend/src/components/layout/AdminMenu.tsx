@@ -29,16 +29,16 @@ export default function AdminMenu() {
   };
 
   return (
-    <Menu as="div" className="relative ml-3">
+    <Menu as="div" className="relative ml-1 sm:ml-2 md:ml-3">
       <div>
         <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-mint-500 focus:ring-offset-2">
           <span className="sr-only">Open admin menu</span>
-          <div className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-mint-500">
+          <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full overflow-hidden ring-2 ring-mint-500">
             <Image
               src="/images/profile.jpg"  // Updated path
               alt={adminInfo.name}
-              width={36}
-              height={36}
+              width={32}
+              height={32}
               className="h-full w-full object-cover"
               priority  // Added priority loading
               unoptimized  // Added to bypass image optimization if needed
@@ -55,7 +55,7 @@ export default function AdminMenu() {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 sm:w-56 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="px-4 py-3">
             <p className="text-sm font-medium text-gray-900">{adminInfo.name}</p>
             <p className="text-xs font-medium text-gray-500">{adminInfo.role}</p>
