@@ -10,8 +10,8 @@ from app.db.session import SessionLocal
 from app.db.init_db import init_db
 from app.db.utils import test_db_connection
 from app.middleware.security import setup_security
-# from fastapi_cache import FastAPICache
-# from fastapi_cache.backends.inmemory import InMemoryBackend
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from contextlib import asynccontextmanager
 
 # Configure logging
@@ -32,7 +32,9 @@ logger.info(f"Environment: {ENVIRONMENT}")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Setup
-    logger.info("App startup - cache disabled for deployment")
+    logger.info("App startup - initializing cache...")
+    FastAPICache.init(InMemoryBackend(), prefix="vadimcastro-cache")
+    logger.info("Cache initialized successfully")
     
     yield
     
