@@ -19,7 +19,8 @@
       "Bash(pkill:*)",
       "Bash(docker logs:*)",
       "Bash(npm install)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(ssh:*)"
     ],
     "deny": []
   }
