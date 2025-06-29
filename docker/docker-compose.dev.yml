@@ -37,12 +37,8 @@ services:
         echo "Starting server..." &&
         uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
       '
-    environment:
-      - ENVIRONMENT=development
-      - DEBUG=1
-      - SECRET_KEY=v_zCh3CsteyB7qxN_0vUuFpEZpvGLxeCKgzLXXr4HsE
-      - DATABASE_URL=postgresql://postgres:password@db:5432/vadimcastro
-      - REDIS_URL=redis://redis:6379/0
+    env_file:
+      - ../.env.development
       
     volumes:
       - ../backend:/app/backend
