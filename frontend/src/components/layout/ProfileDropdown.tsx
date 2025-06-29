@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Mail, Github, Linkedin, Globe, ArrowLeft, Loader2 } from 'lucide-react';
 import { useAuth } from '../../lib/auth/AuthContext';
 
@@ -17,8 +18,13 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { login } = useAuth();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -73,12 +79,13 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
   };
 
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  const dropdownContent = (
     <div
       ref={dropdownRef}
-      className="absolute right-0 top-12 w-64 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-3 space-y-3 animate-in slide-in-from-top-2"
+      className="fixed right-4 top-16 w-64 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-gray-200 p-3 space-y-3 animate-in slide-in-from-top-2 z-[9999]"
+      style={{ zIndex: 9999 }}
     >
       {!isSigningIn ? (
         <>
@@ -192,6 +199,8 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
       )}
     </div>
   );
+
+  return createPortal(dropdownContent, document.body);
 };
 
 export default ProfileDropdown;

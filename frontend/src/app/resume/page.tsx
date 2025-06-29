@@ -133,7 +133,7 @@ export default function ResumePage() {
       </section>
 
       <section className="space-y-3 md:space-y-4">
-        <h2 className="text-xl md:text-2xl font-bold border-b border-gray-200 pb-2 uppercase tracking-widest ml-2">PROFESSIONAL EXPERIENCE</h2>
+        <h2 className="text-xl md:text-2xl font-bold border-b border-gray-200 pb-2 pt-4 uppercase tracking-widest ml-2">PROFESSIONAL EXPERIENCE</h2>
         {experiences.map((exp) => (
           <ExperienceCard key={exp.company} experience={exp} />
         ))}
