@@ -42,6 +42,9 @@ droplet-debug:
 droplet-env-check:
 	@echo "Checking environment file on droplet..."
 	ssh root@206.81.2.168 "cd vadimcastro.me && echo '=== PWD ===' && pwd && echo '=== ENV FILE EXISTS ===' && ls -la .env.production.local && echo '=== ENV FILE CONTENT ===' && head -5 .env.production.local && echo '=== DOCKER COMPOSE PATH ===' && ls -la docker/docker-compose.prod.yml"
+droplet-quick-check:
+	@echo "Quick status check on droplet..."
+	ssh root@206.81.2.168 "cd vadimcastro.me && docker logs docker-api-1 | tail -5 && echo '=== ENV VARS ===' && docker exec docker-api-1 printenv | grep -E '(ENVIRONMENT|POSTGRES_DB|POSTGRES_USER)'"
 setup-prod-env:
 	@echo "Setting up production environment..."
 	./scripts/setup-production-env.sh
