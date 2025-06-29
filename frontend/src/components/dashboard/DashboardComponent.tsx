@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Activity, Users, FileText, Cpu, HardDrive, Wifi, Server, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { Activity, Users, FileText, Cpu, HardDrive, Wifi, Server, Zap, ChevronDown, ChevronUp, GitBranch } from 'lucide-react';
 import { useProtectedApi } from '../../lib/api/protected';
 import { MetricCard } from './MetricCard';
 import { DashboardHeader } from './DashboardHeader';
@@ -67,6 +67,14 @@ interface DashboardMetrics {
     thread_count: number;
     status: string;
   };
+  deployment: {
+    current_branch: string;
+    commit_hash: string;
+    commit_message: string;
+    commit_date: string;
+    environment: string;
+    deploy_time: string;
+  };
 }
 
 const DashboardComponent = () => {
@@ -83,13 +91,14 @@ const DashboardComponent = () => {
       setIsRefreshing(true);
       setError(null);
 
-      const [visitorsData, projectsData, sessionsData, systemData, networkData, healthData] = await Promise.all([
+      const [visitorsData, projectsData, sessionsData, systemData, networkData, healthData, deploymentData] = await Promise.all([
         api.get<DashboardMetrics['visitors']>('/api/v1/metrics/visitors'),
         api.get<DashboardMetrics['projects']>('/api/v1/metrics/projects'),
         api.get<DashboardMetrics['sessions']>('/api/v1/metrics/sessions'),
         api.get<DashboardMetrics['system']>('/api/v1/metrics/system'),
         api.get<DashboardMetrics['network']>('/api/v1/metrics/network'),
         api.get<DashboardMetrics['health']>('/api/v1/metrics/health'),
+        api.get<DashboardMetrics['deployment']>('/api/v1/metrics/deployment'),
       ]);
 
       setMetrics({
@@ -99,6 +108,7 @@ const DashboardComponent = () => {
         system: systemData,
         network: networkData,
         health: healthData,
+        deployment: deploymentData,
       });
       setLastUpdated(new Date());
     } catch (err) {
@@ -148,6 +158,14 @@ const DashboardComponent = () => {
   };
 
   const systemStats = metrics ? [
+    {
+      title: "Deploy Branch",
+      value: metrics.deployment.current_branch,
+      change: metrics.deployment.commit_hash,
+      icon: GitBranch,
+      description: "current",
+      trend: "up" as const
+    },
     {
       title: "CPU Usage",
       value: `${metrics.system.cpu.usage_percent.toFixed(1)}%`,

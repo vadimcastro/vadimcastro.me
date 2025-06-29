@@ -103,3 +103,13 @@ async def get_application_health(
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
     return crud_metrics.get_application_health()
+
+@router.get("/deployment")
+@cache(expire=300)  # Cache for 5 minutes
+async def get_deployment_info(
+    token: str = Depends(oauth2_scheme)
+) -> Dict:
+    user = get_user_from_token(token, get_db().__next__())
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return crud_metrics.get_deployment_info()

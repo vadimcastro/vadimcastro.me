@@ -13,6 +13,7 @@ export interface Project {
     icon: string;
   }>;
   imageUrl: string;
+  githubUrl?: string;
   technicalImplementation: {
     systemArchitecture: string[];
     algorithm?: {
@@ -54,6 +55,7 @@ const projectsList: Project[] = [
       }
     ],
     imageUrl: "/images/scenic_pic.png",
+    githubUrl: "https://github.com/vadimcastro/scenic-navigator",
     technicalImplementation: {
       systemArchitecture: [
         "Scenic's architecture is built around efficient route calculation and POI integration.",

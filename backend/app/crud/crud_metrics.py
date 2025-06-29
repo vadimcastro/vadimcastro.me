@@ -331,3 +331,55 @@ def get_application_health() -> Dict:
         }
     except Exception as e:
         return {"error": str(e), "status": "unhealthy"}
+
+def get_deployment_info() -> Dict:
+    """Get current deployment and git information"""
+    try:
+        deployment_info = {}
+        
+        # Get current git branch
+        try:
+            branch_result = subprocess.run(
+                ['git', 'branch', '--show-current'],
+                capture_output=True, text=True, timeout=5, cwd='/app'
+            )
+            if branch_result.returncode == 0:
+                deployment_info["current_branch"] = branch_result.stdout.strip()
+            else:
+                deployment_info["current_branch"] = "unknown"
+        except Exception:
+            deployment_info["current_branch"] = "unknown"
+        
+        # Get latest commit info
+        try:
+            commit_result = subprocess.run(
+                ['git', 'log', '-1', '--format=%H|%s|%ci'],
+                capture_output=True, text=True, timeout=5, cwd='/app'
+            )
+            if commit_result.returncode == 0:
+                commit_parts = commit_result.stdout.strip().split('|', 2)
+                if len(commit_parts) == 3:
+                    deployment_info["commit_hash"] = commit_parts[0][:8]  # Short hash
+                    deployment_info["commit_message"] = commit_parts[1]
+                    deployment_info["commit_date"] = commit_parts[2]
+                else:
+                    deployment_info["commit_hash"] = "unknown"
+                    deployment_info["commit_message"] = "unknown"
+                    deployment_info["commit_date"] = "unknown"
+            else:
+                deployment_info["commit_hash"] = "unknown"
+                deployment_info["commit_message"] = "unknown"
+                deployment_info["commit_date"] = "unknown"
+        except Exception:
+            deployment_info["commit_hash"] = "unknown"
+            deployment_info["commit_message"] = "unknown"
+            deployment_info["commit_date"] = "unknown"
+        
+        # Get environment info
+        deployment_info["environment"] = os.getenv("ENVIRONMENT", "unknown")
+        deployment_info["deploy_time"] = datetime.now().isoformat()
+        
+        return deployment_info
+        
+    except Exception as e:
+        return {"error": str(e)}
