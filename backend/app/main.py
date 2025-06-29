@@ -64,14 +64,40 @@ from fastapi.middleware.cors import CORSMiddleware
 print("Adding CORS middleware directly...")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=[
+        "http://206.81.2.168:3000",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://vadimcastro.pro",
+        "https://www.vadimcastro.pro"
+    ],
+    allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
     expose_headers=["*"],
     max_age=3600,
 )
 print("CORS middleware added directly")
+
+# Add error handling middleware to ensure CORS headers on errors
+@app.middleware("http")
+async def add_cors_headers_on_error(request: Request, call_next):
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        logger.error(f"Unhandled error in {request.url}: {str(e)}")
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=500,
+            content={"detail": str(e)},
+            headers={
+                "Access-Control-Allow-Origin": "http://206.81.2.168:3000",
+                "Access-Control-Allow-Credentials": "true",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+                "Access-Control-Allow-Headers": "*",
+            }
+        )
 
 # Check middleware stack
 print(f"Total middleware count: {len(app.user_middleware)}")
