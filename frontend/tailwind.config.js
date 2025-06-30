@@ -9,6 +9,7 @@ module.exports = {
       extend: {
         fontFamily: {
           sans: ['var(--font-inter)'],
+          heading: ['var(--font-poppins)'],
           mono: ['var(--font-roboto-mono)'],
         },
         colors: {

@@ -6,6 +6,7 @@ import { ImageModal } from '../../../components/projects/ImageModal';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { Github } from 'lucide-react';
 
 interface ProjectPageProps {
   params: {
@@ -49,22 +50,35 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto px-4 space-y-6 py-6">
+      <div className="max-w-6xl mx-auto px-2 md:px-4 space-y-3 md:space-y-6 py-2 md:py-6">
         {/* Project Header */}
-        <header className="space-y-4">
-          <div className="flex items-center space-x-6">
-            <div className="relative w-12 h-12">
-              <Image 
-                src="/images/compass.svg"
-                alt="Project Icon"
-                fill
-                className="object-contain"
-                priority
-              />
+        <header className="space-y-2 md:space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 md:space-x-6">
+              <div className="relative w-8 h-8 md:w-12 md:h-12">
+                <Image 
+                  src="/images/compass.svg"
+                  alt="Project Icon"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <h1 className="text-3xl md:text-6xl font-heading font-bold text-gray-900">{project.title}</h1>
             </div>
-            <h1 className="text-5xl font-bold text-gray-900">{project.title}</h1>
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 md:p-2 bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm border hover:shadow-md transition-all duration-200 group flex-shrink-0"
+                title="View on GitHub"
+              >
+                <Github className="w-4 h-4 md:w-5 md:h-5 text-gray-600 group-hover:text-gray-900" />
+              </a>
+            )}
           </div>
-          <p className="text-xl text-gray-600 w-full">
+          <p className="text-lg md:text-2xl text-gray-600 w-full font-medium">
             {project.longDescription}
           </p>
         </header>
@@ -113,18 +127,18 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         )}
 
         {/* Tech Stack and Features */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-8 mt-3 md:mt-6">
           <div>
-            <h2 className="text-3xl font-semibold text-gray-900 mb-5">Technology Stack</h2>
+            <h2 className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-3 md:mb-5 pt-2 md:pt-4 ml-2 uppercase tracking-widest">TECHNOLOGY STACK</h2>
             
             {/* Frontend */}
-            <div className="mb-6">
-              <h3 className="text-xl font-medium text-gray-700 mb-3">Frontend</h3>
-              <div className="flex flex-wrap gap-3">
+            <div className="mb-3 md:mb-4 ml-2">
+              <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2">Frontend</h3>
+              <div className="flex flex-wrap gap-1 md:gap-2">
                 {project.techStack.Frontend.map((tech) => (
                   <span 
                     key={tech} 
-                    className="px-3 py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium"
+                    className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
                   >
                     {tech}
                   </span>
@@ -133,13 +147,13 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             </div>
             
             {/* Backend */}
-            <div className="mb-6">
-              <h3 className="text-xl font-medium text-gray-700 mb-3">Backend</h3>
-              <div className="flex flex-wrap gap-3">
+            <div className="mb-3 md:mb-4 ml-2">
+              <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2">Backend</h3>
+              <div className="flex flex-wrap gap-1 md:gap-2">
                 {project.techStack.Backend.map((tech) => (
                   <span 
                     key={tech} 
-                    className="px-3 py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium"
+                    className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
                   >
                     {tech}
                   </span>
@@ -148,13 +162,13 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             </div>
             
             {/* Database */}
-            <div className="mb-6">
-              <h3 className="text-xl font-medium text-gray-700 mb-3">Database</h3>
-              <div className="flex flex-wrap gap-3">
+            <div className="mb-3 md:mb-4 ml-2">
+              <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2">Database</h3>
+              <div className="flex flex-wrap gap-1 md:gap-2">
                 {project.techStack.Database.map((tech) => (
                   <span 
                     key={tech} 
-                    className="px-3 py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium"
+                    className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
                   >
                     {tech}
                   </span>
@@ -163,13 +177,13 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             </div>
             
             {/* DevOps */}
-            <div className="mb-6">
-              <h3 className="text-xl font-medium text-gray-700 mb-3">DevOps</h3>
-              <div className="flex flex-wrap gap-3">
+            <div className="mb-3 md:mb-4 ml-2">
+              <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2">DevOps</h3>
+              <div className="flex flex-wrap gap-1 md:gap-2">
                 {project.techStack.DevOps.map((tech) => (
                   <span 
                     key={tech} 
-                    className="px-3 py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium"
+                    className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
                   >
                     {tech}
                   </span>
@@ -179,12 +193,12 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           </div>
 
           <div>
-            <h2 className="text-3xl font-semibold text-gray-900 mb-5">Key Features</h2>
-            <div className="space-y-5">
+            <h2 className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-3 md:mb-5 pt-1 md:pt-2 ml-2 uppercase tracking-widest">KEY FEATURES</h2>
+            <div className="space-y-3 md:space-y-5">
               {project.features.map((feature) => (
-                <div key={feature.title} className="p-5 bg-white rounded-lg shadow-sm border border-gray-100">
-                  <h3 className="text-xl font-medium mb-2 text-gray-900">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                <div key={feature.title} className="p-3 md:p-5 bg-white rounded-lg shadow-sm border border-gray-100">
+                  <h3 className="text-base md:text-xl font-medium mb-1 md:mb-2 text-gray-900">{feature.title}</h3>
+                  <p className="text-sm md:text-base text-gray-600">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -193,13 +207,13 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Technical Implementation */}
         {project.technicalImplementation && (
-          <section className="space-y-6">
-            <h2 className="text-3xl font-semibold text-gray-900">Technical Implementation</h2>
+          <section className="space-y-3 md:space-y-6">
+            <h2 className="text-xl md:text-2xl font-heading font-bold text-gray-900 pt-2 md:pt-4 ml-2 uppercase tracking-widest">TECHNICAL IMPLEMENTATION</h2>
             
             {/* Architecture Overview Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-2xl font-medium text-gray-900 mb-4">System Architecture</h3>
-              <div className="space-y-4 text-lg leading-relaxed text-gray-700">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
+              <h3 className="text-lg md:text-2xl font-medium text-gray-900 mb-3 md:mb-6">System Architecture</h3>
+              <div className="space-y-2 md:space-y-4 text-sm md:text-lg leading-relaxed text-gray-700">
                 {project.technicalImplementation.systemArchitecture.map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
@@ -208,20 +222,20 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
             {/* Algorithm Card - Only display if project has algorithm data */}
             {project.technicalImplementation.algorithm && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-2xl font-medium text-gray-900 mb-4">Route Calculation Algorithm</h3>
-                <div className="space-y-4 text-lg leading-relaxed text-gray-700">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
+                <h3 className="text-lg md:text-2xl font-bold text-gray-900 mb-2 md:mb-4">Route Calculation Algorithm</h3>
+                <div className="space-y-2 md:space-y-4 text-sm md:text-lg leading-relaxed text-gray-700">
                   <p className="font-medium text-gray-900">
                     {project.technicalImplementation.algorithm.description}
                   </p>
                   
-                  <div className="space-y-3 pl-4">
+                  <div className="space-y-4 md:space-y-5">
                     {project.technicalImplementation.algorithm.steps.map((step, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-semibold">
+                      <div key={index} className="flex items-start space-x-3 md:space-x-4">
+                        <span className="flex-shrink-0 w-6 h-6 md:w-7 md:h-7 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium text-xs md:text-sm mt-8 md:mt-2">
                           {index + 1}
                         </span>
-                        <p>{step}</p>
+                        <p className="text-sm md:text-base leading-relaxed">{step}</p>
                       </div>
                     ))}
                   </div>

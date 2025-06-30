@@ -7,29 +7,24 @@ export default function Home() {
   const projects = getAllProjects();
 
   return (
-    <div className="max-w-[95%] mx-auto px-4 py-4 space-y-2">
-      <h1 className="px3 py-1.5 text-3xl font-semibold text-gray-900 ">
-        Welcome to My Digital Space
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <section className="h-[750px] border rounded-lg bg-white shadow-sm">
-          <div className="h-full flex flex-col">
-            <h2 className="text-2xl font-semibold px-6 py-4 border-b">Pinned Project</h2>
-            <div className="flex-1 p-4">
+    <div className="w-full px-2 md:px-4 py-1 md:py-3">
+      <div className="space-y-2 md:space-y-0 md:grid md:grid-cols-2 md:gap-6 md:items-stretch">
+        <section className="w-full border-0 md:border md:border-gray-200 rounded-none md:rounded-lg bg-white/60 md:bg-white shadow-none md:shadow-sm">
+          <div className="flex flex-col h-full">
+            <h2 className="text-base md:text-xl font-semibold px-2 md:px-4 py-2 md:py-3 border-b-0 md:border-b md:border-gray-100">Pinned Project</h2>
+            <div className="flex-1 p-2 md:p-3">
               {projects.length > 0 ? (
-                <div className="h-full flex items-stretch">
-                  <ProjectPreviewCard project={projects[0]} />
-                </div>
+                <ProjectPreviewCard project={projects[0]} />
               ) : (
-                <p className="text-gray-500">No projects available</p>
+                <p className="text-gray-500 p-3 md:p-4">No projects available</p>
               )}
             </div>
           </div>
         </section>
-        <section className="h-[750px] border rounded-lg bg-white shadow-sm">
-          <div className="h-full flex flex-col">
-            <h2 className="text-2xl font-semibold px-6 py-4 border-b">Work Experience Overview</h2>
-            <div className="flex-1 p-4 overflow-y-auto">
+        <section className="w-full border-0 md:border md:border-gray-200 rounded-none md:rounded-lg bg-white/60 md:bg-white shadow-none md:shadow-sm">
+          <div className="flex flex-col h-full">
+            <h2 className="text-base md:text-xl font-semibold px-2 md:px-4 py-2 md:py-3 border-b-0 md:border-b md:border-gray-100">Work Experience Overview</h2>
+            <div className="p-3 md:p-4 flex-1">
               <ResumeSummary />
             </div>
           </div>

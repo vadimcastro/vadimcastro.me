@@ -11,10 +11,10 @@ interface DashboardHeaderProps {
     isRefreshing
   }: DashboardHeaderProps) => (
     <div className="flex justify-between items-center">
-      <h1 className="text-3xl font-semibold text-gray-900">
+      <h1 className="text-3xl font-semibold text-gray-900 hidden lg:block">
         Welcome to Your Dashboard
       </h1>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 hidden lg:flex">
         <span className="text-sm text-gray-500">
           Last updated {lastUpdated}
         </span>

@@ -18,17 +18,19 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white/80 backdrop-blur-sm shadow-sm">
-      <div className="max-w-[95%] mx-auto px-4">
-        <div className="flex justify-between h-12 items-center">
-          <Link href="/" className="font-bold text-xl flex items-center">
-            <span>Vadim Castro</span>
-          </Link>
+    <nav className="bg-white/60 md:bg-white/80 backdrop-blur-sm shadow-none md:shadow-sm border-b border-gray-50 md:border-gray-200">
+      <div className="w-full px-2 md:px-4">
+        <div className="flex justify-between h-14 sm:h-12 items-center">
           <div className="flex items-center">
-            <Link href="/resume" className="hover:text-gray-600 transition-colors duration-200 px-6">
+            <Link href="/" className="font-bold text-lg sm:text-xl ml-2 md:ml-4">
+              Vadim Castro
+            </Link>
+          </div>
+          <div className="flex items-center">
+            <Link href="/resume" className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base">
               Resume
             </Link>
-            <Link href="/projects" className="hover:text-gray-600 transition-colors duration-200 px-6">
+            <Link href="/projects" className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base">
               Projects
             </Link>
             {user ? (
@@ -38,7 +40,7 @@ export default function Navbar() {
                 <button
                   ref={profileButtonRef}
                   onClick={toggleDropdown}
-                  className="flex items-center hover:opacity-80 transition-opacity duration-200 pl-6"
+                  className="flex items-center hover:opacity-80 transition-opacity duration-200 pl-2 sm:pl-4 md:pl-6"
                 >
                   <div className="relative w-8 h-8 rounded-full overflow-hidden">
                     <Image

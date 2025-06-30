@@ -16,6 +16,11 @@ services:
     build:
       dockerfile: docker/Dockerfile
       context: ..
+      args:
+        GIT_BRANCH: ${GIT_BRANCH:-unknown}
+        GIT_COMMIT_HASH: ${GIT_COMMIT_HASH:-unknown}
+        GIT_COMMIT_MESSAGE: ${GIT_COMMIT_MESSAGE:-unknown}
+        GIT_COMMIT_DATE: ${GIT_COMMIT_DATE:-unknown}
     command: >
       sh -c '
         echo "Running migrations..." &&

@@ -3,10 +3,22 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Git information build args
+ARG GIT_BRANCH=unknown
+ARG GIT_COMMIT_HASH=unknown
+ARG GIT_COMMIT_MESSAGE=unknown
+ARG GIT_COMMIT_DATE=unknown
+
 # Set Python path
 ENV PYTHONPATH=/app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+
+# Set git information as environment variables
+ENV GIT_BRANCH=${GIT_BRANCH}
+ENV GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
+ENV GIT_COMMIT_MESSAGE=${GIT_COMMIT_MESSAGE}
+ENV GIT_COMMIT_DATE=${GIT_COMMIT_DATE}
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
