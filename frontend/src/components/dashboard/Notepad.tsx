@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useProtectedApi } from '../../lib/api/protected';
-import { Save, Loader2, Plus, FileText, Trash2, Maximize2, Minimize2, Edit3, ChevronDown, ChevronUp } from 'lucide-react';
+import { Save, Loader2, Plus, PlusCircle, FileText, Trash2, Maximize2, Minimize2, Edit3, ChevronDown, ChevronUp, Layers, BookOpen, Settings } from 'lucide-react';
 
 interface Note {
   id: number;
@@ -29,6 +29,7 @@ export const Notepad = () => {
   const titleTextareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileActionsRef = useRef<HTMLDivElement>(null);
+  const notepadSectionRef = useRef<HTMLElement>(null);
   const api = useProtectedApi();
 
   useEffect(() => {
@@ -241,7 +242,7 @@ export const Notepad = () => {
         <div 
           style={{ 
             position: 'fixed',
-            top: '12vh',
+            top: '8vh',
             right: '4vw',
             transform: 'translateZ(0)', // Force hardware acceleration
             zIndex: 99999999,
@@ -252,41 +253,99 @@ export const Notepad = () => {
             willChange: 'transform' // Optimize for animations
           }}
         >
-          {/* Save button */}
+          {/* Exit Focus mode button - moved to top as most used */}
           <button
             onTouchStart={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('Save touched');
-              saveNote();
+              console.log('Exit touched');
+              setIsMaximized(false);
               setShowMobileActions(false);
+              // Focus and scroll to notepad section after exiting
+              setTimeout(() => {
+                // First scroll to the notepad section
+                notepadSectionRef.current?.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start' 
+                });
+                // Then focus on the content textarea
+                setTimeout(() => {
+                  contentTextareaRef.current?.focus();
+                }, 100);
+              }, 300);
             }}
             onMouseDown={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('Save clicked');
-              saveNote();
+              console.log('Exit clicked');
+              setIsMaximized(false);
               setShowMobileActions(false);
+              // Focus and scroll to notepad section after exiting
+              setTimeout(() => {
+                // First scroll to the notepad section
+                notepadSectionRef.current?.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start' 
+                });
+                // Then focus on the content textarea
+                setTimeout(() => {
+                  contentTextareaRef.current?.focus();
+                }, 100);
+              }, 300);
             }}
-            disabled={saving || (!content.trim() && title === 'New Note')}
             style={{
-              width: '50px',
-              height: '50px',
+              width: '34px',
+              height: '34px',
               borderRadius: '50%',
-              backgroundColor: saving ? '#9CA3AF' : '#2563EB',
-              color: 'white',
+              backgroundColor: '#D2B48C',
+              color: '#8B4513',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               pointerEvents: 'auto',
               touchAction: 'manipulation',
-              opacity: (saving || (!content.trim() && title === 'New Note')) ? 0.5 : 1,
               cursor: 'pointer'
             }}
           >
-            💾
+            <Minimize2 size={14} />
           </button>
+          
+          {/* Notes selector button */}
+          {notes.length > 0 && (
+            <button
+              onTouchStart={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Notes touched');
+                setShowNoteSelector(true);
+                setShowMobileActions(false);
+              }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Notes clicked');
+                setShowNoteSelector(true);
+                setShowMobileActions(false);
+              }}
+              style={{
+                width: '34px',
+                height: '34px',
+                borderRadius: '50%',
+                backgroundColor: '#E6D3B7',
+                color: '#8B4513',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                pointerEvents: 'auto',
+                touchAction: 'manipulation',
+                cursor: 'pointer'
+              }}
+            >
+              <BookOpen size={14} />
+            </button>
+          )}
           
           {/* New Note button */}
           <button
@@ -305,11 +364,11 @@ export const Notepad = () => {
               setShowMobileActions(false);
             }}
             style={{
-              width: '50px',
-              height: '50px',
+              width: '34px',
+              height: '34px',
               borderRadius: '50%',
-              backgroundColor: '#16A34A',
-              color: 'white',
+              backgroundColor: '#DDD0B4',
+              color: '#8B4513',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
@@ -319,41 +378,7 @@ export const Notepad = () => {
               cursor: 'pointer'
             }}
           >
-            ➕
-          </button>
-          
-          {/* Exit Focus mode button */}
-          <button
-            onTouchStart={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log('Exit touched');
-              setIsMaximized(false);
-              setShowMobileActions(false);
-            }}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log('Exit clicked');
-              setIsMaximized(false);
-              setShowMobileActions(false);
-            }}
-            style={{
-              width: '50px',
-              height: '50px',
-              borderRadius: '50%',
-              backgroundColor: '#D97706',
-              color: 'white',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              pointerEvents: 'auto',
-              touchAction: 'manipulation',
-              cursor: 'pointer'
-            }}
-          >
-            ❌
+            <Plus size={14} />
           </button>
           
           {/* Delete button - only show when note has content */}
@@ -378,11 +403,11 @@ export const Notepad = () => {
                 setShowMobileActions(false);
               }}
               style={{
-                width: '50px',
-                height: '50px',
+                width: '34px',
+                height: '34px',
                 borderRadius: '50%',
-                backgroundColor: '#DC2626',
-                color: 'white',
+                backgroundColor: '#FEF7F7',
+                color: '#DC2626',
                 border: 'none',
                 display: 'flex',
                 alignItems: 'center',
@@ -392,49 +417,53 @@ export const Notepad = () => {
                 cursor: 'pointer'
               }}
             >
-              🗑️
+              <Trash2 size={14} />
             </button>
           )}
           
-          {/* Notes selector - only show if notes exist */}
-          {notes.length > 0 && (
-            <button
-              onTouchStart={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Notes touched');
-                setShowNoteSelector(true);
-                setShowMobileActions(false);
-              }}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Notes clicked');
-                setShowNoteSelector(true);
-                setShowMobileActions(false);
-              }}
-              style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                backgroundColor: '#4B5563',
-                color: 'white',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                pointerEvents: 'auto',
-                touchAction: 'manipulation',
-                cursor: 'pointer'
-              }}
-            >
-              📄
-            </button>
-          )}
+          {/* Save button - moved down due to auto-save making it less critical */}
+          <button
+            onTouchStart={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Save touched');
+              saveNote();
+              setShowMobileActions(false);
+            }}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Save clicked');
+              saveNote();
+              setShowMobileActions(false);
+            }}
+            disabled={saving || (!content.trim() && title === 'New Note')}
+            style={{
+              width: '34px',
+              height: '34px',
+              borderRadius: '50%',
+              backgroundColor: saving ? '#F3F4F6' : '#D2B48C',
+              color: saving ? '#9CA3AF' : '#8B4513',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pointerEvents: 'auto',
+              touchAction: 'manipulation',
+              opacity: (saving || (!content.trim() && title === 'New Note')) ? 0.5 : 1,
+              cursor: 'pointer'
+            }}
+          >
+            {saving ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Save size={14} />
+            )}
+          </button>
         </div>
       )}
 
-      <section className={`${isMaximized ? `fixed inset-0 ${showNoteSelector ? 'z-40' : 'z-50'} h-screen w-screen bg-gradient-to-br from-amber-50 via-orange-25 to-yellow-50 shadow-2xl` : 'h-[600px] md:h-[450px] max-w-full border rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300'} overflow-hidden`} style={isMaximized ? {width: '100vw', height: '100vh', left: 0, top: 0, margin: 0, padding: 0} : {}}>
+      <section ref={notepadSectionRef} className={`${isMaximized ? `fixed inset-0 ${showNoteSelector ? 'z-40' : 'z-50'} h-screen w-screen bg-gradient-to-br from-amber-50 via-orange-25 to-yellow-50 shadow-2xl` : 'h-[600px] md:h-[450px] max-w-full border rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300'} overflow-hidden`} style={isMaximized ? {width: '100vw', height: '100vh', left: 0, top: 0, margin: 0, padding: 0} : {}}>
       <div className="h-full flex flex-col lg:flex-row min-w-0">
         {/* Notes List Sidebar - Hidden when maximized, stacked on mobile */}
         {!isMaximized && (
@@ -497,9 +526,9 @@ export const Notepad = () => {
 
         {/* Note Editor */}
         <div className={`flex-1 flex flex-col min-w-0 ${isMaximized ? 'bg-transparent' : 'bg-gray-50'}`}>
-          <div className={`px-4 lg:px-6 py-3 lg:py-3 border-b min-w-0 ${isMaximized ? 'border-amber-200/60 bg-amber-100/50 backdrop-blur-sm' : 'border-gray-200 bg-gray-50'}`}>
-            <div className="flex items-start gap-3 min-w-0">
-              <FileText className={`w-5 h-5 flex-shrink-0 hidden lg:block ${isMaximized ? 'text-amber-800' : 'text-gray-600'}`} />
+          <div className={`px-4 lg:px-6 py-1.5 lg:py-1.5 border-b min-w-0 ${isMaximized ? 'border-amber-200/60 bg-amber-100/50 backdrop-blur-sm' : 'border-gray-200 bg-gray-50'}`}>
+            <div className="flex items-center gap-2 min-w-0">
+              <FileText className={`w-4 h-4 flex-shrink-0 hidden lg:block ${isMaximized ? 'text-amber-800' : 'text-gray-600'}`} />
               
               {/* Note title editor - flex-1 to take available space */}
               <div className="flex-1 min-w-0">
@@ -519,7 +548,7 @@ export const Notepad = () => {
                     }
                   }}
                   rows={1}
-                  className={`text-lg lg:text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 px-0 w-full font-sans resize-none ${isMaximized ? 'text-amber-900' : 'text-gray-900'} leading-relaxed tracking-wide`}
+                  className={`text-lg lg:text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 px-0 py-0 w-full font-heading resize-none ${isMaximized ? 'text-amber-900' : 'text-gray-900'} leading-tight tracking-wide`}
                   placeholder="New Note"
                   style={{
                     minHeight: '1.5rem',
@@ -534,7 +563,7 @@ export const Notepad = () => {
               </div>
               
               {/* Buttons container - flex-shrink-0 to keep on same row */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-1 flex-shrink-0">
                 {/* Desktop: Show all buttons */}
                 <div className="hidden lg:flex items-center gap-2">
                   {/* Note selector dropdown button */}
@@ -654,10 +683,19 @@ export const Notepad = () => {
                 <div className={`lg:hidden relative ${isMaximized ? 'z-[90]' : 'z-[60]'}`} ref={mobileActionsRef}>
                   <button
                     onClick={() => setShowMobileActions(!showMobileActions)}
-                    className={`px-4 py-3 rounded-full text-white transition-all duration-200 shadow-lg ${isMaximized ? 'bg-amber-600 hover:bg-amber-700 border-2 border-amber-400' : 'bg-gray-600 hover:bg-gray-700'} ${showMobileActions ? 'rotate-45' : ''}`}
-                    title="Actions"
+                    className={`px-2.5 py-2 rounded-md text-gray-600 transition-all duration-300 shadow-md flex items-center justify-center hover:scale-105`}
+                    style={{
+                      backgroundColor: isMaximized ? '#D2B48C' : '#B8D4C7' // sand in max mode, minty silver in normal
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = isMaximized ? '#C19A6B' : '#A5C6B8'; // darker on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = isMaximized ? '#D2B48C' : '#B8D4C7'; // back to base
+                    }}
+                    title="Tools"
                   >
-                    <Plus className="w-5 h-5" />
+                    <Settings className="w-3 h-3" />
                   </button>
                   
                   
@@ -676,14 +714,23 @@ export const Notepad = () => {
                         />
                         {/* Dropdown */}
                         <div 
-                          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-white border border-amber-200 rounded-lg shadow-2xl max-h-64 overflow-y-auto w-[280px]"
+                          className="fixed top-16 left-1/2 transform -translate-x-1/2 bg-white border border-amber-200 rounded-lg shadow-2xl max-h-96 overflow-y-auto w-[300px]"
                           style={{ zIndex: 9999 }}
                         >
                           <div className="p-1">
                             {notes.map((note) => (
                               <button
                                 key={note.id}
-                                onClick={() => {
+                                onTouchStart={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  selectNote(note);
+                                  setShowNoteSelector(false);
+                                  setShowMobileActions(false);
+                                }}
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
                                   selectNote(note);
                                   setShowNoteSelector(false);
                                   setShowMobileActions(false);
@@ -691,6 +738,10 @@ export const Notepad = () => {
                                 className={`w-full text-left px-3 py-2 rounded hover:bg-gray-50 transition-colors text-sm block ${
                                   selectedNote?.id === note.id ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
                                 }`}
+                                style={{
+                                  pointerEvents: 'auto',
+                                  touchAction: 'manipulation'
+                                }}
                               >
                                 <div className="font-medium whitespace-normal break-words leading-tight mb-1">
                                   {getNoteDisplayTitle(note)}
@@ -714,7 +765,16 @@ export const Notepad = () => {
                         {notes.map((note) => (
                           <button
                             key={note.id}
-                            onClick={() => {
+                            onTouchStart={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              selectNote(note);
+                              setShowNoteSelector(false);
+                              setShowMobileActions(false);
+                            }}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
                               selectNote(note);
                               setShowNoteSelector(false);
                               setShowMobileActions(false);
@@ -722,6 +782,10 @@ export const Notepad = () => {
                             className={`w-full text-left px-3 py-2 rounded hover:bg-gray-50 transition-colors text-sm block ${
                               selectedNote?.id === note.id ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
                             }`}
+                            style={{
+                              pointerEvents: 'auto',
+                              touchAction: 'manipulation'
+                            }}
                           >
                             <div className="font-medium whitespace-normal break-words leading-tight mb-1">
                               {getNoteDisplayTitle(note)}
@@ -739,49 +803,22 @@ export const Notepad = () => {
                   
                   {/* Spring action buttons - Normal mode */}
                   {showMobileActions && !isMaximized && (
-                    <div className="absolute top-full right-0 mt-2 flex flex-col gap-2 z-[60]">
-                      {/* Save button */}
-                      <button
-                        onClick={() => {
-                          saveNote();
-                          setShowMobileActions(false);
-                        }}
-                        disabled={saving || (!content.trim() && title === 'New Note')}
-                        className="px-3 py-2 text-white rounded-full transition-all duration-200 transform animate-[slideDown_0.2s_ease-out] disabled:opacity-50 bg-blue-600 hover:bg-blue-700"
-                        style={{ animationDelay: '0ms' }}
-                      >
-                        {saving ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Save className="w-4 h-4" />
-                        )}
-                      </button>
-                      
-                      {/* Focus mode button */}
+                    <div className="absolute top-full right-0 mt-2 flex flex-col gap-2 z-[60]" style={{ padding: '8px', marginRight: '-12px' }}>
+                      {/* Focus mode button - moved to top for consistency */}
                       <button
                         onClick={() => {
                           setIsMaximized(!isMaximized);
                           setShowMobileActions(false);
                         }}
-                        className="px-3 py-2 text-white rounded-full transition-all duration-200 transform animate-[slideDown_0.2s_ease-out] bg-gray-600 hover:bg-gray-700"
-                        style={{ animationDelay: '50ms' }}
+                        className="px-3 py-2 rounded-full transition-all duration-200 transform animate-[slideDown_0.2s_ease-out]"
+                        style={{ 
+                          animationDelay: '0ms',
+                          backgroundColor: '#B8D4C7',
+                          color: '#4A5D54'
+                        }}
                       >
                         <Maximize2 className="w-4 h-4" />
                       </button>
-                      
-                      {/* Delete button - only show when note has content */}
-                      {selectedNote && (content.trim() || title !== 'New Note') && (
-                        <button
-                          onClick={() => {
-                            deleteNote(selectedNote.id);
-                            setShowMobileActions(false);
-                          }}
-                          className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition-all duration-200 transform animate-[slideDown_0.2s_ease-out]"
-                          style={{ animationDelay: '100ms' }}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
                       
                       {/* Notes selector - only show if notes exist */}
                       {notes.length > 0 && (
@@ -790,12 +827,55 @@ export const Notepad = () => {
                             setShowNoteSelector(true);
                             setShowMobileActions(false);
                           }}
-                          className="px-3 py-2 text-white rounded-full transition-all duration-200 transform animate-[slideDown_0.2s_ease-out] bg-gray-600 hover:bg-gray-700"
-                          style={{ animationDelay: '150ms' }}
+                          className="px-3 py-2 rounded-full transition-all duration-200 transform animate-[slideDown_0.2s_ease-out]"
+                          style={{ 
+                            animationDelay: '50ms',
+                            backgroundColor: '#B8D4C7',
+                            color: '#4A5D54'
+                          }}
                         >
-                          <FileText className="w-4 h-4" />
+                          <BookOpen className="w-4 h-4" />
                         </button>
                       )}
+                      
+                      {/* Delete button - only show when note has content */}
+                      {selectedNote && (content.trim() || title !== 'New Note') && (
+                        <button
+                          onClick={() => {
+                            deleteNote(selectedNote.id);
+                            setShowMobileActions(false);
+                          }}
+                          className="px-3 py-2 rounded-full transition-all duration-200 transform animate-[slideDown_0.2s_ease-out]"
+                          style={{ 
+                            animationDelay: '100ms',
+                            backgroundColor: '#B8D4C7',
+                            color: '#8B3A3A'
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                      
+                      {/* Save button */}
+                      <button
+                        onClick={() => {
+                          saveNote();
+                          setShowMobileActions(false);
+                        }}
+                        disabled={saving || (!content.trim() && title === 'New Note')}
+                        className="px-3 py-2 rounded-full transition-all duration-200 transform animate-[slideDown_0.2s_ease-out] disabled:opacity-50"
+                        style={{ 
+                          animationDelay: '150ms',
+                          backgroundColor: saving ? '#F3F4F6' : '#B8D4C7',
+                          color: saving ? '#9CA3AF' : '#4A5D54'
+                        }}
+                      >
+                        {saving ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Save className="w-4 h-4" />
+                        )}
+                      </button>
                     </div>
                   )}
 
