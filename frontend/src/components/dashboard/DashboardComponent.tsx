@@ -4,7 +4,7 @@ import { useProtectedApi } from '../../lib/api/protected';
 import { MetricCard } from './MetricCard';
 import { DashboardHeader } from './DashboardHeader';
 import { CryptoPrice } from './CryptoPrice';
-import { NotepadRefactored as Notepad } from './NotepadRefactored';
+import { NotepadWithBothMenus as Notepad } from './NotepadWithBothMenus';
 
 interface DashboardMetrics {
   visitors: {
