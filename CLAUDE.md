@@ -12,6 +12,13 @@ make dev
 ```
 
 ### Production Deployment
+
+#### Quick One-Command Deployment
+```bash
+make droplet-deploy   # One-command: SSH + pull + deploy + status
+```
+
+#### Manual Step-by-Step Deployment  
 ```bash
 make droplet          # Connect to droplet
 make pull            # Pull latest code  
@@ -81,18 +88,40 @@ The development command will:
 - ✅ **UI/UX Polish** - Professional footer, modal fixes, and layout improvements
 
 ### Production Commands
+
+#### Automated Deployment (Recommended)
 ```bash
-# Quick deployment workflow
+make droplet-deploy   # One-command deployment: SSH + pull + build + deploy
+```
+
+#### Manual Deployment Workflow
+```bash
 make droplet          # SSH to droplet
 make pull            # Get latest code
 make deploy          # Deploy everything
+```
 
+#### Database Operations
+```bash
 # First-time setup
 make setup-prod-env  # Create production environment
 
-# Database operations  
+# Manual database operations (if needed)
 docker exec docker-api-1 bash -c "cd /app && alembic upgrade head"
 docker exec docker-api-1 python3 /app/scripts/init_db.py
+```
+
+#### Deployment Status & Monitoring
+```bash
+# Check deployment status
+ssh root@206.81.2.168 'cd /root/vadimcastro.me && docker-compose -f docker-compose.prod.yml ps'
+
+# View real-time logs
+ssh root@206.81.2.168 'cd /root/vadimcastro.me && docker-compose -f docker-compose.prod.yml logs -f'
+
+# Quick health check
+curl http://206.81.2.168:3000  # Frontend
+curl http://206.81.2.168:8000  # API
 ```
 
 ### Deployment Architecture
@@ -191,9 +220,62 @@ docker exec docker-api-1 python3 /app/scripts/init_db.py
 - **Authentication**: Streamlined local development setup with comprehensive testing
 - **Visual Consistency**: Unified design language across all dashboard components
 
+## 🚀 Quick Deployment Reference
+
+### One-Command Deployment (Recommended)
+```bash
+make droplet-deploy                    # Deploy current/configured branch
+make droplet-deploy branch=main        # Deploy specific branch
+```
+**What it does**: SSH to droplet → pull latest code → rebuild containers → deploy → show status
+
+### Branch Management & Deployment
+```bash
+# Set default deployment branch (persistent)
+make set-branch branch=feature/mobile-friendly
+
+# Check current branch configuration
+make show-branch
+
+# Deploy with different branch options
+make droplet-deploy                    # Uses DEPLOY_BRANCH_ENV or current branch
+make droplet-deploy branch=main        # Deploy specific branch
+```
+
+### Development Workflow
+```bash
+# 1. Make changes locally
+git add . && git commit -m "your changes"
+git push origin feature/mobile-friendly
+
+# 2. Deploy to production  
+make droplet-deploy
+
+# 3. Verify deployment
+curl http://206.81.2.168:3000  # Frontend
+curl http://206.81.2.168:8000  # API
+```
+
+### Troubleshooting Deployment
+```bash
+# View real-time logs
+ssh root@206.81.2.168 'cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml logs -f'
+
+# Check container status
+ssh root@206.81.2.168 'cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml ps'
+
+# Force rebuild if needed
+make droplet-force-rebuild
+```
+
+### Branch Management
+- **Current deployment branch**: `feature/mobile-friendly`
+- **Production URL**: http://206.81.2.168:3000
+- **API URL**: http://206.81.2.168:8000
+
 ### Next Session Priorities:
-1. **Production Deployment** - Deploy revolutionary mobile dashboard to production droplet
-2. **iPhone Testing** - Validate mobile experience on actual device via droplet
+1. **Notepad Upgrades** - Enhanced features and functionality
+2. **Production Testing** - Validate all features on live droplet
 3. **Performance Monitoring** - Track real-world system metrics performance
-4. **User Experience** - Gather feedback on mobile interface improvements
-5. **Feature Enhancement** - Consider additional system monitoring capabilities
+4. **Mobile Testing** - iPhone/Android validation via droplet
+5. **Feature Enhancement** - Additional dashboard capabilities

@@ -55,7 +55,7 @@ const projectsList: Project[] = [
       }
     ],
     imageUrl: "/images/scenic_pic.png",
-    githubUrl: "https://github.com/vadimcastro/scenic-navigator",
+    githubUrl: "https://github.com/vadimcastro/tour-guide",
     technicalImplementation: {
       systemArchitecture: [
         "Scenic's architecture is built around efficient route calculation and POI integration.",

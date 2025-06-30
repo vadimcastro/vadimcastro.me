@@ -83,7 +83,7 @@ export const CryptoPrice = () => {
   return (
     <section className="border rounded-lg bg-white shadow-sm">
       <div className="px-3 md:px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
-        <Wallet className="w-5 h-5 text-gray-600" />
+        <Wallet className="w-5 h-5 text-gray-600 mr-2" />
         
         <div className="flex items-center gap-3 md:gap-6 overflow-x-auto">
           {loading ? (

@@ -337,43 +337,15 @@ def get_deployment_info() -> Dict:
     try:
         deployment_info = {}
         
-        # Get current git branch
-        try:
-            branch_result = subprocess.run(
-                ['git', 'branch', '--show-current'],
-                capture_output=True, text=True, timeout=5, cwd='/app'
-            )
-            if branch_result.returncode == 0:
-                deployment_info["current_branch"] = branch_result.stdout.strip()
-            else:
-                deployment_info["current_branch"] = "unknown"
-        except Exception:
-            deployment_info["current_branch"] = "unknown"
+        # Get git information from environment variables (set during Docker build)
+        deployment_info["current_branch"] = os.getenv("GIT_BRANCH", "unknown")
+        deployment_info["commit_hash"] = os.getenv("GIT_COMMIT_HASH", "unknown")
+        deployment_info["commit_message"] = os.getenv("GIT_COMMIT_MESSAGE", "unknown") 
+        deployment_info["commit_date"] = os.getenv("GIT_COMMIT_DATE", "unknown")
         
-        # Get latest commit info
-        try:
-            commit_result = subprocess.run(
-                ['git', 'log', '-1', '--format=%H|%s|%ci'],
-                capture_output=True, text=True, timeout=5, cwd='/app'
-            )
-            if commit_result.returncode == 0:
-                commit_parts = commit_result.stdout.strip().split('|', 2)
-                if len(commit_parts) == 3:
-                    deployment_info["commit_hash"] = commit_parts[0][:8]  # Short hash
-                    deployment_info["commit_message"] = commit_parts[1]
-                    deployment_info["commit_date"] = commit_parts[2]
-                else:
-                    deployment_info["commit_hash"] = "unknown"
-                    deployment_info["commit_message"] = "unknown"
-                    deployment_info["commit_date"] = "unknown"
-            else:
-                deployment_info["commit_hash"] = "unknown"
-                deployment_info["commit_message"] = "unknown"
-                deployment_info["commit_date"] = "unknown"
-        except Exception:
-            deployment_info["commit_hash"] = "unknown"
-            deployment_info["commit_message"] = "unknown"
-            deployment_info["commit_date"] = "unknown"
+        # Ensure commit_hash is shortened to 8 characters if it's a full hash
+        if deployment_info["commit_hash"] != "unknown" and len(deployment_info["commit_hash"]) > 8:
+            deployment_info["commit_hash"] = deployment_info["commit_hash"][:8]
         
         # Get environment info
         deployment_info["environment"] = os.getenv("ENVIRONMENT", "unknown")
