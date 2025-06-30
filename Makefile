@@ -1,4 +1,4 @@
-.PHONY: dev prod down clean migrate migrate-create logs test format
+.PHONY: dev prod down clean migrate logs format help
 # Development commands
 dev:
 	@echo "Starting development environment..."
@@ -14,76 +14,38 @@ prod-rebuild:
 	@echo "Rebuilding and starting production environment..."
 	docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d
 deploy:
-	@echo "Pulling latest code and deploying..."
+	@echo "🚀 Pulling latest code and deploying..."
 	@if [ -n "$(branch)" ]; then \
-		echo "Using branch: $(branch)"; \
+		echo "📡 Using branch: $(branch)"; \
 		git pull origin $(branch); \
-	elif [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
-		echo "Using branch: $$DEPLOY_BRANCH_ENV"; \
-		git pull origin $$DEPLOY_BRANCH_ENV; \
+		GIT_BRANCH=$(branch) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make down && GIT_BRANCH=$(branch) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make prod; \
 	else \
-		echo "Using branch: $$(git branch --show-current)"; \
+		echo "📡 Using branch: $$(git branch --show-current)"; \
 		git pull origin $$(git branch --show-current); \
+		GIT_BRANCH=$$(git branch --show-current) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make down && GIT_BRANCH=$$(git branch --show-current) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make prod; \
 	fi
-	make down && make prod
 deploy-rebuild:
-	@echo "Pulling latest code and rebuilding..."
+	@echo "🚀 Pulling latest code and rebuilding..."
 	@if [ -n "$(branch)" ]; then \
-		echo "Using branch: $(branch)"; \
+		echo "📡 Using branch: $(branch)"; \
 		git pull origin $(branch); \
-	elif [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
-		echo "Using branch: $$DEPLOY_BRANCH_ENV"; \
-		git pull origin $$DEPLOY_BRANCH_ENV; \
+		GIT_BRANCH=$(branch) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make prod-rebuild; \
 	else \
-		echo "Using branch: $$(git branch --show-current)"; \
+		echo "📡 Using branch: $$(git branch --show-current)"; \
 		git pull origin $$(git branch --show-current); \
+		GIT_BRANCH=$$(git branch --show-current) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make prod-rebuild; \
 	fi
-	make prod-rebuild
 # Git commands
 pull:
-	@echo "Pulling latest code..."
+	@echo "🔄 Pulling latest code..."
 	@if [ -n "$(branch)" ]; then \
-		echo "Using branch: $(branch)"; \
+		echo "📡 Using branch: $(branch)"; \
 		git pull origin $(branch); \
-	elif [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
-		echo "Using branch: $$DEPLOY_BRANCH_ENV"; \
-		git pull origin $$DEPLOY_BRANCH_ENV; \
 	else \
-		echo "Using branch: $$(git branch --show-current)"; \
+		echo "📡 Using branch: $$(git branch --show-current)"; \
 		git pull origin $$(git branch --show-current); \
 	fi
-# Branch management (works locally or on droplet)
-set-branch:
-	@if [ -z "$(branch)" ]; then \
-		echo "Error: Please specify a branch. Usage: make set-branch branch=your-branch"; \
-		exit 1; \
-	fi
-	@echo "Setting deployment branch to: $(branch)"
-	@echo "export DEPLOY_BRANCH_ENV=$(branch)" >> ~/.bashrc
-	@. ~/.bashrc
-	@echo "Branch set and activated! Future deployments will use: $(branch)"
 
-show-branch:
-	@echo "Current deployment branch configuration:"
-	@if [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
-		echo "  Environment variable: $$DEPLOY_BRANCH_ENV"; \
-	else \
-		echo "  Environment variable: not set"; \
-	fi
-	@echo "  Current git branch: $$(git branch --show-current)"
-	@if [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
-		echo "  Effective deploy branch: $$DEPLOY_BRANCH_ENV"; \
-	else \
-		echo "  Effective deploy branch: $$(git branch --show-current)"; \
-	fi
-
-deploy-current:
-	@echo "Deploying current branch..."
-	DEPLOY_BRANCH_ENV=$$(git branch --show-current) make deploy
-
-deploy-master:
-	@echo "Deploying master branch..."
-	DEPLOY_BRANCH_ENV=master make deploy
 
 # Droplet management
 droplet:
@@ -92,9 +54,6 @@ droplet:
 droplet-logs:
 	@echo "Viewing API logs on droplet..."
 	ssh root@206.81.2.168 "docker logs docker-api-1 | tail -20"
-droplet-cors-test:
-	@echo "Testing CORS on droplet..."
-	ssh root@206.81.2.168 'curl -v -H "Origin: http://206.81.2.168:3000" -H "Access-Control-Request-Method: GET" -X OPTIONS http://206.81.2.168:8000/health'
 droplet-force-rebuild:
 	@echo "Force rebuilding on droplet..."
 	ssh root@206.81.2.168 "cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml down && docker system prune -f && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d"
@@ -105,24 +64,18 @@ droplet-deploy:
 	@echo "🚀 Starting automated droplet deployment..."
 	@if [ -n "$(branch)" ]; then \
 		echo "📡 Deploying branch: $(branch)"; \
-		ssh root@206.81.2.168 'cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
-	elif [ -n "$$DEPLOY_BRANCH_ENV" ]; then \
-		echo "📡 Deploying branch: $$DEPLOY_BRANCH_ENV"; \
-		ssh root@206.81.2.168 'cd vadimcastro.me && git pull origin $$DEPLOY_BRANCH_ENV && export GIT_BRANCH=$$DEPLOY_BRANCH_ENV && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+		ssh root@206.81.2.168 "cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=\$\$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE=\"\$\$(git log -1 --pretty=%B)\" && export GIT_COMMIT_DATE=\"\$\$(git log -1 --format=%ci)\" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d"; \
 	else \
-		echo "📡 Deploying current branch: $$(git branch --show-current)"; \
-		ssh root@206.81.2.168 "cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE=\"$$(git log -1 --pretty=%B)\" && export GIT_COMMIT_DATE=\"$$(git log -1 --format=%ci)\" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d"; \
+		echo "📡 Deploying branch: $$(git branch --show-current)"; \
+		ssh root@206.81.2.168 "cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=\$\$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE=\"\$\$(git log -1 --pretty=%B)\" && export GIT_COMMIT_DATE=\"\$\$(git log -1 --format=%ci)\" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d"; \
 	fi
 	@echo "✅ Deployment complete!"
 	@echo "🌐 Frontend: http://206.81.2.168:3000"
 	@echo "🔧 API: http://206.81.2.168:8000"
 	@echo "📊 Check logs: ssh root@206.81.2.168 'cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml logs -f'"
-droplet-env-check:
-	@echo "Checking environment file on droplet..."
-	ssh root@206.81.2.168 "cd vadimcastro.me && echo '=== PWD ===' && pwd && echo '=== ENV FILE EXISTS ===' && ls -la .env.production.local && echo '=== ENV FILE CONTENT ===' && head -5 .env.production.local && echo '=== DOCKER COMPOSE PATH ===' && ls -la docker/docker-compose.prod.yml"
-droplet-quick-check:
-	@echo "Quick status check on droplet..."
-	ssh root@206.81.2.168 "cd vadimcastro.me && docker logs docker-api-1 | tail -5 && echo '=== ENV VARS ===' && docker exec docker-api-1 printenv | grep -E '(ENVIRONMENT|POSTGRES_DB|POSTGRES_USER)'"
+droplet-status:
+	@echo "Checking droplet status..."
+	ssh root@206.81.2.168 "cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml ps && docker logs docker-api-1 | tail -5"
 setup-prod-env:
 	@echo "Setting up production environment..."
 	./scripts/setup-production-env.sh
@@ -144,61 +97,39 @@ migrate-create:
 down:
 	@echo "Stopping containers..."
 	docker compose -f docker/docker-compose.prod.yml down
-clean: down
+clean:
 	@echo "Cleaning up development environment..."
-	rm -rf frontend/.next
-	rm -rf frontend/node_modules
 	docker system prune -f
-clean-volumes: clean
-	@echo "Removing volumes..."
-	docker compose down -v
+	rm -rf frontend/.next frontend/node_modules
+clean-all: clean
+	@echo "Removing volumes and rebuilding..."
+	docker compose -f docker/docker-compose.prod.yml down -v
 # Utility commands
 logs:
 	@echo "Showing logs..."
 	docker compose logs -f
-frontend-logs:
-	@echo "Showing frontend logs..."
-	docker compose logs -f frontend
-api-logs:
-	@echo "Showing API logs..."
-	docker compose logs -f api
 format:
 	@echo "Formatting code..."
 	cd frontend && npm run format
 	cd backend && black .
 # Help command
 help:
-	@echo "Available commands:"
-	@echo "  make dev              - Start development environment"
-	@echo "  make dev-debug        - Start development environment with debug logging"
-	@echo "  make prod             - Start production environment"
-	@echo "  make down             - Stop containers"
-	@echo "  make clean            - Clean up development environment"
-	@echo "  make clean-volumes    - Clean up including volumes"
-	@echo "  make migrate          - Run database migrations"
-	@echo "  make migrate-create   - Create new migration (use with name=migration_name)"
-	@echo "  make logs            - Show all container logs"
-	@echo "  make frontend-logs   - Show frontend container logs"
-	@echo "  make api-logs        - Show API container logs"
-	@echo "  make format          - Format code"
+	@echo "🚀 VadimCastro.me Development Commands"
 	@echo ""
-	@echo "Git & Deployment commands:"
-	@echo "  make pull            - Pull latest code (respects DEPLOY_BRANCH_ENV)"
-	@echo "  make deploy          - Pull and deploy (respects DEPLOY_BRANCH_ENV)"
-	@echo "  make deploy-rebuild  - Pull and rebuild (respects DEPLOY_BRANCH_ENV)"
+	@echo "📱 Development:"
+	@echo "  make dev                    - Start development environment"
+	@echo "  make setup-local-auth       - Configure local authentication"
+	@echo "  make logs                   - Show container logs"
+	@echo "  make clean                  - Clean up environment"
 	@echo ""
-	@echo "Branch Management:"
-	@echo "  make set-branch branch=NAME                - Set default deployment branch"
-	@echo "  make show-branch                           - Show current branch configuration"
+	@echo "🌐 Deployment:"
+	@echo "  make droplet-deploy         - Deploy current branch to production"
+	@echo "  make droplet-deploy branch=X- Deploy specific branch to production"
+	@echo "  make droplet-status         - Check production status"
 	@echo ""
-	@echo "Quick Deployment:"
-	@echo "  make deploy-current                        - Deploy current branch"
-	@echo "  make deploy-master                         - Deploy master branch"
+	@echo "🗄️ Database:"
+	@echo "  make migrate                - Run migrations"
+	@echo "  make migrate-create name=X  - Create new migration"
 	@echo ""
-	@echo "Droplet commands:"
-	@echo "  make droplet         - SSH into droplet"
-	@echo "  make droplet-deploy  - One-command deployment: SSH + pull + build + deploy (respects DEPLOY_BRANCH_ENV)"
-	@echo "  make droplet-logs    - View API logs on droplet"
-	@echo "  make droplet-cors-test - Test CORS on droplet"
-	@echo "  make droplet-force-rebuild - Force rebuild on droplet"
-	@echo "  make droplet-debug   - Run all debug commands on droplet"
+	@echo "💻 Droplet Access:"
+	@echo "  make droplet                - SSH into production server"
