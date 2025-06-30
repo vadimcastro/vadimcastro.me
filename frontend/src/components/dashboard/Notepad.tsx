@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useProtectedApi } from '../../lib/api/protected';
-import { Save, Loader2, Plus, FileText, Trash2, Maximize2, Minimize2, Edit3 } from 'lucide-react';
+import { Save, Loader2, Plus, FileText, Trash2, Maximize2, Minimize2, Edit3, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Note {
   id: number;
@@ -22,6 +22,7 @@ export const Notepad = () => {
   const [loading, setLoading] = useState(true);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isMaximized, setIsMaximized] = useState(false);
+  const [showNoteSelector, setShowNoteSelector] = useState(false);
   const api = useProtectedApi();
 
   useEffect(() => {
@@ -166,12 +167,12 @@ export const Notepad = () => {
   }
 
   return (
-    <section className={`${isMaximized ? 'fixed inset-0 z-50 h-screen' : 'h-[600px] md:h-[450px] max-w-full'} border rounded-lg bg-white shadow-sm overflow-hidden`}>
+    <section className={`${isMaximized ? 'fixed inset-0 z-50 h-screen bg-gradient-to-br from-amber-50 via-orange-25 to-yellow-50 shadow-2xl' : 'h-[600px] md:h-[450px] max-w-full border rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300'} overflow-hidden`}>
       <div className="h-full flex flex-col lg:flex-row min-w-0">
         {/* Notes List Sidebar - Hidden when maximized, stacked on mobile */}
         {!isMaximized && (
           <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col bg-gray-50 max-h-40 lg:max-h-none">
-            <div className="px-4 lg:px-6 py-3 lg:py-4 border-b border-gray-200 flex items-center justify-between">
+            <div className="pl-4 pr-2 lg:px-6 py-3 lg:py-4 border-b border-gray-200 flex items-center justify-between">
               <Edit3 className="w-5 h-5 text-gray-700" />
               <button
                 onClick={createNewNote}
@@ -228,8 +229,8 @@ export const Notepad = () => {
         )}
 
         {/* Note Editor */}
-        <div className={`flex-1 flex flex-col min-w-0 ${isMaximized ? 'bg-amber-50' : 'bg-gray-50'}`}>
-          <div className={`px-3 lg:px-4 py-2 lg:py-3 border-b flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-3 min-w-0 ${isMaximized ? 'border-amber-200 bg-amber-100' : 'border-gray-200 bg-gray-50'}`}>
+        <div className={`flex-1 flex flex-col min-w-0 ${isMaximized ? 'bg-transparent' : 'bg-gray-50'}`}>
+          <div className={`px-3 lg:px-6 py-1.5 lg:py-3 border-b flex flex-col lg:flex-row lg:items-center justify-between gap-1.5 lg:gap-3 min-w-0 ${isMaximized ? 'border-amber-200/60 bg-amber-100/50 backdrop-blur-sm' : 'border-gray-200 bg-gray-50'}`}>
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <FileText className={`w-5 h-5 flex-shrink-0 hidden lg:block ${isMaximized ? 'text-amber-800' : 'text-gray-600'}`} />
               
@@ -239,34 +240,57 @@ export const Notepad = () => {
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className={`text-lg lg:text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 px-0 w-full font-heading ${isMaximized ? 'text-amber-900' : 'text-gray-900'} ${title === 'New Note' ? 'lg:block hidden' : ''}`}
-                  placeholder="Untitled Note"
+                  className={`text-lg lg:text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 px-0 w-full font-heading ${isMaximized ? 'text-amber-900' : 'text-gray-900'}`}
+                  placeholder="New Note"
                 />
               </div>
             </div>
             
-            <div className="flex items-center gap-2 flex-shrink-0 lg:justify-end w-full lg:w-auto">
-              {/* Quick note selector for mobile */}
-              <select
-                value={selectedNote?.id || ''}
-                onChange={(e) => {
-                  const noteId = parseInt(e.target.value);
-                  const note = notes.find(n => n.id === noteId);
-                  if (note) {
-                    selectNote(note);
-                  } else {
-                    createNewNote();
-                  }
-                }}
-                className={`lg:hidden text-sm border rounded px-2 py-1 focus:outline-none focus:ring-2 min-w-[110px] ${isMaximized ? 'border-amber-300 bg-amber-50 text-amber-800 focus:ring-amber-500' : 'border-gray-300 bg-white text-gray-800 focus:ring-blue-500'}`}
-              >
-                <option value="">New Note</option>
-                {notes.map((note) => (
-                  <option key={note.id} value={note.id}>
-                    {getNoteDisplayTitle(note)}
-                  </option>
-                ))}
-              </select>
+            <div className="flex items-center gap-2 flex-shrink-0 lg:justify-end w-full lg:w-auto relative">
+              {/* Note selector dropdown button */}
+              {notes.length > 0 && (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowNoteSelector(!showNoteSelector)}
+                    className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center justify-center gap-1 ${isMaximized ? 'bg-purple-600 hover:bg-purple-700' : 'bg-purple-600 hover:bg-purple-700'}`}
+                    title="Select existing note"
+                  >
+                    {showNoteSelector ? (
+                      <ChevronUp className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                    <span className="hidden lg:inline">Notes</span>
+                  </button>
+                  
+                  {/* Hidden dropdown for saved notes */}
+                  {showNoteSelector && (
+                    <div className={`absolute top-full left-0 mt-1 bg-white border rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto min-w-[200px] ${isMaximized ? 'border-amber-200' : 'border-gray-200'}`}>
+                      <div className="p-1">
+                        {notes.map((note) => (
+                          <button
+                            key={note.id}
+                            onClick={() => {
+                              selectNote(note);
+                              setShowNoteSelector(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded hover:bg-gray-50 transition-colors text-sm ${
+                              selectedNote?.id === note.id ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                            }`}
+                          >
+                            <div className="font-medium truncate">
+                              {getNoteDisplayTitle(note)}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {formatDate(note.created_at)}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               
               <div className="flex items-center gap-2 ml-auto lg:ml-0">
                 {/* Auto-saved timer */}
@@ -339,16 +363,16 @@ export const Notepad = () => {
             </div>
           </div>
           
-          <div className={`flex-1 ${isMaximized ? 'p-4 lg:p-8' : 'p-2 lg:p-3'} ${isMaximized ? 'bg-amber-50' : 'bg-gray-100'}`}>
+          <div className={`flex-1 ${isMaximized ? 'mx-2 lg:mx-12 my-2 lg:my-8 rounded-xl shadow-2xl border border-amber-200/30 bg-white/95 backdrop-blur-md' : 'shadow-inner border border-gray-200/50'}`}>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className={`w-full h-full p-3 lg:p-4 rounded-lg resize-none focus:outline-none focus:ring-2 text-base leading-relaxed ${
+              className={`w-full h-full resize-none focus:outline-none focus:ring-0 border-0 text-base leading-relaxed ${
                 isMaximized 
-                  ? 'border border-amber-200 bg-amber-50 text-amber-950 placeholder-amber-400 focus:ring-amber-500 focus:border-amber-500 lg:text-lg shadow-inner' 
-                  : 'border border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 focus:bg-white'
+                  ? 'p-4 lg:p-12 bg-transparent text-amber-950 placeholder-amber-500/60 lg:text-xl font-light tracking-wide' 
+                  : 'p-3 lg:p-4 bg-white text-gray-900 placeholder-gray-500'
               }`}
-              placeholder="Start writing your thoughts..."
+              placeholder={isMaximized ? "Let your thoughts flow..." : "Start writing your thoughts..."}
             />
           </div>
         </div>

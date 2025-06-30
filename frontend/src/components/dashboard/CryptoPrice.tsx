@@ -58,22 +58,22 @@ export const CryptoPrice = () => {
   }, []);
 
   const renderCrypto = (crypto: CryptoData) => (
-    <div key={crypto.symbol} className="flex items-center space-x-2 md:space-x-3">
-      <div className="flex items-center space-x-1 md:space-x-2">
-        <span className="text-xs md:text-sm font-semibold text-gray-700">{crypto.symbol}</span>
-        <span className="text-sm md:text-lg font-bold text-gray-900">
+    <div key={crypto.symbol} className="flex items-center space-x-1 md:space-x-2">
+      <div className="flex items-center space-x-1">
+        <span className="text-xs font-semibold text-gray-700">{crypto.symbol}</span>
+        <span className="text-xs md:text-sm font-bold text-gray-900">
           ${crypto.price.toLocaleString()}
         </span>
       </div>
-      <div className={`flex items-center space-x-0.5 md:space-x-1 ${
+      <div className={`flex items-center space-x-0.5 ${
         crypto.change24h >= 0 ? 'text-green-600' : 'text-red-600'
       }`}>
         {crypto.change24h >= 0 ? (
-          <TrendingUp className="w-3 h-3 md:w-4 md:h-4" />
+          <TrendingUp className="w-3 h-3" />
         ) : (
-          <TrendingDown className="w-3 h-3 md:w-4 md:h-4" />
+          <TrendingDown className="w-3 h-3" />
         )}
-        <span className="text-xs md:text-sm font-medium">
+        <span className="text-xs font-medium">
           {crypto.change24h.toFixed(2)}%
         </span>
       </div>
@@ -82,21 +82,21 @@ export const CryptoPrice = () => {
 
   return (
     <section className="border rounded-lg bg-white shadow-sm">
-      <div className="px-3 md:px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
-        <Wallet className="w-5 h-5 text-gray-600 mr-2" />
+      <div className="px-3 md:px-6 py-3 border-b border-gray-200 flex items-center bg-gray-50">
+        <Wallet className="w-4 h-4 text-gray-600 mr-2 flex-shrink-0" />
         
-        <div className="flex items-center gap-3 md:gap-6 overflow-x-auto">
+        <div className="flex items-center gap-2 md:gap-4 overflow-x-auto flex-1 justify-center">
           {loading ? (
-            <div className="animate-pulse flex gap-3 md:gap-6">
-              <div className="flex items-center space-x-3">
-                <div className="h-4 w-12 bg-gray-200 rounded"></div>
-                <div className="h-4 w-16 bg-gray-200 rounded"></div>
-                <div className="h-4 w-12 bg-gray-200 rounded"></div>
+            <div className="animate-pulse flex gap-2 md:gap-4">
+              <div className="flex items-center space-x-2">
+                <div className="h-3 w-8 bg-gray-200 rounded"></div>
+                <div className="h-3 w-12 bg-gray-200 rounded"></div>
+                <div className="h-3 w-8 bg-gray-200 rounded"></div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="h-4 w-12 bg-gray-200 rounded"></div>
-                <div className="h-4 w-16 bg-gray-200 rounded"></div>
-                <div className="h-4 w-12 bg-gray-200 rounded"></div>
+              <div className="flex items-center space-x-2">
+                <div className="h-3 w-8 bg-gray-200 rounded"></div>
+                <div className="h-3 w-12 bg-gray-200 rounded"></div>
+                <div className="h-3 w-8 bg-gray-200 rounded"></div>
               </div>
             </div>
           ) : (
@@ -106,8 +106,6 @@ export const CryptoPrice = () => {
             </>
           )}
         </div>
-        
-        <div className="w-5"></div>
       </div>
     </section>
   );
