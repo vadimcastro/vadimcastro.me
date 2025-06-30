@@ -18,22 +18,22 @@ deploy:
 	@if [ -n "$(branch)" ]; then \
 		echo "📡 Using branch: $(branch)"; \
 		git pull origin $(branch); \
-		export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && make down && make prod; \
+		GIT_BRANCH=$(branch) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make down && GIT_BRANCH=$(branch) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make prod; \
 	else \
 		echo "📡 Using branch: $$(git branch --show-current)"; \
 		git pull origin $$(git branch --show-current); \
-		export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && make down && make prod; \
+		GIT_BRANCH=$$(git branch --show-current) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make down && GIT_BRANCH=$$(git branch --show-current) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make prod; \
 	fi
 deploy-rebuild:
 	@echo "🚀 Pulling latest code and rebuilding..."
 	@if [ -n "$(branch)" ]; then \
 		echo "📡 Using branch: $(branch)"; \
 		git pull origin $(branch); \
-		export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && make prod-rebuild; \
+		GIT_BRANCH=$(branch) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make prod-rebuild; \
 	else \
 		echo "📡 Using branch: $$(git branch --show-current)"; \
 		git pull origin $$(git branch --show-current); \
-		export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && make prod-rebuild; \
+		GIT_BRANCH=$$(git branch --show-current) GIT_COMMIT_HASH=$$(git rev-parse HEAD) GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" make prod-rebuild; \
 	fi
 # Git commands
 pull:
