@@ -50,32 +50,44 @@ pull:
 # Droplet management
 droplet:
 	@echo "Connecting to DigitalOcean Droplet..."
-	ssh root@206.81.2.168
+	ssh droplet
 droplet-logs:
 	@echo "Viewing API logs on droplet..."
-	ssh root@206.81.2.168 "docker logs docker-api-1 | tail -20"
+	ssh droplet "docker logs docker-api-1 | tail -20"
 droplet-force-rebuild:
 	@echo "Force rebuilding on droplet..."
-	ssh root@206.81.2.168 "cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml down && docker system prune -f && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d"
+	ssh droplet "cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml down && docker system prune -f && docker compose -f docker/docker-compose.prod.yml build --no-cache && docker compose -f docker/docker-compose.prod.yml up -d"
+droplet-clean-rebuild:
+	@echo "🧹 Clean rebuilding on droplet (clears all caches)..."
+	@if [ -n "$(branch)" ]; then \
+		echo "📡 Using branch: $(branch)"; \
+		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $(branch) && git pull origin $(branch) && docker compose -f docker/docker-compose.prod.yml down && docker system prune -af && docker builder prune -af && docker compose -f docker/docker-compose.prod.yml build --no-cache --pull && docker compose -f docker/docker-compose.prod.yml up -d'; \
+	else \
+		echo "📡 Using branch: $$(git branch --show-current)"; \
+		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $$(git branch --show-current) && git pull origin $$(git branch --show-current) && docker compose -f docker/docker-compose.prod.yml down && docker system prune -af && docker builder prune -af && docker compose -f docker/docker-compose.prod.yml build --no-cache --pull && docker compose -f docker/docker-compose.prod.yml up -d'; \
+	fi
+	@echo "✅ Clean rebuild complete!"
+	@echo "🌐 Frontend: http://206.81.2.168:3000"
+	@echo "🔧 API: http://206.81.2.168:8000"
 droplet-debug:
 	@echo "Running debug commands on droplet..."
-	ssh root@206.81.2.168 "cd vadimcastro.me && echo '=== Container Status ===' && docker ps && echo '=== API Logs ===' && docker logs docker-api-1 | tail -10 && echo '=== Environment Check ===' && docker exec -it docker-api-1 printenv | grep -E '(ENVIRONMENT|POSTGRES_DB)' && echo '=== CORS Middleware ===' && docker logs docker-api-1 | grep -i 'Adding CORS middleware'"
+	ssh droplet "cd vadimcastro.me && echo '=== Container Status ===' && docker ps && echo '=== API Logs ===' && docker logs docker-api-1 | tail -10 && echo '=== Environment Check ===' && docker exec -it docker-api-1 printenv | grep -E '(ENVIRONMENT|POSTGRES_DB)' && echo '=== CORS Middleware ===' && docker logs docker-api-1 | grep -i 'Adding CORS middleware'"
 droplet-deploy:
 	@echo "🚀 Starting automated droplet deployment..."
 	@if [ -n "$(branch)" ]; then \
 		echo "📡 Deploying branch: $(branch)"; \
-		ssh root@206.81.2.168 'cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+		ssh droplet 'cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
 	else \
 		echo "📡 Deploying branch: $$(git branch --show-current)"; \
-		ssh root@206.81.2.168 'cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+		ssh droplet 'cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
 	fi
 	@echo "✅ Deployment complete!"
 	@echo "🌐 Frontend: http://206.81.2.168:3000"
 	@echo "🔧 API: http://206.81.2.168:8000"
-	@echo "📊 Check logs: ssh root@206.81.2.168 'cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml logs -f'"
+	@echo "📊 Check logs: ssh droplet 'cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml logs -f'"
 droplet-status:
 	@echo "Checking droplet status..."
-	ssh root@206.81.2.168 "cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml ps && docker logs docker-api-1 | tail -5"
+	ssh droplet "cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml ps && docker logs docker-api-1 | tail -5"
 setup-prod-env:
 	@echo "Setting up production environment..."
 	./scripts/setup-production-env.sh
@@ -118,18 +130,41 @@ help:
 	@echo ""
 	@echo "📱 Development:"
 	@echo "  make dev                    - Start development environment"
+	@echo "  make dev-debug              - Start with debug logging"
+	@echo "  make format                 - Format code (Prettier + Black)"
 	@echo "  make setup-local-auth       - Configure local authentication"
 	@echo "  make logs                   - Show container logs"
 	@echo "  make clean                  - Clean up environment"
 	@echo ""
-	@echo "🌐 Deployment:"
+	@echo "🏠 Local Production:"
+	@echo "  make prod                   - Start production environment locally"
+	@echo "  make prod-rebuild           - Rebuild production environment locally"
+	@echo "  make deploy                 - Deploy locally"
+	@echo "  make deploy-rebuild         - Deploy with rebuild locally"
+	@echo ""
+	@echo "☁️ Droplet:"
+	@echo "  make droplet                - SSH into production server"
 	@echo "  make droplet-deploy         - Deploy current branch to production"
 	@echo "  make droplet-deploy branch=X- Deploy specific branch to production"
+	@echo "  make droplet-clean-rebuild  - Clean rebuild on droplet"
+	@echo "  make droplet-clean-rebuild branch=X - Clean rebuild specific branch"
+	@echo "  make droplet-force-rebuild  - Force rebuild on droplet"
 	@echo "  make droplet-status         - Check production status"
+	@echo "  make droplet-logs           - View droplet API logs"
+	@echo "  make droplet-debug          - Debug droplet status"
+	@echo ""
+	@echo "🔄 Git:"
+	@echo "  make pull                   - Pull latest code (current branch)"
+	@echo "  make pull branch=X          - Pull from specific branch"
 	@echo ""
 	@echo "🗄️ Database:"
 	@echo "  make migrate                - Run migrations"
 	@echo "  make migrate-create name=X  - Create new migration"
 	@echo ""
-	@echo "💻 Droplet Access:"
-	@echo "  make droplet                - SSH into production server"
+	@echo "🧹 Cleanup:"
+	@echo "  make down                   - Stop containers"
+	@echo "  make clean                  - Clean up environment"
+	@echo ""
+	@echo "⚙️ Setup:"
+	@echo "  make setup-prod-env         - Set up production environment"
+	@echo "  make setup-local-auth       - Configure local authentication"
