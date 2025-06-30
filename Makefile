@@ -64,10 +64,10 @@ droplet-deploy:
 	@echo "🚀 Starting automated droplet deployment..."
 	@if [ -n "$(branch)" ]; then \
 		echo "📡 Deploying branch: $(branch)"; \
-		ssh root@206.81.2.168 "cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=\$\$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE=\"\$\$(git log -1 --pretty=%B)\" && export GIT_COMMIT_DATE=\"\$\$(git log -1 --format=%ci)\" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d"; \
+		ssh root@206.81.2.168 'cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
 	else \
 		echo "📡 Deploying branch: $$(git branch --show-current)"; \
-		ssh root@206.81.2.168 "cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=\$\$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE=\"\$\$(git log -1 --pretty=%B)\" && export GIT_COMMIT_DATE=\"\$\$(git log -1 --format=%ci)\" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d"; \
+		ssh root@206.81.2.168 'cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
 	fi
 	@echo "✅ Deployment complete!"
 	@echo "🌐 Frontend: http://206.81.2.168:3000"
