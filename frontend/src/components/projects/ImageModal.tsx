@@ -27,6 +27,11 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   };
 
   const updateScale = useCallback((newScale: number) => {
+    // Safety check for invalid scale values
+    if (!isFinite(newScale) || isNaN(newScale)) {
+      return;
+    }
+    
     const clampedScale = Math.min(Math.max(newScale, 1), 3);
     
     if (clampedScale === 1) {
@@ -67,7 +72,8 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    // Reduce sensitivity for smoother zooming
+    const delta = e.deltaY > 0 ? 0.95 : 1.05;
     updateScale(scale * delta);
   }, [scale, updateScale]);
 
@@ -86,7 +92,13 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
       };
-      setPosition(newPosition);
+      // Add bounds checking for mouse movement too
+      const maxOffset = 300; // pixels
+      const boundedPosition = {
+        x: Math.min(Math.max(newPosition.x, -maxOffset), maxOffset),
+        y: Math.min(Math.max(newPosition.y, -maxOffset), maxOffset)
+      };
+      setPosition(boundedPosition);
     }
   }, [isDragging, dragStart, scale]);
 
@@ -130,7 +142,9 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
       const distance = getTouchDistance(e.touches);
       if (lastTouchDistance > 0) {
         const scaleChange = distance / lastTouchDistance;
-        updateScale(scale * scaleChange);
+        // Clamp the scale change to prevent sudden jumps
+        const clampedScaleChange = Math.min(Math.max(scaleChange, 0.8), 1.2);
+        updateScale(scale * clampedScaleChange);
       }
       setLastTouchDistance(distance);
     } else if (e.touches.length === 1 && isDragging && scale > 1) {
@@ -138,7 +152,13 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
         x: e.touches[0].clientX - dragStart.x,
         y: e.touches[0].clientY - dragStart.y,
       };
-      setPosition(newPosition);
+      // Add bounds checking to prevent image from going too far off screen
+      const maxOffset = 300; // pixels
+      const boundedPosition = {
+        x: Math.min(Math.max(newPosition.x, -maxOffset), maxOffset),
+        y: Math.min(Math.max(newPosition.y, -maxOffset), maxOffset)
+      };
+      setPosition(boundedPosition);
     }
   }, [lastTouchDistance, isDragging, dragStart, scale, updateScale]);
 
