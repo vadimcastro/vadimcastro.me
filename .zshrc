@@ -11,6 +11,7 @@
   alias gl='git pull'
   alias gb='git branch'
   alias gco='git checkout'
+  alias glog='git log --oneline -1'
 
   # System shortcuts
   alias ll='ls -alh'
