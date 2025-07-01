@@ -1,0 +1,43 @@
+# Project navigation shortcuts
+  vadim-cloud() {
+      cd /Users/vadimcastro/Desktop/PROJECTS/my_website/vadimcastro.me
+  }
+
+  dlm() {
+      cd /Users/vadimcastro/Desktop/DAN/dlm-photo-gallery
+  }
+
+  # Git shortcuts
+  alias gs='git status'
+  alias ga='git add .'
+  alias gc='git commit -m'
+  alias gp='git push'
+  alias gl='git pull'
+  alias gb='git branch'
+  alias gco='git checkout'
+
+  # System shortcuts
+  alias ll='ls -alh'
+  alias ..='cd ..'
+  alias c='clear'
+
+  # Docker shortcuts
+  alias dps='docker ps'
+  alias dclean='docker system prune -f'
+  alias dlog='docker logs -f'
+  alias dex='docker exec -it'
+
+  # Development shortcuts
+  alias dev='make dev'
+  alias deploy='make droplet-deploy'
+  alias status='make droplet-status'
+
+  # Quick commit and push
+  gcp() {
+      git add . && git commit -m "$1" && git push
+  }
+
+  # Quick project deployment
+  quick-deploy() {
+      vadim-cloud && make droplet-quick-deploy
+  }
