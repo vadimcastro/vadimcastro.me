@@ -51,29 +51,11 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
       setPosition({ x: 0, y: 0 });
     } else {
       setScale(clampedScale);
-      
-      // If we have a center point (for pinch zoom), adjust position to zoom into that point
-      if (centerPoint && imageRef.current) {
-        const rect = imageRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        const deltaX = (centerPoint.x - centerX) * (clampedScale - scale) / clampedScale;
-        const deltaY = (centerPoint.y - centerY) * (clampedScale - scale) / clampedScale;
-        
-        const newPosition = constrainPosition({
-          x: position.x + deltaX,
-          y: position.y + deltaY
-        }, clampedScale);
-        
-        setPosition(newPosition);
-      } else {
-        // Constrain current position for new scale
-        const constrainedPosition = constrainPosition(position, clampedScale);
-        setPosition(constrainedPosition);
-      }
+      // For now, keep current position and just constrain it
+      const constrainedPosition = constrainPosition(position, clampedScale);
+      setPosition(constrainedPosition);
     }
-  }, [scale, position, constrainPosition]);
+  }, [position, constrainPosition]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
@@ -98,12 +80,13 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    const centerPoint = { x: e.clientX, y: e.clientY };
-    updateScale(scale * delta, centerPoint);
+    updateScale(scale * delta);
   }, [scale, updateScale]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     if (scale > 1) {
       setIsDragging(true);
       setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
@@ -111,6 +94,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   }, [scale, position]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     if (isDragging && scale > 1) {
       const newPosition = {
         x: e.clientX - dragStart.x,
@@ -137,6 +121,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     if (e.touches.length === 2) {
       const distance = getTouchDistance(e.touches);
@@ -154,18 +139,13 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     if (e.touches.length === 2) {
       const distance = getTouchDistance(e.touches);
       if (lastTouchDistance > 0) {
         const scaleChange = distance / lastTouchDistance;
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
-        const centerPoint = {
-          x: (touch1.clientX + touch2.clientX) / 2,
-          y: (touch1.clientY + touch2.clientY) / 2
-        };
-        updateScale(scale * scaleChange, centerPoint);
+        updateScale(scale * scaleChange);
       }
       setLastTouchDistance(distance);
     } else if (e.touches.length === 1 && isDragging && scale > 1) {
@@ -180,6 +160,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     if (e.touches.length === 0) {
       setIsDragging(false);
@@ -208,8 +189,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
     
     if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
       if (scale === 1) {
-        const centerPoint = { x: e.clientX, y: e.clientY };
-        updateScale(1.5, centerPoint);
+        updateScale(1.5);
       } else {
         resetZoom();
       }
@@ -220,11 +200,14 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
 
   return (
     <div 
-      ref={containerRef}
       className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
-      <div className="relative overflow-hidden flex items-center justify-center w-full h-full">
+      <div 
+        ref={containerRef}
+        className="relative flex items-center justify-center"
+        style={{ width: 'auto', height: 'auto' }}
+      >
         <div 
           ref={imageRef}
           className="relative transition-transform duration-200 ease-out"
