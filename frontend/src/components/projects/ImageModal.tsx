@@ -28,7 +28,8 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
 
   const updateScale = useCallback((newScale: number) => {
     // Safety check for invalid scale values
-    if (!isFinite(newScale) || isNaN(newScale)) {
+    if (!isFinite(newScale) || isNaN(newScale) || newScale <= 0) {
+      console.warn('Invalid scale value:', newScale);
       return;
     }
     
@@ -39,6 +40,11 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
       setPosition({ x: 0, y: 0 });
     } else {
       setScale(clampedScale);
+      // Also reset position if it gets too extreme
+      setPosition(prev => ({
+        x: Math.min(Math.max(prev.x, -200), 200),
+        y: Math.min(Math.max(prev.y, -200), 200)
+      }));
     }
   }, []);
 
@@ -72,8 +78,8 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Reduce sensitivity for smoother zooming
-    const delta = e.deltaY > 0 ? 0.95 : 1.05;
+    // Much less sensitive zooming
+    const delta = e.deltaY > 0 ? 0.98 : 1.02;
     updateScale(scale * delta);
   }, [scale, updateScale]);
 
@@ -93,7 +99,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
         y: e.clientY - dragStart.y,
       };
       // Add bounds checking for mouse movement too
-      const maxOffset = 300; // pixels
+      const maxOffset = 150; // pixels - much more restrictive
       const boundedPosition = {
         x: Math.min(Math.max(newPosition.x, -maxOffset), maxOffset),
         y: Math.min(Math.max(newPosition.y, -maxOffset), maxOffset)
@@ -110,10 +116,12 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
     if (touches.length < 2) return 0;
     const touch1 = touches[0];
     const touch2 = touches[1];
-    return Math.sqrt(
+    const distance = Math.sqrt(
       Math.pow(touch2.clientX - touch1.clientX, 2) + 
       Math.pow(touch2.clientY - touch1.clientY, 2)
     );
+    // Ensure we never return 0 or very small values that could cause issues
+    return Math.max(distance, 10);
   };
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -140,11 +148,13 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
     
     if (e.touches.length === 2) {
       const distance = getTouchDistance(e.touches);
-      if (lastTouchDistance > 0) {
+      if (lastTouchDistance > 0 && distance > 0) {
         const scaleChange = distance / lastTouchDistance;
-        // Clamp the scale change to prevent sudden jumps
-        const clampedScaleChange = Math.min(Math.max(scaleChange, 0.8), 1.2);
-        updateScale(scale * clampedScaleChange);
+        // Much more conservative clamping and sensitivity
+        const clampedScaleChange = Math.min(Math.max(scaleChange, 0.9), 1.1);
+        // Additional damping for smoother zoom
+        const dampedScaleChange = 1 + (clampedScaleChange - 1) * 0.5;
+        updateScale(scale * dampedScaleChange);
       }
       setLastTouchDistance(distance);
     } else if (e.touches.length === 1 && isDragging && scale > 1) {
@@ -153,7 +163,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
         y: e.touches[0].clientY - dragStart.y,
       };
       // Add bounds checking to prevent image from going too far off screen
-      const maxOffset = 300; // pixels
+      const maxOffset = 150; // pixels - much more restrictive
       const boundedPosition = {
         x: Math.min(Math.max(newPosition.x, -maxOffset), maxOffset),
         y: Math.min(Math.max(newPosition.y, -maxOffset), maxOffset)
