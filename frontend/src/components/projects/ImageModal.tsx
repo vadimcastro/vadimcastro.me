@@ -20,30 +20,13 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   const imageRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const constrainPosition = useCallback((newPosition: { x: number, y: number }, currentScale: number) => {
-    if (!imageRef.current || !containerRef.current) return newPosition;
-    
-    const container = containerRef.current.getBoundingClientRect();
-    const image = imageRef.current.getBoundingClientRect();
-    
-    const scaledWidth = image.width * currentScale;
-    const scaledHeight = image.height * currentScale;
-    
-    const maxX = Math.max(0, (scaledWidth - container.width) / 2);
-    const maxY = Math.max(0, (scaledHeight - container.height) / 2);
-    
-    return {
-      x: Math.min(Math.max(newPosition.x, -maxX), maxX),
-      y: Math.min(Math.max(newPosition.y, -maxY), maxY)
-    };
-  }, []);
 
   const resetZoom = () => {
     setScale(1);
     setPosition({ x: 0, y: 0 });
   };
 
-  const updateScale = useCallback((newScale: number, centerPoint?: { x: number, y: number }) => {
+  const updateScale = useCallback((newScale: number) => {
     const clampedScale = Math.min(Math.max(newScale, 1), 3);
     
     if (clampedScale === 1) {
@@ -51,11 +34,8 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
       setPosition({ x: 0, y: 0 });
     } else {
       setScale(clampedScale);
-      // For now, keep current position and just constrain it
-      const constrainedPosition = constrainPosition(position, clampedScale);
-      setPosition(constrainedPosition);
     }
-  }, [position, constrainPosition]);
+  }, []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
@@ -74,8 +54,14 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   }, [onClose, scale, updateScale]);
 
   useEffect(() => {
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [handleKeyDown]);
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
@@ -100,10 +86,9 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
       };
-      const constrainedPosition = constrainPosition(newPosition, scale);
-      setPosition(constrainedPosition);
+      setPosition(newPosition);
     }
-  }, [isDragging, dragStart, scale, constrainPosition]);
+  }, [isDragging, dragStart, scale]);
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
@@ -153,10 +138,9 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
         x: e.touches[0].clientX - dragStart.x,
         y: e.touches[0].clientY - dragStart.y,
       };
-      const constrainedPosition = constrainPosition(newPosition, scale);
-      setPosition(constrainedPosition);
+      setPosition(newPosition);
     }
-  }, [lastTouchDistance, isDragging, dragStart, scale, updateScale, constrainPosition]);
+  }, [lastTouchDistance, isDragging, dragStart, scale, updateScale]);
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
@@ -200,21 +184,32 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
 
   return (
     <div 
-      className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/90 z-50"
+      style={{ 
+        touchAction: 'none',
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        userSelect: 'none'
+      }}
       onClick={onClose}
     >
       <div 
         ref={containerRef}
-        className="relative flex items-center justify-center"
-        style={{ width: 'auto', height: 'auto' }}
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ 
+          overflow: 'hidden',
+          touchAction: 'none'
+        }}
       >
         <div 
           ref={imageRef}
-          className="relative transition-transform duration-200 ease-out"
+          className="select-none"
           style={{
-            transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
+            transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
+            transformOrigin: 'center center',
             cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
-            transformOrigin: 'center center'
+            touchAction: 'none',
+            transition: isDragging ? 'none' : 'transform 0.2s ease-out'
           }}
           onWheel={handleWheel}
           onMouseDown={handleMouseDown}
@@ -231,10 +226,18 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
             alt={alt}
             width={0}
             height={0}
-            style={{ width: 'auto', height: 'auto', maxWidth: '90vw', maxHeight: '90vh' }}
+            style={{ 
+              width: 'auto', 
+              height: 'auto', 
+              maxWidth: '90vw', 
+              maxHeight: '90vh',
+              display: 'block',
+              userSelect: 'none'
+            }}
             sizes="90vw"
             priority
             quality={95}
+            draggable={false}
           />
         </div>
       </div>
