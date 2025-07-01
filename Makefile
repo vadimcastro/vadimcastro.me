@@ -105,6 +105,30 @@ droplet-deep-clean:
 droplet-disk-usage:
 	@echo "💾 Checking droplet disk usage..."
 	@ssh droplet 'df -h && echo "=== Docker Usage ===" && docker system df'
+droplet-quick-deploy:
+	@echo "⚡ Quick deployment to droplet (uses cache)..."
+	@if [ -n "$(branch)" ]; then \
+		echo "📡 Using branch: $(branch)"; \
+		ssh droplet 'cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+	else \
+		echo "📡 Using branch: $$(git branch --show-current)"; \
+		ssh droplet 'cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+	fi
+	@echo "⚡ Quick deployment complete!"
+	@echo "🌐 Frontend: http://206.81.2.168:3000"
+	@echo "🔧 API: http://206.81.2.168:8000"
+droplet-quick-rebuild:
+	@echo "🚀 Quick rebuild on droplet (partial cache clear)..."
+	@if [ -n "$(branch)" ]; then \
+		echo "📡 Using branch: $(branch)"; \
+		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $(branch) && git pull origin $(branch) && docker compose -f docker/docker-compose.prod.yml down && docker image prune -f && docker compose -f docker/docker-compose.prod.yml build && docker compose -f docker/docker-compose.prod.yml up -d'; \
+	else \
+		echo "📡 Using branch: $$(git branch --show-current)"; \
+		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $$(git branch --show-current) && git pull origin $$(git branch --show-current) && docker compose -f docker/docker-compose.prod.yml down && docker image prune -f && docker compose -f docker/docker-compose.prod.yml build && docker compose -f docker/docker-compose.prod.yml up -d'; \
+	fi
+	@echo "🚀 Quick rebuild complete!"
+	@echo "🌐 Frontend: http://206.81.2.168:3000"
+	@echo "🔧 API: http://206.81.2.168:8000"
 setup-prod-env:
 	@echo "Setting up production environment..."
 	./scripts/setup-production-env.sh
@@ -163,6 +187,8 @@ help:
 	@echo "  make droplet                - SSH into production server"
 	@echo "  make droplet-deploy         - Deploy current branch to production"
 	@echo "  make droplet-deploy branch=X- Deploy specific branch to production"
+	@echo "  make droplet-quick-deploy   - ⚡ Quick deploy (uses cache for testing)"
+	@echo "  make droplet-quick-rebuild  - 🚀 Quick rebuild (partial cache clear)"
 	@echo "  make droplet-clean-rebuild  - Clean rebuild on droplet"
 	@echo "  make droplet-clean-rebuild branch=X - Clean rebuild specific branch"
 	@echo "  make droplet-force-rebuild  - Force rebuild on droplet"
