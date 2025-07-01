@@ -72,7 +72,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
     setPosition({ x: 0, y: 0 });
   };
 
-  const getTouchDistance = (touches: TouchList) => {
+  const getTouchDistance = (touches: React.TouchList) => {
     if (touches.length < 2) return 0;
     const touch1 = touches[0];
     const touch2 = touches[1];
