@@ -85,7 +85,11 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
     <div
       ref={dropdownRef}
       className="fixed right-4 top-16 w-64 bg-white/95 backdrop-blur-md rounded-lg shadow-2xl border border-gray-200 p-3 space-y-3 animate-in slide-in-from-top-2"
-      style={{ zIndex: 9999999999 }}
+      style={{ 
+        zIndex: 2147483647,
+        position: 'fixed',
+        isolation: 'isolate'
+      }}
     >
       {!isSigningIn ? (
         <>
