@@ -54,6 +54,7 @@ shortcuts             # Show all available aliases
 # Droplet (Ubuntu/bash)  
 sb                    # Source ~/.bashrc (reload config)
 vb                    # Edit ~/.bashrc
+gsb                   # Generate ~/.bashrc from template + source
 shortcuts             # Show all available aliases
 ```
 
@@ -119,8 +120,8 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 
 ### Production Environment (Ubuntu + bash)  
 - **File**: `/root/.bashrc` (deploy from `scripts/droplet-bashrc`)
-- **Features**: Production-focused aliases, enhanced history, colored prompt
-- **Deploy**: Copy `scripts/droplet-bashrc` to droplet `~/.bashrc`
+- **Features**: Production-focused aliases, enhanced history, colored prompt, self-deployment
+- **Deploy**: Run `gsb` on droplet (copies template + sources automatically)
 
 ### Key Differences
 | Feature | Local (zsh) | Droplet (bash) |

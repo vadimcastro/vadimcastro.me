@@ -66,6 +66,11 @@ alias c='clear'
 alias sb='source ~/.bashrc'
 alias vb='vim ~/.bashrc'
 
+# Generate and source bashrc from template
+gsb() {
+    cp scripts/droplet-bashrc ~/.bashrc && sb
+}
+
 # Docker shortcuts
 alias dps='docker ps'
 alias dclean='docker system prune -f'
