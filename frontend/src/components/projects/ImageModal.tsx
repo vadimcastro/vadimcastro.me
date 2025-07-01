@@ -1,7 +1,7 @@
 // src/components/projects/ImageModal.tsx
 "use client";
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 
 interface ImageModalProps {
@@ -15,6 +15,9 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [lastTouchDistance, setLastTouchDistance] = useState(0);
+  const [lastTap, setLastTap] = useState(0);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
@@ -69,15 +72,91 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
     setPosition({ x: 0, y: 0 });
   };
 
+  const getTouchDistance = (touches: TouchList) => {
+    if (touches.length < 2) return 0;
+    const touch1 = touches[0];
+    const touch2 = touches[1];
+    return Math.sqrt(
+      Math.pow(touch2.clientX - touch1.clientX, 2) + 
+      Math.pow(touch2.clientY - touch1.clientY, 2)
+    );
+  };
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    
+    if (e.touches.length === 2) {
+      const distance = getTouchDistance(e.touches);
+      setLastTouchDistance(distance);
+    } else if (e.touches.length === 1) {
+      if (scale > 1) {
+        setIsDragging(true);
+        setDragStart({ 
+          x: e.touches[0].clientX - position.x, 
+          y: e.touches[0].clientY - position.y 
+        });
+      }
+    }
+  }, [scale, position]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    
+    if (e.touches.length === 2) {
+      const distance = getTouchDistance(e.touches);
+      if (lastTouchDistance > 0) {
+        const scaleChange = distance / lastTouchDistance;
+        setScale(prev => Math.min(Math.max(prev * scaleChange, 0.5), 3));
+      }
+      setLastTouchDistance(distance);
+    } else if (e.touches.length === 1 && isDragging && scale > 1) {
+      setPosition({
+        x: e.touches[0].clientX - dragStart.x,
+        y: e.touches[0].clientY - dragStart.y,
+      });
+    }
+  }, [lastTouchDistance, isDragging, dragStart, scale]);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    
+    if (e.touches.length === 0) {
+      setIsDragging(false);
+      setLastTouchDistance(0);
+      
+      const now = Date.now();
+      const timeSinceLastTap = now - lastTap;
+      
+      if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+        if (scale === 1) {
+          setScale(1.5);
+        } else {
+          setScale(1);
+          setPosition({ x: 0, y: 0 });
+        }
+      }
+      
+      setLastTap(now);
+    }
+  }, [lastTap, scale]);
+
   const handleImageClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (scale === 1) {
-      setScale(1.5);
-    } else {
-      setScale(1);
-      setPosition({ x: 0, y: 0 });
+    
+    const now = Date.now();
+    const timeSinceLastTap = now - lastTap;
+    
+    if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+      if (scale === 1) {
+        setScale(1.5);
+      } else {
+        setScale(1);
+        setPosition({ x: 0, y: 0 });
+      }
     }
-  }, [scale]);
+    
+    setLastTap(now);
+  }, [scale, lastTap]);
 
   return (
     <div 
@@ -85,6 +164,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
       onClick={onClose}
     >
       <div 
+        ref={imageRef}
         className="relative max-w-[90vw] max-h-[90vh] transition-transform duration-200 ease-out"
         style={{
           transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
@@ -96,6 +176,9 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onClick={handleImageClick}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <Image
           src={src}
@@ -108,51 +191,6 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
           quality={95}
         />
         
-        {/* Zoom controls */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-black/70 rounded-full px-4 py-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setScale(prev => Math.max(prev / 1.2, 0.5));
-            }}
-            className="text-white hover:text-gray-200 p-1 transition-colors"
-            title="Zoom out (-)"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
-            </svg>
-          </button>
-          
-          <span className="text-white text-sm font-medium min-w-[3rem] text-center">
-            {Math.round(scale * 100)}%
-          </span>
-          
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setScale(prev => Math.min(prev * 1.2, 3));
-            }}
-            className="text-white hover:text-gray-200 p-1 transition-colors"
-            title="Zoom in (+)"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-            </svg>
-          </button>
-          
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              resetZoom();
-            }}
-            className="text-white hover:text-gray-200 p-1 transition-colors ml-2"
-            title="Reset zoom (0)"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </button>
-        </div>
       </div>
     </div>
   );
