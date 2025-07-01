@@ -79,7 +79,7 @@ ssh droplet                    # 🔗 Passwordless SSH access (via SSH key)
 - **Advanced Dashboard**: Real-time system metrics with expandable mobile interface
 - **Authentication System**: JWT-based login with local dev setup
 - **Production Deployment**: Automated deployment pipeline with branch management
-- **Enhanced Image Modal**: Zoomable, high-quality image viewer with intuitive controls
+- **Mobile-Optimized Image Modal**: Touch-friendly image viewer with pinch-to-zoom and double-tap controls
 
 ### 🔄 Branch Management
 ```bash
@@ -113,20 +113,30 @@ make deploy branch=main                         # Deploy specific branch (when S
 />
 ```
 
-### Image Modal System
+### Mobile Image Modal System
 **Component**: `ImageModal` (`frontend/src/components/projects/ImageModal.tsx`)
-- **Interactive Zoom**: Mouse wheel, click-to-zoom, keyboard shortcuts (+/-/0)
-- **Pan & Drag**: Drag to pan when zoomed in, smooth transforms
-- **Mobile Optimized**: Touch-friendly, click-outside-to-close functionality
+- **Touch-Based Zoom**: Native pinch-to-zoom with stability controls
+- **Double-Tap Interaction**: Double-click/tap to zoom in/out (no single-click)
+- **Pan & Drag**: Smooth dragging when zoomed in with movement bounds
+- **Mobile-First**: No UI buttons, clean unobstructed image viewing
 - **High Quality**: 95% image quality, responsive sizing
-- **Clean Interface**: No close button needed, intuitive zoom controls
 
-**Features**:
-- Click image to zoom in/out toggle
-- Scroll wheel for precise zoom control
-- Keyboard shortcuts: `+`/`-` for zoom, `0` to reset, `ESC` to close
-- Visual zoom controls with percentage display
-- Automatic branch synchronization for deployments
+**Touch Features**:
+- **Pinch-to-zoom**: Two-finger gesture with sensitivity damping
+- **Double-tap zoom**: Toggle between 1x and 1.5x zoom levels
+- **Bounded movement**: Image stays within ±150px of center when dragging
+- **Page isolation**: Prevents background scrolling/interaction during use
+
+**Desktop Features**:
+- **Mouse wheel zoom**: Reduced sensitivity for smooth control
+- **Double-click zoom**: Same behavior as mobile double-tap
+- **Keyboard shortcuts**: `+`/`-` for zoom, `0` to reset, `ESC` to close
+- **Drag to pan**: When zoomed in, with same movement bounds
+
+**Stability**:
+- Scale bounds: 1x (normal) to 3x maximum zoom
+- Movement constraints prevent image disappearing off-screen
+- Touch sensitivity damping prevents aggressive zoom jumps
 
 ### Design System
 - **Typography**: Poppins (headings), Inter (body)
