@@ -44,7 +44,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   };
 
   const updateScale = useCallback((newScale: number, centerPoint?: { x: number, y: number }) => {
-    const clampedScale = Math.min(Math.max(newScale, 0.5), 3);
+    const clampedScale = Math.min(Math.max(newScale, 1), 3);
     
     if (clampedScale === 1) {
       setScale(1);
@@ -224,34 +224,36 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
       className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
-      <div 
-        ref={imageRef}
-        className="relative max-w-[90vw] max-h-[90vh] transition-transform duration-200 ease-out"
-        style={{
-          transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
-          cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in'
-        }}
-        onWheel={handleWheel}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onClick={handleImageClick}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <Image
-          src={src}
-          alt={alt}
-          width={0}
-          height={0}
-          style={{ width: 'auto', height: 'auto', maxWidth: '90vw', maxHeight: '90vh' }}
-          sizes="90vw"
-          priority
-          quality={95}
-        />
-        
+      <div className="relative overflow-hidden flex items-center justify-center w-full h-full">
+        <div 
+          ref={imageRef}
+          className="relative transition-transform duration-200 ease-out"
+          style={{
+            transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
+            cursor: scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+            transformOrigin: 'center center'
+          }}
+          onWheel={handleWheel}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onClick={handleImageClick}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <Image
+            src={src}
+            alt={alt}
+            width={0}
+            height={0}
+            style={{ width: 'auto', height: 'auto', maxWidth: '90vw', maxHeight: '90vh' }}
+            sizes="90vw"
+            priority
+            quality={95}
+          />
+        </div>
       </div>
     </div>
   );
