@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Activity, Users, FileText, Cpu, HardDrive, Wifi, Server, Zap, ChevronDown, ChevronUp, GitBranch } from 'lucide-react';
 import { useProtectedApi } from '../../lib/api/protected';
 import { MetricCard } from './MetricCard';
+import { DiskMetricCard } from './DiskMetricCard';
 import { DashboardHeader } from './DashboardHeader';
 import { CryptoPrice } from './CryptoPrice';
 import { NotepadWithBothMenus as Notepad } from './NotepadWithBothMenus';
@@ -301,7 +302,14 @@ const DashboardComponent = () => {
                 trend={stat.trend}
               />
             ))}
+            {/* Disk usage card with special layout */}
+            <DiskMetricCard />
           </div>
+        </div>
+        
+        {/* Mobile: Add disk card separately for better mobile layout */}
+        <div className="lg:hidden">
+          <DiskMetricCard />
         </div>
       </div>
 

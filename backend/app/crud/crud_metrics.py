@@ -355,3 +355,63 @@ def get_deployment_info() -> Dict:
         
     except Exception as e:
         return {"error": str(e)}
+
+def get_disk_metrics() -> Dict:
+    """Get detailed disk usage metrics with cleanup benefits tracking"""
+    try:
+        # Main disk usage
+        disk = psutil.disk_usage('/')
+        disk_used_gb = round(disk.used / (1024**3), 2)
+        disk_total_gb = round(disk.total / (1024**3), 2)
+        disk_free_gb = round(disk.free / (1024**3), 2)
+        disk_percent = round((disk.used / disk.total) * 100, 1)
+        
+        # Docker system usage
+        docker_info = {}
+        try:
+            result = subprocess.run(
+                ['docker', 'system', 'df', '--format', 'json'],
+                capture_output=True, text=True, timeout=10
+            )
+            if result.returncode == 0:
+                import json
+                docker_data = json.loads(result.stdout)
+                
+                # Calculate total Docker usage
+                total_docker_gb = 0
+                for item in docker_data:
+                    if 'Size' in item:
+                        # Parse size string (e.g., "1.2GB" -> 1.2)
+                        size_str = item['Size']
+                        if 'GB' in size_str:
+                            total_docker_gb += float(size_str.replace('GB', ''))
+                        elif 'MB' in size_str:
+                            total_docker_gb += float(size_str.replace('MB', '')) / 1024
+                
+                docker_info = {
+                    "total_size_gb": round(total_docker_gb, 2),
+                    "percentage_of_disk": round((total_docker_gb / disk_total_gb) * 100, 1)
+                }
+        except:
+            docker_info = {"total_size_gb": 0, "percentage_of_disk": 0}
+        
+        # Cleanup potential calculation
+        cleanup_potential = {
+            "logs_cleanup_mb": 50,  # Estimated log cleanup
+            "docker_cache_gb": round(docker_info.get("total_size_gb", 0) * 0.3, 2),  # 30% of Docker can be cache
+            "package_cache_mb": 100,  # APT cache
+            "total_potential_gb": round((50 + 100) / 1024 + docker_info.get("total_size_gb", 0) * 0.3, 2)
+        }
+        
+        return {
+            "disk_used_gb": disk_used_gb,
+            "disk_total_gb": disk_total_gb,
+            "disk_free_gb": disk_free_gb,
+            "disk_percent": disk_percent,
+            "docker_usage": docker_info,
+            "cleanup_potential": cleanup_potential,
+            "health_status": "warning" if disk_percent > 80 else "good" if disk_percent < 60 else "caution"
+        }
+        
+    except Exception as e:
+        return {"error": str(e), "health_status": "error"}
