@@ -90,8 +90,9 @@ droplet-clean-rebuild:
 		echo "📡 Using branch: $(branch)"; \
 		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $(branch) && git pull origin $(branch) && docker compose -f docker/docker-compose.prod.yml down && docker system prune -af && docker builder prune -af && docker compose -f docker/docker-compose.prod.yml build --no-cache --pull && docker compose -f docker/docker-compose.prod.yml up -d'; \
 	else \
-		echo "📡 Using branch: $$(git branch --show-current)"; \
-		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $$(git branch --show-current) && git pull origin $$(git branch --show-current) && docker compose -f docker/docker-compose.prod.yml down && docker system prune -af && docker builder prune -af && docker compose -f docker/docker-compose.prod.yml build --no-cache --pull && docker compose -f docker/docker-compose.prod.yml up -d'; \
+		LOCAL_BRANCH=$$(git branch --show-current); \
+		echo "📡 Using branch: $$LOCAL_BRANCH"; \
+		ssh droplet "cd vadimcastro.me && git fetch origin && git checkout $$LOCAL_BRANCH && git pull origin $$LOCAL_BRANCH && docker compose -f docker/docker-compose.prod.yml down && docker system prune -af && docker builder prune -af && docker compose -f docker/docker-compose.prod.yml build --no-cache --pull && docker compose -f docker/docker-compose.prod.yml up -d"; \
 	fi
 	@echo "✅ Clean rebuild complete!"
 	@echo "🌐 Frontend: http://206.81.2.168:3000"
@@ -103,10 +104,11 @@ droplet-deploy:
 	@echo "🚀 Starting automated droplet deployment..."
 	@if [ -n "$(branch)" ]; then \
 		echo "📡 Deploying branch: $(branch)"; \
-		ssh droplet 'cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $(branch) && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
 	else \
-		echo "📡 Deploying branch: $$(git branch --show-current)"; \
-		ssh droplet 'cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+		LOCAL_BRANCH=$$(git branch --show-current); \
+		echo "📡 Deploying branch: $$LOCAL_BRANCH"; \
+		ssh droplet "cd vadimcastro.me && git fetch origin && git checkout $$LOCAL_BRANCH && git pull origin $$LOCAL_BRANCH && export GIT_BRANCH=$$LOCAL_BRANCH && export GIT_COMMIT_HASH=\$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE=\"\$$(git log -1 --pretty=%B)\" && export GIT_COMMIT_DATE=\"\$$(git log -1 --format=%ci)\" && docker compose -f docker/docker-compose.prod.yml down && docker compose -f docker/docker-compose.prod.yml up --build -d"; \
 	fi
 	@echo "✅ Deployment complete!"
 	@echo "🌐 Frontend: http://206.81.2.168:3000"
@@ -136,10 +138,11 @@ droplet-quick-deploy:
 	@echo "⚡ Quick deployment to droplet (uses cache)..."
 	@if [ -n "$(branch)" ]; then \
 		echo "📡 Using branch: $(branch)"; \
-		ssh droplet 'cd vadimcastro.me && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $(branch) && git pull origin $(branch) && export GIT_BRANCH=$(branch) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
 	else \
-		echo "📡 Using branch: $$(git branch --show-current)"; \
-		ssh droplet 'cd vadimcastro.me && git pull origin $$(git branch --show-current) && export GIT_BRANCH=$$(git branch --show-current) && export GIT_COMMIT_HASH=$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE="$$(git log -1 --pretty=%B)" && export GIT_COMMIT_DATE="$$(git log -1 --format=%ci)" && docker compose -f docker/docker-compose.prod.yml up --build -d'; \
+		LOCAL_BRANCH=$$(git branch --show-current); \
+		echo "📡 Using branch: $$LOCAL_BRANCH"; \
+		ssh droplet "cd vadimcastro.me && git fetch origin && git checkout $$LOCAL_BRANCH && git pull origin $$LOCAL_BRANCH && export GIT_BRANCH=$$LOCAL_BRANCH && export GIT_COMMIT_HASH=\$$(git rev-parse HEAD) && export GIT_COMMIT_MESSAGE=\"\$$(git log -1 --pretty=%B)\" && export GIT_COMMIT_DATE=\"\$$(git log -1 --format=%ci)\" && docker compose -f docker/docker-compose.prod.yml up --build -d"; \
 	fi
 	@echo "⚡ Quick deployment complete!"
 	@echo "🌐 Frontend: http://206.81.2.168:3000"
@@ -150,8 +153,9 @@ droplet-quick-rebuild:
 		echo "📡 Using branch: $(branch)"; \
 		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $(branch) && git pull origin $(branch) && docker compose -f docker/docker-compose.prod.yml down && docker image prune -f && docker compose -f docker/docker-compose.prod.yml build && docker compose -f docker/docker-compose.prod.yml up -d'; \
 	else \
-		echo "📡 Using branch: $$(git branch --show-current)"; \
-		ssh droplet 'cd vadimcastro.me && git fetch origin && git checkout $$(git branch --show-current) && git pull origin $$(git branch --show-current) && docker compose -f docker/docker-compose.prod.yml down && docker image prune -f && docker compose -f docker/docker-compose.prod.yml build && docker compose -f docker/docker-compose.prod.yml up -d'; \
+		LOCAL_BRANCH=$$(git branch --show-current); \
+		echo "📡 Using branch: $$LOCAL_BRANCH"; \
+		ssh droplet "cd vadimcastro.me && git fetch origin && git checkout $$LOCAL_BRANCH && git pull origin $$LOCAL_BRANCH && docker compose -f docker/docker-compose.prod.yml down && docker image prune -f && docker compose -f docker/docker-compose.prod.yml build && docker compose -f docker/docker-compose.prod.yml up -d"; \
 	fi
 	@echo "🚀 Quick rebuild complete!"
 	@echo "🌐 Frontend: http://206.81.2.168:3000"

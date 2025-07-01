@@ -40,9 +40,11 @@ make clean            # Clean up environment
 
 ### Deployment
 ```bash
-make droplet-deploy                # Deploy to production
-make set-branch branch=BRANCH      # Set deployment branch
-make show-branch                   # Show current branch config
+make droplet-deploy                           # Deploy current local branch to production
+make droplet-deploy branch=BRANCH             # Deploy specific branch to production
+make droplet-quick-deploy                     # ⚡ Fast deployment (uses cache)
+make droplet-quick-rebuild                    # 🚀 Quick rebuild (partial cache clear)
+make droplet-clean-rebuild                    # 🧹 Deep clean rebuild (full cache clear)
 ```
 
 ### Database
@@ -77,16 +79,19 @@ ssh droplet                    # 🔗 Passwordless SSH access (via SSH key)
 - **Advanced Dashboard**: Real-time system metrics with expandable mobile interface
 - **Authentication System**: JWT-based login with local dev setup
 - **Production Deployment**: Automated deployment pipeline with branch management
+- **Enhanced Image Modal**: Zoomable, high-quality image viewer with intuitive controls
 
 ### 🔄 Branch Management
 ```bash
-# Deploy current branch
-make droplet-deploy                             # Deploy current git branch
+# Deploy current local branch (auto-syncs with droplet)
+make droplet-deploy                             # Deploy current local branch to droplet
 make deploy                                     # Deploy current branch (when SSH'd)
 
 # Deploy specific branch
-make droplet-deploy branch=main                 # Deploy specific branch
+make droplet-deploy branch=main                 # Deploy specific branch to droplet
 make deploy branch=main                         # Deploy specific branch (when SSH'd)
+
+# Note: All droplet commands now automatically sync your local branch to the droplet
 ```
 
 ## 🎨 Frontend Architecture
@@ -107,6 +112,21 @@ make deploy branch=main                         # Deploy specific branch (when S
   theme="auto"
 />
 ```
+
+### Image Modal System
+**Component**: `ImageModal` (`frontend/src/components/projects/ImageModal.tsx`)
+- **Interactive Zoom**: Mouse wheel, click-to-zoom, keyboard shortcuts (+/-/0)
+- **Pan & Drag**: Drag to pan when zoomed in, smooth transforms
+- **Mobile Optimized**: Touch-friendly, click-outside-to-close functionality
+- **High Quality**: 95% image quality, responsive sizing
+- **Clean Interface**: No close button needed, intuitive zoom controls
+
+**Features**:
+- Click image to zoom in/out toggle
+- Scroll wheel for precise zoom control
+- Keyboard shortcuts: `+`/`-` for zoom, `0` to reset, `ESC` to close
+- Visual zoom controls with percentage display
+- Automatic branch synchronization for deployments
 
 ### Design System
 - **Typography**: Poppins (headings), Inter (body)
