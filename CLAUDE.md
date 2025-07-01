@@ -53,10 +53,12 @@ make migrate-create name=NAME      # Create new migration
 
 ### Maintenance & Cleanup
 ```bash
-make droplet-deep-clean     # 🧹 Comprehensive cleanup (Docker + logs + system updates)
-make droplet-disk-usage     # 💾 Check disk usage and Docker stats
-make help                   # 📖 Show all 33 available commands
-ssh droplet                 # 🔗 Passwordless SSH access (via SSH key)
+make droplet-deep-clean        # 🧹 Comprehensive cleanup (Docker + logs + system updates)
+make droplet-disk-usage        # 💾 Check disk usage and Docker stats
+make clean-branches            # 🗑️ Delete all non-master branches locally
+make droplet-clean-branches    # 🗑️ Delete all non-master branches on droplet
+make help                      # 📖 Show all available commands
+ssh droplet                    # 🔗 Passwordless SSH access (via SSH key)
 ```
 
 ## 📁 Project Structure
