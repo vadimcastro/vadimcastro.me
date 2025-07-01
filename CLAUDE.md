@@ -143,7 +143,7 @@ The vadimOS.md file contains:
 
 ## 🎯 Current Development Focus
 
-### ✅ Completed Features
+### ✅ Recently Completed Features
 - **Mobile-First Design**: Responsive UI across all pages
 - **Unified Action Menus**: Reusable desktop/mobile components with sand/mint theming
 - **Advanced Dashboard**: Real-time system metrics with expandable mobile interface
@@ -278,5 +278,7 @@ make droplet-force-rebuild  # Force clean rebuild
 ```
 
 ### Pull Request
-**Ready for merge**: `feature/mobile-friendly` → `master`
-[Create PR](https://github.com/vadimcastro/vadimcastro.me/compare/master...feature/mobile-friendly)
+**Ready for merge**: `hotfix/release-metric` → `master`
+[Create PR](https://github.com/vadimcastro/vadimcastro.me/compare/master...hotfix/release-metric)
+
+**Branch Status**: Enhanced metric card system with health-based visual indicators and organized component architecture
