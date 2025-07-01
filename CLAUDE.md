@@ -28,21 +28,43 @@ make droplet-clean-rebuild    # 🧹 Deep clean rebuild (full cache clear)
 - **Status**: ✅ Operational
 - **Branch**: `feature/mobile-friendly`
 
+## ⚡ Terminal Workflow
+
+### Quick Navigation & Git
+```bash
+vc                    # Navigate to vadimcastro.me project
+dlm                   # Navigate to photo gallery project  
+gs                    # Git status
+gcp "message"         # Add, commit, push in one command
+glog                  # Show last commit
+d                     # SSH to droplet
+home                  # Go to home directory
+..                    # Go up one directory
+```
+
+### Docker Shortcuts
+```bash
+dps                   # Docker container status
+dclean                # Clean up Docker system
+dlog                  # Follow Docker logs
+dex                   # Execute into Docker container
+```
+
 ## 🔧 Essential Commands
 
 ### Development
 ```bash
-make dev              # Start development environment
+dev                   # Start development environment (alias for make dev)
 make setup-local-auth # Configure local authentication
-make logs             # View container logs
+logs                  # View container logs (alias for make droplet-logs)
 make clean            # Clean up environment
 ```
 
 ### Deployment
 ```bash
-make droplet-deploy                           # Deploy current local branch to production
+deploy                                        # Deploy current local branch to production (alias)
 make droplet-deploy branch=BRANCH             # Deploy specific branch to production
-make droplet-quick-deploy                     # ⚡ Fast deployment (uses cache)
+quick-deploy                                  # ⚡ Fast deployment (alias for make droplet-quick-deploy)
 make droplet-quick-rebuild                    # 🚀 Quick rebuild (partial cache clear)
 make droplet-clean-rebuild                    # 🧹 Deep clean rebuild (full cache clear)
 ```
@@ -60,7 +82,7 @@ make droplet-disk-usage        # 💾 Check disk usage and Docker stats
 make clean-branches            # 🗑️ Delete all non-master branches locally
 make droplet-clean-branches    # 🗑️ Delete all non-master branches on droplet
 make help                      # 📖 Show all available commands
-ssh droplet                    # 🔗 Passwordless SSH access (via SSH key)
+d                              # 🔗 Passwordless SSH access (alias for ssh droplet)
 ```
 
 ## 📁 Project Structure
@@ -83,8 +105,14 @@ ssh droplet                    # 🔗 Passwordless SSH access (via SSH key)
 
 ### 🔄 Branch Management
 ```bash
+# Quick git workflow with aliases
+vc                                              # Navigate to project (alias)
+gs                                              # Git status (alias)
+gcp "commit message"                            # Add, commit, push in one command (alias)
+glog                                            # Show last commit (alias)
+
 # Deploy current local branch (auto-syncs with droplet)
-make droplet-deploy                             # Deploy current local branch to droplet
+deploy                                          # Deploy current local branch to droplet (alias)
 make deploy                                     # Deploy current branch (when SSH'd)
 
 # Deploy specific branch
