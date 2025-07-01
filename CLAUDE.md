@@ -130,6 +130,16 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 | Docker CLI | Added to PATH | System installed |
 | Project path | `/Users/vadimcastro/Desktop/PROJECTS/my_website/vadimcastro.me` | `/root/vadimcastro.me` |
 
+### 📖 Complete Workflow Documentation
+For comprehensive terminal workflow documentation, architectural decisions, and setup history, see: **[`~/vadimOS.md`](file:///Users/vadimcastro/vadimOS.md)**
+
+The vadimOS.md file contains:
+- Complete shell configuration templates
+- Advanced alias recommendations  
+- Project management utilities
+- Shell optimization insights
+- Deployment patterns and history
+
 ## 🎯 Current Development Focus
 
 ### ✅ Completed Features
