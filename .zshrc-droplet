@@ -1,10 +1,6 @@
 # Project navigation shortcuts
-  vadim-cloud() {
-      cd /Users/vadimcastro/Desktop/PROJECTS/my_website/vadimcastro.me
-  }
-
-  dlm() {
-      cd /Users/vadimcastro/Desktop/DAN/dlm-photo-gallery
+  vc() {
+      cd /root/vadimcastro.me
   }
 
   # Git shortcuts
@@ -19,6 +15,7 @@
   # System shortcuts
   alias ll='ls -alh'
   alias ..='cd ..'
+  alias home='cd ~'
   alias c='clear'
 
   # Docker shortcuts
@@ -29,15 +26,11 @@
 
   # Development shortcuts
   alias dev='make dev'
-  alias deploy='make droplet-deploy'
+  alias prod='make prod'
+  alias deploy='make deploy'
   alias status='make droplet-status'
 
   # Quick commit and push
   gcp() {
       git add . && git commit -m "$1" && git push
-  }
-
-  # Quick project deployment
-  quick-deploy() {
-      vadim-cloud && make droplet-quick-deploy
   }
