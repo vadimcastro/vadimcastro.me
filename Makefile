@@ -88,6 +88,23 @@ droplet-deploy:
 droplet-status:
 	@echo "Checking droplet status..."
 	ssh droplet "cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml ps && docker logs docker-api-1 | tail -5"
+droplet-deep-clean:
+	@echo "🧹 Starting comprehensive droplet maintenance..."
+	@echo "📊 Before cleanup:"
+	@ssh droplet 'df -h | head -2'
+	@echo ""
+	@echo "🐳 Cleaning Docker system..."
+	@ssh droplet 'docker system prune -af && docker volume prune -f && docker builder prune -af'
+	@echo "📝 Cleaning logs..."
+	@ssh droplet 'journalctl --vacuum-time=7d && docker container prune -f'
+	@echo "🔄 Updating system packages..."
+	@ssh droplet 'apt update && apt upgrade -y && apt autoremove -y && apt autoclean'
+	@echo "📊 After cleanup:"
+	@ssh droplet 'df -h | head -2 && echo "=== Docker Usage ===" && docker system df'
+	@echo "✅ Deep clean complete!"
+droplet-disk-usage:
+	@echo "💾 Checking droplet disk usage..."
+	@ssh droplet 'df -h && echo "=== Docker Usage ===" && docker system df'
 setup-prod-env:
 	@echo "Setting up production environment..."
 	./scripts/setup-production-env.sh
@@ -152,6 +169,8 @@ help:
 	@echo "  make droplet-status         - Check production status"
 	@echo "  make droplet-logs           - View droplet API logs"
 	@echo "  make droplet-debug          - Debug droplet status"
+	@echo "  make droplet-deep-clean     - Comprehensive maintenance (cleanup + logs + updates)"
+	@echo "  make droplet-disk-usage     - Check disk usage and Docker stats"
 	@echo ""
 	@echo "🔄 Git:"
 	@echo "  make pull                   - Pull latest code (current branch)"
