@@ -38,8 +38,23 @@ gs                    # Git status
 gcp "message"         # Add, commit, push in one command
 glog                  # Show last commit
 d                     # SSH to droplet
+v                     # SSH to droplet + CD to vadimcastro.me
 home                  # Go to home directory
 ..                    # Go up one directory
+```
+
+### Shell Configuration
+```bash
+# Local (macOS/zsh)
+sz                    # Source ~/.zshrc (reload config)
+vz                    # Edit ~/.zshrc
+vp                    # Edit ~/.zprofile
+shortcuts             # Show all available aliases
+
+# Droplet (Ubuntu/bash)  
+sb                    # Source ~/.bashrc (reload config)
+vb                    # Edit ~/.bashrc
+shortcuts             # Show all available aliases
 ```
 
 ### Docker Shortcuts
@@ -87,11 +102,33 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 
 ## 📁 Project Structure
 ```
-├── frontend/     # Next.js application
-├── backend/      # FastAPI application
-├── docker/       # Docker configurations
-└── scripts/      # Deployment & setup scripts
+├── frontend/           # Next.js application
+├── backend/            # FastAPI application
+├── docker/             # Docker configurations
+├── scripts/            # Deployment & setup scripts
+│   └── droplet-bashrc  # 🐚 Droplet bash configuration
+└── CLAUDE.md           # 📖 Development documentation
 ```
+
+## 🐚 Shell Configuration
+
+### Local Environment (macOS + zsh)
+- **File**: `~/.zshrc` 
+- **Features**: Docker CLI path, project navigation, development aliases
+- **Special**: `v` alias for droplet SSH + auto-cd
+
+### Production Environment (Ubuntu + bash)  
+- **File**: `/root/.bashrc` (deploy from `scripts/droplet-bashrc`)
+- **Features**: Production-focused aliases, enhanced history, colored prompt
+- **Deploy**: Copy `scripts/droplet-bashrc` to droplet `~/.bashrc`
+
+### Key Differences
+| Feature | Local (zsh) | Droplet (bash) |
+|---------|-------------|----------------|
+| Shell reload | `sz` | `sb` |  
+| Edit config | `vz` | `vb` |
+| Docker CLI | Added to PATH | System installed |
+| Project path | `/Users/vadimcastro/Desktop/PROJECTS/my_website/vadimcastro.me` | `/root/vadimcastro.me` |
 
 ## 🎯 Current Development Focus
 
