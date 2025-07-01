@@ -45,6 +45,33 @@ pull:
 		echo "📡 Using branch: $$(git branch --show-current)"; \
 		git pull origin $$(git branch --show-current); \
 	fi
+clean-branches:
+	@echo "🧹 Cleaning local branches (keeping master)..."
+	@current_branch=$$(git branch --show-current); \
+	if [ "$$current_branch" != "master" ]; then \
+		echo "⚠️  Currently on branch: $$current_branch"; \
+		echo "   Switching to master first..."; \
+		git checkout master; \
+	fi
+	@echo "🗑️  Deleting merged branches..."
+	@git branch --merged master | grep -v '^\*\|master' | xargs -n 1 -r git branch -d || true
+	@echo "🗑️  Deleting unmerged branches (excluding current)..."
+	@git branch | grep -v '^\*\|master' | xargs -n 1 -r git branch -D || true
+	@echo "✅ Local branch cleanup complete!"
+droplet-clean-branches:
+	@echo "🧹 Cleaning droplet branches (keeping master)..."
+	@ssh droplet 'cd vadimcastro.me && \
+		current_branch=$$(git branch --show-current); \
+		if [ "$$current_branch" != "master" ]; then \
+			echo "⚠️  Currently on branch: $$current_branch"; \
+			echo "   Switching to master first..."; \
+			git checkout master; \
+		fi && \
+		echo "🗑️  Deleting merged branches..." && \
+		git branch --merged master | grep -v "^\*\|master" | xargs -n 1 -r git branch -d || true && \
+		echo "🗑️  Deleting unmerged branches..." && \
+		git branch | grep -v "^\*\|master" | xargs -n 1 -r git branch -D || true && \
+		echo "✅ Droplet branch cleanup complete!"'
 
 
 # Droplet management
@@ -201,6 +228,8 @@ help:
 	@echo "🔄 Git:"
 	@echo "  make pull                   - Pull latest code (current branch)"
 	@echo "  make pull branch=X          - Pull from specific branch"
+	@echo "  make clean-branches         - Delete all non-master branches locally"
+	@echo "  make droplet-clean-branches - Delete all non-master branches on droplet"
 	@echo ""
 	@echo "🗄️ Database:"
 	@echo "  make migrate                - Run migrations"
