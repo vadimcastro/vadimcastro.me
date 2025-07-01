@@ -38,6 +38,8 @@ services:
       - ../.env.production.local
     environment:
       - PYTHONPATH=/app:/app/app
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       db:
         condition: service_healthy
