@@ -20,56 +20,6 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
   const imageRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') onClose();
-    if (e.key === '+' || e.key === '=') {
-      e.preventDefault();
-      updateScale(scale * 1.2);
-    }
-    if (e.key === '-') {
-      e.preventDefault();
-      updateScale(scale / 1.2);
-    }
-    if (e.key === '0') {
-      e.preventDefault();
-      resetZoom();
-    }
-  }, [onClose, scale, updateScale]);
-
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
-
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    const centerPoint = { x: e.clientX, y: e.clientY };
-    updateScale(scale * delta, centerPoint);
-  }, [scale, updateScale]);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (scale > 1) {
-      setIsDragging(true);
-      setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
-    }
-  }, [scale, position]);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isDragging && scale > 1) {
-      const newPosition = {
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y,
-      };
-      const constrainedPosition = constrainPosition(newPosition, scale);
-      setPosition(constrainedPosition);
-    }
-  }, [isDragging, dragStart, scale, constrainPosition]);
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
   const constrainPosition = useCallback((newPosition: { x: number, y: number }, currentScale: number) => {
     if (!imageRef.current || !containerRef.current) return newPosition;
     
@@ -124,6 +74,56 @@ export const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => 
       }
     }
   }, [scale, position, constrainPosition]);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') onClose();
+    if (e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      updateScale(scale * 1.2);
+    }
+    if (e.key === '-') {
+      e.preventDefault();
+      updateScale(scale / 1.2);
+    }
+    if (e.key === '0') {
+      e.preventDefault();
+      resetZoom();
+    }
+  }, [onClose, scale, updateScale]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    const centerPoint = { x: e.clientX, y: e.clientY };
+    updateScale(scale * delta, centerPoint);
+  }, [scale, updateScale]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (scale > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
+    }
+  }, [scale, position]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (isDragging && scale > 1) {
+      const newPosition = {
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y,
+      };
+      const constrainedPosition = constrainPosition(newPosition, scale);
+      setPosition(constrainedPosition);
+    }
+  }, [isDragging, dragStart, scale, constrainPosition]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
 
   const getTouchDistance = (touches: React.TouchList) => {
     if (touches.length < 2) return 0;
