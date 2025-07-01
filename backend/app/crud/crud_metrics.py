@@ -343,6 +343,12 @@ def get_deployment_info() -> Dict:
         deployment_info["commit_message"] = os.getenv("GIT_COMMIT_MESSAGE", "unknown") 
         deployment_info["commit_date"] = os.getenv("GIT_COMMIT_DATE", "unknown")
         
+        # If branch is unknown/empty, try to get tag information
+        if deployment_info["current_branch"] in ["unknown", "", None]:
+            tag_info = os.getenv("GIT_TAG", "")
+            if tag_info:
+                deployment_info["current_branch"] = tag_info
+        
         # Ensure commit_hash is shortened to 8 characters if it's a full hash
         if deployment_info["commit_hash"] != "unknown" and len(deployment_info["commit_hash"]) > 8:
             deployment_info["commit_hash"] = deployment_info["commit_hash"][:8]

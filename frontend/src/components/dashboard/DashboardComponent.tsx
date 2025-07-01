@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Activity, Users, FileText, Cpu, HardDrive, Wifi, Server, Zap, ChevronDown, ChevronUp, GitBranch } from 'lucide-react';
 import { useProtectedApi } from '../../lib/api/protected';
-import { MetricCard } from './MetricCard';
+import { InfrastructureMetrics } from './InfrastructureMetrics';
+import { UserAnalyticsMetrics } from './UserAnalyticsMetrics';
 import { DiskMetricCard } from './DiskMetricCard';
 import { DashboardHeader } from './DashboardHeader';
 import { CryptoPrice } from './CryptoPrice';
@@ -85,7 +85,6 @@ const DashboardComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [showAllMetrics, setShowAllMetrics] = useState(false);
 
   const fetchDashboardMetrics = useCallback(async () => {
     try {
@@ -151,100 +150,6 @@ const DashboardComponent = () => {
     );
   }
 
-  const formatBytes = (bytes: number): string => {
-    const gb = bytes / (1024 ** 3);
-    if (gb > 1) return `${gb.toFixed(1)}GB`;
-    const mb = bytes / (1024 ** 2);
-    return `${mb.toFixed(0)}MB`;
-  };
-
-  const systemStats = metrics ? [
-    {
-      title: "Deploy Branch",
-      value: metrics.deployment.current_branch,
-      change: metrics.deployment.commit_hash,
-      icon: GitBranch,
-      description: "current",
-      trend: "up" as const
-    },
-    {
-      title: "CPU Usage",
-      value: `${metrics.system.cpu.usage_percent.toFixed(1)}%`,
-      change: `${metrics.system.cpu.cores} cores`,
-      icon: Cpu,
-      description: "system load",
-      trend: metrics.system.cpu.usage_percent < 70 ? "up" as const : "down" as const
-    },
-    {
-      title: "Memory",
-      value: `${metrics.system.memory.usage_percent.toFixed(0)}%`,
-      change: `${metrics.system.memory.used_gb}GB used`,
-      icon: Zap,
-      description: `of ${metrics.system.memory.total_gb}GB`,
-      trend: metrics.system.memory.usage_percent < 80 ? "up" as const : "down" as const
-    },
-    {
-      title: "Disk Space",
-      value: `${metrics.system.disk.free_gb.toFixed(1)}GB`,
-      change: `${metrics.system.disk.usage_percent.toFixed(0)}% used`,
-      icon: HardDrive,
-      description: "free space",
-      trend: metrics.system.disk.usage_percent < 80 ? "up" as const : "down" as const
-    },
-    {
-      title: "Network",
-      value: formatBytes(metrics.network.bytes_recv),
-      change: `${metrics.network.active_connections} connections`,
-      icon: Wifi,
-      description: "received",
-      trend: "up" as const
-    },
-    {
-      title: "API Health",
-      value: `${metrics.health.memory_usage_mb.toFixed(0)}MB`,
-      change: metrics.health.uptime_human,
-      icon: Server,
-      description: "uptime",
-      trend: metrics.health.status === 'healthy' ? "up" as const : "down" as const
-    },
-    {
-      title: "Containers",
-      value: formatNumber(metrics.system.docker.total_running || 0),
-      change: "running",
-      icon: Server,
-      description: "docker",
-      trend: "up" as const
-    }
-  ] : [];
-
-  const siteStats = metrics ? [
-    {
-      title: "Visitors",
-      value: formatNumber(metrics.visitors.total),
-      change: formatPercentage(metrics.visitors.percentageChange),
-      icon: Users,
-      description: "vs. last month",
-      trend: metrics.visitors.percentageChange >= 0 ? "up" as const : "down" as const
-    },
-    {
-      title: "Projects",
-      value: formatNumber(metrics.projects.total),
-      change: formatPercentage(metrics.projects.percentageChange),
-      icon: FileText,
-      description: "vs. last month",
-      trend: metrics.projects.percentageChange >= 0 ? "up" as const : "down" as const
-    },
-    {
-      title: "Sessions",
-      value: formatNumber(metrics.sessions.active),
-      change: formatPercentage(metrics.sessions.percentageChange),
-      icon: Activity,
-      description: "vs. last hour",
-      trend: metrics.sessions.percentageChange >= 0 ? "up" as const : "down" as const
-    }
-  ] : [];
-
-  const allStats = [...systemStats, ...siteStats];
 
   return (
     <div className="max-w-[95%] mx-auto px-1 md:px-4 py-4 space-y-6">
@@ -254,63 +159,28 @@ const DashboardComponent = () => {
         isRefreshing={isRefreshing}
       />
       
-      <div className="space-y-3">
-        {/* Mobile view: show limited metrics with expand/collapse */}
-        <div className="lg:hidden">
-          <div className="grid grid-cols-1 gap-2">
-            {(showAllMetrics ? allStats : allStats.slice(0, 3)).map((stat, index) => (
-              <MetricCard
-                key={index}
-                title={stat.title}
-                value={stat.value}
-                change={stat.change}
-                icon={stat.icon}
-                description={stat.description}
-                trend={stat.trend}
-              />
-            ))}
-          </div>
-          
-          {allStats.length > 3 && (
-            <div className="flex justify-center mt-3">
-              <button
-                onClick={() => setShowAllMetrics(!showAllMetrics)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
-              >
-                <span>{showAllMetrics ? 'Show Less' : `Show ${allStats.length - 3} More`}</span>
-                {showAllMetrics ? (
-                  <ChevronUp className="w-3 h-3" />
-                ) : (
-                  <ChevronDown className="w-3 h-3" />
-                )}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Desktop view: show all metrics always */}
-        <div className="hidden lg:block">
-          <div className="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-3">
-            {allStats.map((stat, index) => (
-              <MetricCard
-                key={index}
-                title={stat.title}
-                value={stat.value}
-                change={stat.change}
-                icon={stat.icon}
-                description={stat.description}
-                trend={stat.trend}
-              />
-            ))}
-            {/* Disk usage card with special layout */}
-            <DiskMetricCard />
-          </div>
-        </div>
+      <div className="space-y-6">
+        {/* Infrastructure & Deployment Metrics */}
+        {metrics && (
+          <InfrastructureMetrics
+            system={metrics.system}
+            network={metrics.network}
+            health={metrics.health}
+            deployment={metrics.deployment}
+          />
+        )}
         
-        {/* Mobile: Add disk card separately for better mobile layout */}
-        <div className="lg:hidden">
-          <DiskMetricCard />
-        </div>
+        {/* Disk usage card */}
+        <DiskMetricCard />
+        
+        {/* User Analytics Metrics */}
+        {metrics && (
+          <UserAnalyticsMetrics
+            visitors={metrics.visitors}
+            projects={metrics.projects}
+            sessions={metrics.sessions}
+          />
+        )}
       </div>
 
       <div className="space-y-6">

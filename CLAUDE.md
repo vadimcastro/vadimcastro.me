@@ -150,6 +150,15 @@ The vadimOS.md file contains:
 - **Authentication System**: JWT-based login with local dev setup
 - **Production Deployment**: Automated deployment pipeline with branch management
 - **Mobile-Optimized Image Modal**: Touch-friendly image viewer with pinch-to-zoom and double-tap controls
+- **Enhanced Metric Cards**: Comprehensive metric grouping with health-based visual cues, capacity indicators, and organized infrastructure/analytics sections
+
+### 🔧 Pending Development Tasks
+- **User Session Management**: Implement proper user session tracking and analytics
+  - Set up session persistence and tracking infrastructure  
+  - Create comprehensive session metrics (duration, page views, interaction patterns)
+  - Fix UserAnalyticsMetrics component to use real session data instead of placeholder values
+  - Integrate with existing JWT authentication system for user identification
+  - Add session-based analytics dashboard features
 
 ### 🔄 Branch Management
 ```bash
@@ -228,22 +237,25 @@ make deploy branch=main                         # Deploy specific branch (when S
 
 ## 📊 Dashboard Features
 
-### System Metrics Dashboard
-- **Real-time Monitoring**: CPU, memory, disk, network metrics
-- **Mobile-First Design**: Responsive 1→6 column grid
-- **Expandable Interface**: "Show X More" for compact display
-- **Icon-Based Navigation**: Clean header design
+### Enhanced Metric System
+- **Infrastructure Metrics Group**: Deploy branch, CPU, memory, disk, network, API health, containers
+  - Mobile: First 3 metrics + "Show X More" button
+  - Desktop: All 7 metrics in responsive grid
+- **User Analytics Group**: Visitors, projects, sessions (collapsible on mobile)
+- **Health-Based Visual Cues**: Green/amber/red borders based on actual capacity thresholds
+- **Smart Status Detection**: CPU <70%/85%, Memory <75%/90%, Disk <80%/95%
+
+### Component Architecture
+- `InfrastructureMetrics.tsx` - Infrastructure & deployment metrics group
+- `UserAnalyticsMetrics.tsx` - User analytics metrics group  
+- `MetricCard.tsx` - Enhanced metric cards with health status indicators
+- `DashboardComponent.tsx` - Main dashboard with organized metric groups
+- `DiskMetricCard.tsx` - Specialized disk usage visualization
 
 ### Backend Monitoring
-- **API Endpoints**: `/api/v1/metrics/system`, `/metrics/network`, `/metrics/health`
+- **API Endpoints**: `/api/v1/metrics/system`, `/metrics/network`, `/metrics/health`, `/metrics/deployment`
 - **Docker Integration**: Container status tracking
-- **Performance Optimization**: Eliminated render loops
-
-### Key Components
-- `DashboardComponent.tsx` - Main dashboard interface
-- `MetricCard.tsx` - Responsive metric display
-- `Notepad.tsx` - Icon-only header with perfect alignment
-- `CryptoPrice.tsx` - Mobile-friendly price display
+- **Real-time Updates**: 5-minute polling with manual refresh
 
 ## 🚀 Deployment Workflow
 
