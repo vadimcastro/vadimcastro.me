@@ -16,7 +16,7 @@ RUN chmod +x /usr/local/bin/start-api.sh
 
 # Copy requirements and install dependencies
 COPY backend/requirements-minimal.txt .
-RUN python3 -m pip install --no-cache-dir -r requirements-minimal.txt
+RUN python3 -m pip install -r requirements-minimal.txt
 
 # Copy the backend code
 COPY backend/ .
@@ -39,7 +39,7 @@ COPY backend/ .
 # Copy minimal requirements
 COPY backend/requirements-minimal.txt .
 # Install Python dependencies
-RUN python3 -m pip install --no-cache-dir -r requirements-minimal.txt
+RUN python3 -m pip install -r requirements-minimal.txt
 # Make sure the script is executable
 RUN chmod +x scripts/start.sh
 # Command will be overridden by docker-compose

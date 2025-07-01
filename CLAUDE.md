@@ -10,8 +10,10 @@ make setup-local-auth # First-time auth setup
 
 ### Production Deployment
 ```bash
-make droplet-deploy           # One-command deployment
-make set-branch branch=NAME   # Configure deployment branch
+make droplet-deploy           # Standard deployment
+make droplet-quick-deploy     # ⚡ Fast deployment (uses cache)
+make droplet-quick-rebuild    # 🚀 Quick rebuild (partial cache clear)
+make droplet-clean-rebuild    # 🧹 Deep clean rebuild (full cache clear)
 ```
 
 ## 🏗️ Tech Stack
@@ -47,6 +49,14 @@ make show-branch                   # Show current branch config
 ```bash
 make migrate                       # Run migrations
 make migrate-create name=NAME      # Create new migration
+```
+
+### Maintenance & Cleanup
+```bash
+make droplet-deep-clean     # 🧹 Comprehensive cleanup (Docker + logs + system updates)
+make droplet-disk-usage     # 💾 Check disk usage and Docker stats
+make help                   # 📖 Show all 33 available commands
+ssh droplet                 # 🔗 Passwordless SSH access (via SSH key)
 ```
 
 ## 📁 Project Structure
