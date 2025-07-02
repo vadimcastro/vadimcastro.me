@@ -155,6 +155,14 @@ glog                      # Show last commit
 dev                       # Start development environment
 deploy                    # Deploy current branch
 quick-deploy              # Fast deployment with cache
+auth-setup                # Complete OAuth/authentication setup
+deploy-clean              # Deep clean rebuild deployment
+
+# Utility Commands
+kd                        # Quick delete (rm -rf)
+docs                      # Open API documentation
+newtest                   # Create standardized test project
+clean-dirs                # Cleanup testing directories
 
 # Shell Management
 sz / sb                   # Source config (zsh/bash)
