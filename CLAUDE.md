@@ -133,194 +133,29 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 
 ## 🖥️ vadimOS Integration
 
-  ## 🎯 vadimOS Development Values
+## 🎯 vadimOS Development Values
 
-  **Core Principles:**
-  - **Efficiency First**: Every command should save time and reduce cognitive load
-  - **Universal Consistency**: Same commands work across all projects
-  - **Context Awareness**: Tools should understand the project environment
-  - **Fail Fast**: Clear error messages and quick recovery paths
-  - **Documentation as Code**: Keep docs in sync with reality
+**Core Principles:**
+- **Efficiency First**: Every command should save time and reduce cognitive load
+- **Universal Consistency**: Same commands work across all projects
+- **Context Awareness**: Tools should understand the project environment
+- **Fail Fast**: Clear error messages and quick recovery paths
+- **Documentation as Code**: Keep docs in sync with reality
 
-  **Workflow Philosophy:**
-  - Minimize context switching between tools and projects
-  - Automate repetitive tasks (navigation, setup, deployment)
-  - Make complex operations simple and discoverable
-  - Ensure every project follows the same patterns
-  - Optimize for developer happiness and productivity
+**Workflow Philosophy:**
+- Minimize context switching between tools and projects
+- Automate repetitive tasks (navigation, setup, deployment)
+- Make complex operations simple and discoverable
+- Ensure every project follows the same patterns
+- Optimize for developer happiness and productivity
 
-  ## 🔧 Core vadimOS Commands
-  **Project Navigation:** `vc` → auto-navigate here
-  **Development:** `gs`, `gcp "msg"`, `glog`, `dev`, `deploy`
-  **Production:** `quick-deploy`, `deploy-clean`, `logs`, `d` (SSH droplet)
-  **Utilities:** `kd`, `shortcuts`, `sz` (reload config)
-  **SSH Integration:** `v` → SSH + auto-cd to vadimcastro.me
+## 🔧 Core vadimOS Commands
+**Project Navigation:** `vc` → auto-navigate here  
+**Development:** `gs`, `gcp "msg"`, `glog`, `dev`, `deploy`  
+**Production:** `quick-deploy`, `deploy-clean`, `logs`, `d` (SSH droplet)  
+**Utilities:** `kd`, `shortcuts`, `sz` (reload config)  
+**SSH Integration:** `v` → SSH + auto-cd to vadimcastro.me
 
-  📖 **Complete Reference:** `/Users/vadimcastro/vadimOS.md`
-  🔧 **Live Config:** `/Users/vadimcastro/.zshrc`
-  ⚙️ **Claude Config:** `.claude/settings.local.json` (47 permissions)
-
-  ### **Current Compatibility Status:**
-  ✅ **Universal Commands**: All vadimOS workflow commands active
-  ✅ **Context Awareness**: vadimOS.md + .zshrc read access enabled
-  ✅ **Zero Approval Prompts**: 47+ commands pre-approved
-
-
-## 🎯 Current Development Focus
-
-### ✅ Completed Features (v2.0)
-- **Mobile-First Design**: Responsive UI across all pages
-- **Unified Action Menus**: Reusable desktop/mobile components with sand/mint theming
-- **Advanced Dashboard**: Real-time system metrics with expandable mobile interface
-- **Authentication System**: JWT-based login with local dev setup
-- **Production Deployment**: Automated deployment pipeline with branch management
-- **Mobile-Optimized Image Modal**: Touch-friendly image viewer with pinch-to-zoom and double-tap controls
-- **Enhanced Metric Cards**: Comprehensive metric grouping with health-based visual cues, capacity indicators, and organized infrastructure/analytics sections
-
-### 🔧 Pending Development Tasks
-- **User Session Management**: Implement proper user session tracking and analytics
-  - Set up session persistence and tracking infrastructure  
-  - Create comprehensive session metrics (duration, page views, interaction patterns)
-  - Fix UserAnalyticsMetrics component to use real session data instead of placeholder values
-  - Integrate with existing JWT authentication system for user identification
-  - Add session-based analytics dashboard features
-- **Project Template**: Complete vadim-project-template with metrics system
-- **Infrastructure Automation**: One-command deployment and monitoring
-
-### 🚧 Development Roadmap (v2.1 - Q1 2025)
-**Content & Portfolio Enhancement:**
-- [ ] **Technical Blog System**: MDX-powered writing platform
-- [ ] **Interactive Projects**: Live demos with embedded code examples
-- [ ] **Skills Timeline**: Interactive technology progression showcase
-- [ ] **Case Studies**: Detailed project breakdowns with metrics
-- [ ] **Professional Contact**: Enhanced inquiry management system
-
-**Performance & SEO:**
-- [ ] **Image Optimization**: WebP conversion and lazy loading
-- [ ] **Bundle Optimization**: Code splitting and tree shaking
-- [ ] **Core Web Vitals**: Perfect Lighthouse performance scores
-- [ ] **Schema Markup**: Rich snippets for search engines
-- [ ] **Analytics Integration**: Google Analytics 4 with custom events
-
-### 🔄 Branch Management
-```bash
-# Quick git workflow with aliases
-vc                                              # Navigate to project (alias)
-gs                                              # Git status (alias)
-gcp "commit message"                            # Add, commit, push in one command (alias)
-glog                                            # Show last commit (alias)
-
-# Deploy current local branch (auto-syncs with droplet)
-deploy                                          # Deploy current local branch to droplet (alias)
-make deploy                                     # Deploy current branch (when SSH'd)
-
-# Deploy specific branch
-make droplet-deploy branch=main                 # Deploy specific branch to droplet
-make deploy branch=main                         # Deploy specific branch (when SSH'd)
-
-# Note: All droplet commands now automatically sync your local branch to the droplet
-```
-
-## 🎨 Frontend Architecture
-
-### Action Menu System
-**Components**: `MobileActionMenu`, `DesktopActionMenu`
-- Touch-optimized floating buttons
-- Auto-switching sand/mint theming
-- Portal-based rendering with proper z-index
-- TypeScript support with flexible APIs
-
-```tsx
-// Usage Example
-<MobileActionMenu
-  actions={getMobileActions()}
-  isOpen={showActions}
-  onClose={() => setShowActions(false)}
-  theme="auto"
-/>
-```
-
-### Mobile Image Modal System
-**Component**: `ImageModal` (`frontend/src/components/projects/ImageModal.tsx`)
-- **Touch-Based Zoom**: Native pinch-to-zoom with stability controls
-- **Double-Tap Interaction**: Double-click/tap to zoom in/out (no single-click)
-- **Pan & Drag**: Smooth dragging when zoomed in with movement bounds
-- **Mobile-First**: No UI buttons, clean unobstructed image viewing
-- **High Quality**: 95% image quality, responsive sizing
-
-**Touch Features**:
-- **Pinch-to-zoom**: Two-finger gesture with sensitivity damping
-- **Double-tap zoom**: Toggle between 1x and 1.5x zoom levels
-- **Bounded movement**: Image stays within ±150px of center when dragging
-- **Page isolation**: Prevents background scrolling/interaction during use
-
-**Desktop Features**:
-- **Mouse wheel zoom**: Reduced sensitivity for smooth control
-- **Double-click zoom**: Same behavior as mobile double-tap
-- **Keyboard shortcuts**: `+`/`-` for zoom, `0` to reset, `ESC` to close
-- **Drag to pan**: When zoomed in, with same movement bounds
-
-**Stability**:
-- Scale bounds: 1x (normal) to 3x maximum zoom
-- Movement constraints prevent image disappearing off-screen
-- Touch sensitivity damping prevents aggressive zoom jumps
-
-### Design System
-- **Typography**: Poppins (headings), Inter (body)
-- **Mobile-first**: `px-2 md:px-4`, `text-xs md:text-sm`
-- **Icons**: Lucide React icons
-- **Spacing**: Consistent responsive margins
-
-### Contact Information
-- **Email**: vadimcastro1@gmail.com
-- **Phone**: 914-222-0975
-- **LinkedIn**: linkedin.com/in/vadimcastro
-- **GitHub**: github.com/vadimcastro
-
-## 📊 Dashboard Features
-
-### Enhanced Metric System
-- **Infrastructure Metrics Group**: Deploy branch, CPU, memory, disk, network, API health, containers
-  - Mobile: First 3 metrics + "Show X More" button
-  - Desktop: All 7 metrics in responsive grid
-- **User Analytics Group**: Visitors, projects, sessions (collapsible on mobile)
-- **Health-Based Visual Cues**: Green/amber/red borders based on actual capacity thresholds
-- **Smart Status Detection**: CPU <70%/85%, Memory <75%/90%, Disk <80%/95%
-
-### Component Architecture
-- `InfrastructureMetrics.tsx` - Infrastructure & deployment metrics group
-- `UserAnalyticsMetrics.tsx` - User analytics metrics group  
-- `MetricCard.tsx` - Enhanced metric cards with health status indicators
-- `DashboardComponent.tsx` - Main dashboard with organized metric groups
-- `DiskMetricCard.tsx` - Specialized disk usage visualization
-
-### Backend Monitoring
-- **API Endpoints**: `/api/v1/metrics/system`, `/metrics/network`, `/metrics/health`, `/metrics/deployment`
-- **Docker Integration**: Container status tracking
-- **Real-time Updates**: 5-minute polling with manual refresh
-
-## 🚀 Deployment Workflow
-
-```bash
-# 1. Development
-git add . && git commit -m "feature: description"
-git push origin feature/mobile-friendly
-
-# 2. Deploy
-make droplet-deploy
-
-# 3. Verify
-curl http://206.81.2.168:3000  # Frontend health check
-```
-
-### Troubleshooting
-```bash
-ssh root@206.81.2.168 'cd vadimcastro.me && docker compose -f docker/docker-compose.prod.yml logs -f'
-make droplet-force-rebuild  # Force clean rebuild
-```
-
-### Pull Request
-**Ready for merge**: `hotfix/release-metric` → `master`
-[Create PR](https://github.com/vadimcastro/vadimcastro.me/compare/master...hotfix/release-metric)
-
-**Branch Status**: Enhanced metric card system with health-based visual indicators and organized component architecture
+📖 **Complete Reference:** `/Users/vadimcastro/vadimOS.md`  
+🔧 **Live Config:** `/Users/vadimcastro/.zshrc`  
+⚙️ **Claude Config:** `.claude/settings.local.json` (47 permissions)

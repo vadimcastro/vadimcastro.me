@@ -1,5 +1,5 @@
-# ~/.bashrc: VadimCastro.me Droplet Configuration
-# Optimized bash configuration for DigitalOcean droplet production environment
+# ~/.bashrc: vadimcastro.me Droplet Configuration
+# Optimized bash configuration for production environment
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -20,13 +20,18 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# Colored prompt with proper escape sequences
+# Git branch display function
+parse_git_branch() {
+    git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'
+}
+
+# Colored prompt with git branch display
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    # Green user@host, blue path, white $
-    PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    # Green user@host, blue path, yellow git branch, white $
+    PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] \[\033[01;33m\]$(parse_git_branch)\[\033[00m\]\$ '
 else
-    # Fallback without colors
-    PS1='\u@\h:\w\$ '
+    # Fallback without colors but with git branch
+    PS1='\u@\h:\w $(parse_git_branch)\$ '
 fi
 
 # Set terminal title
@@ -37,10 +42,10 @@ xterm*|rxvt*|screen*)
 esac
 
 # Environment variables
-export DEPLOY_BRANCH_ENV=feature/mobile-friendly
+export DEPLOY_BRANCH_ENV=main
 
 # Project navigation shortcuts
-function vc() {
+function vadimcastrome() {
     cd /root/vadimcastro.me
 }
 
@@ -83,6 +88,7 @@ alias prod='make prod'
 alias deploy='make deploy'
 alias status='make droplet-status'
 alias logs='make droplet-logs'
+alias quick-deploy='make droplet-quick-deploy'
 
 # Quick commit and push
 function gcp() {
@@ -94,7 +100,7 @@ function shortcuts() {
     echo "📋 Available Shortcuts & Aliases:"
     echo ""
     echo "🗂️  Project Navigation:"
-    echo "  vc → cd /root/vadimcastro.me"
+    echo "  vadimcastrome → cd /root/vadimcastro.me"
     echo ""
     echo "🔧 Git Shortcuts:"
     echo "  gs → git status"
@@ -117,6 +123,7 @@ function shortcuts() {
     echo "  dev → make dev"
     echo "  prod → make prod"
     echo "  deploy → make deploy"
+    echo "  quick-deploy → make droplet-quick-deploy"
     echo "  status → make droplet-status"
     echo "  logs → make droplet-logs"
     echo ""
@@ -129,6 +136,7 @@ function shortcuts() {
     echo "  c → clear"
     echo "  sb → source ~/.bashrc"
     echo "  vb → vim ~/.bashrc"
+    echo "  gsb → generate and source bashrc from template"
 }
 
 # Load bash completion if available
