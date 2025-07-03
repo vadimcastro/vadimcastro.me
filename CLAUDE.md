@@ -26,7 +26,7 @@ make droplet-clean-rebuild    # 🧹 Deep clean rebuild (full cache clear)
 - **Frontend**: http://206.81.2.168:3000
 - **API**: http://206.81.2.168:8000
 - **Status**: ✅ Operational
-- **Branch**: `feature/mobile-friendly`
+- **Branch**: `master`
 
 ## ⚡ Terminal Workflow
 
@@ -133,66 +133,41 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 
 ## 🖥️ vadimOS Integration
 
-### **Current Compatibility Status:**
-✅ **Full Integration**: All universal workflow commands working seamlessly  
-✅ **Shell Optimization**: Complete zsh (local) + bash (droplet) configuration  
-✅ **Cross-Project Navigation**: `vc`, `dlm`, project-specific functions active  
-✅ **Production Workflows**: Deployment patterns proven in production environment
+  ## 🎯 vadimOS Development Values
 
-### **Universal Workflow Commands:**
-```bash
-# Navigation & Context Switching
-vc                        # Navigate to vadimcastro.me
-dlm                       # Navigate to DLM photo gallery
-d                         # SSH to droplet
-v                         # SSH to droplet + auto-cd to vadimcastro.me
-home                      # Go to home directory
+  **Core Principles:**
+  - **Efficiency First**: Every command should save time and reduce cognitive load
+  - **Universal Consistency**: Same commands work across all projects
+  - **Context Awareness**: Tools should understand the project environment
+  - **Fail Fast**: Clear error messages and quick recovery paths
+  - **Documentation as Code**: Keep docs in sync with reality
 
-# Development Workflow
-gs                        # Git status
-gcp "message"             # Add, commit, push in one command
-glog                      # Show last commit
-dev                       # Start development environment
-deploy                    # Deploy current branch
-quick-deploy              # Fast deployment with cache
-auth-setup                # Complete OAuth/authentication setup
-deploy-clean              # Deep clean rebuild deployment
+  **Workflow Philosophy:**
+  - Minimize context switching between tools and projects
+  - Automate repetitive tasks (navigation, setup, deployment)
+  - Make complex operations simple and discoverable
+  - Ensure every project follows the same patterns
+  - Optimize for developer happiness and productivity
 
-# Utility Commands
-kd                        # Quick delete (rm -rf)
-docs                      # Open API documentation
-newtest                   # Create standardized test project
-clean-dirs                # Cleanup testing directories
+  ## 🔧 Core vadimOS Commands
+  **Project Navigation:** `vc` → auto-navigate here
+  **Development:** `gs`, `gcp "msg"`, `glog`, `dev`, `deploy`
+  **Production:** `quick-deploy`, `deploy-clean`, `logs`, `d` (SSH droplet)
+  **Utilities:** `kd`, `shortcuts`, `sz` (reload config)
+  **SSH Integration:** `v` → SSH + auto-cd to vadimcastro.me
 
-# Shell Management
-sz / sb                   # Source config (zsh/bash)
-vz / vb                   # Edit config (zsh/bash)
-shortcuts                 # Show all available aliases
-```
+  📖 **Complete Reference:** `/Users/vadimcastro/vadimOS.md`
+  🔧 **Live Config:** `/Users/vadimcastro/.zshrc`
+  ⚙️ **Claude Config:** `.claude/settings.local.json` (47 permissions)
 
-### **Project-Specific Enhancements:**
-```bash
-# VadimCastro.me Specific
-logs                      # View container logs
-dps                       # Docker container status
-dclean                    # Docker system cleanup
-gsb                       # Generate droplet bashrc + source (when SSH'd)
-```
+  ### **Current Compatibility Status:**
+  ✅ **Universal Commands**: All vadimOS workflow commands active
+  ✅ **Context Awareness**: vadimOS.md + .zshrc read access enabled
+  ✅ **Zero Approval Prompts**: 47+ commands pre-approved
 
-### **Complete Workflow Documentation:**
-For comprehensive terminal workflow documentation, architectural decisions, and setup history, see: **[`~/vadimOS.md`](file:///Users/vadimcastro/vadimOS.md)**
-
-The vadimOS.md file contains:
-- Complete shell configuration templates
-- Advanced alias recommendations  
-- Project management utilities
-- Shell optimization insights
-- Deployment patterns and history
-- Cross-project workflow patterns
 
 ## 🎯 Current Development Focus
 
-### ✅ Recently Completed Features
 ### ✅ Completed Features (v2.0)
 - **Mobile-First Design**: Responsive UI across all pages
 - **Unified Action Menus**: Reusable desktop/mobile components with sand/mint theming
