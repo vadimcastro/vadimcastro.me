@@ -129,7 +129,7 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 | Shell reload | `sz` | `sb` |  
 | Edit config | `vz` | `vb` |
 | Docker CLI | Added to PATH | System installed |
-| Project path | `/Users/vadimcastro/Desktop/PROJECTS/my_website/vadimcastro.me` | `/root/vadimcastro.me` |
+| Project path | `/Users/vadimcastro/Desktop/PROJECTS/vadimcastro.me` | `/root/vadimcastro.me` |
 
 ## 🖥️ vadimOS Integration
 
@@ -158,4 +158,5 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 
 📖 **Complete Reference:** `/Users/vadimcastro/vadimOS.md`  
 🔧 **Live Config:** `/Users/vadimcastro/.zshrc`  
-⚙️ **Claude Config:** `.claude/settings.local.json` (47 permissions)
+🏗️ **Infrastructure:** `/Users/vadimcastro/Desktop/PROJECTS/vadimOS/`  
+⚙️ **Claude Config:** `.claude/settings.local.json` (47+ permissions)
