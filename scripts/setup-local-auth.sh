@@ -58,7 +58,9 @@ if echo "$response" | grep -q "access_token"; then
     fi
     
     echo "✅ Success"
+    echo "📋 Login: vadim@vadimcastro.pro / meow"
+    echo "🌐 http://localhost:3000 | 🔧 http://localhost:8000/docs"
 else
-    echo "❌ Authentication failed"
+    echo "❌ Authentication failed: $response"
     exit 1
 fi
