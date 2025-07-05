@@ -140,6 +140,110 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 🎯 vadimOS Development Values
 
 **Core Principles:**
@@ -166,4 +270,4 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 📖 **Complete Reference:** `/Users/vadimcastro/vadimOS.md`  
 🔧 **Live Config:** `/Users/vadimcastro/.zshrc`  
 🏗️ **Infrastructure:** `/Users/vadimcastro/Desktop/PROJECTS/vadimOS/`  
-⚙️ **Claude Config:** `.claude/settings.local.json` (47+ permissions)
+⚙️ **Claude Config:** `.claude/settings.local.json` (100+ permissions)
