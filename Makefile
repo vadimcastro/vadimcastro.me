@@ -179,8 +179,9 @@ migrate-create:
 	docker compose exec api alembic revision --autogenerate -m "$(name)"
 # Cleanup commands
 down:
-	@echo "Stopping containers..."
-	docker compose -f docker/docker-compose.prod.yml down
+	@echo "🛑 Stopping all services..."
+	@docker compose -f docker/docker-compose.prod.yml down
+	@echo "✅ All services stopped"
 clean:
 	@echo "Cleaning up development environment..."
 	docker system prune -f
