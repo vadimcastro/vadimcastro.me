@@ -1,8 +1,14 @@
-.PHONY: dev prod down clean migrate logs format help
+.PHONY: dev prod down clean migrate logs format help build-base dev-ultra health health-docker health-containers health-api
 # Development commands
 dev:
 	@echo "Starting development environment..."
 	cd docker && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+build-base:
+	@echo "🏗️ Building vadimcastro.me base images..."
+	./scripts/build-base-images.sh
+dev-ultra:
+	@echo "🚀 Starting ULTRA development environment (requires base images)..."
+	cd docker && docker compose -f docker-compose.dev.ultra.yml up
 dev-debug:
 	@echo "Starting development environment with debug logs..."
 	cd docker && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build 2>&1 | tee debug.log
@@ -179,8 +185,9 @@ migrate-create:
 	docker compose exec api alembic revision --autogenerate -m "$(name)"
 # Cleanup commands
 down:
-	@echo "Stopping containers..."
-	docker compose -f docker/docker-compose.prod.yml down
+	@echo "🛑 Stopping all services..."
+	@docker compose -f docker/docker-compose.prod.yml down
+	@echo "✅ All services stopped"
 clean:
 	@echo "Cleaning up development environment..."
 	docker system prune -f
@@ -246,3 +253,23 @@ help:
 	@echo "⚙️ Setup:"
 	@echo "  make setup-prod-env         - Set up production environment"
 	@echo "  make setup-local-auth       - Configure local authentication"
+	@echo ""
+	@echo "🏥 Health Checks:"
+	@echo "  make health                 - Comprehensive system health check"
+	@echo "  make health-docker          - Docker installation & daemon check"
+	@echo "  make health-containers      - Running containers status"
+	@echo "  make health-api             - API endpoints availability"
+
+# Health check commands
+health:
+	@echo "🏥 Running comprehensive health check..."
+	@./scripts/docker-health.sh && health
+health-docker:
+	@echo "🐳 Checking Docker health..."
+	@./scripts/docker-health.sh && health_docker
+health-containers:
+	@echo "📦 Checking container health..."
+	@./scripts/docker-health.sh && health_containers
+health-api:
+	@echo "🌐 Checking API health..."
+	@./scripts/docker-health.sh && health_api
