@@ -2,6 +2,48 @@
 #!/bin/bash
 cd /app
 
+# Ensure the database exists first
+echo "Ensuring database exists..."
+python3 -c "
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import os
+
+# Database connection parameters
+db_params = {
+    'host': os.getenv('POSTGRES_HOST', 'db'),
+    'port': int(os.getenv('POSTGRES_PORT', '5432')),
+    'user': os.getenv('POSTGRES_USER', 'postgres'),
+    'password': os.getenv('POSTGRES_PASSWORD', 'password'),
+}
+
+db_name = os.getenv('POSTGRES_DB', 'vadimcastro')
+
+try:
+    # Connect to postgres default database
+    conn = psycopg2.connect(**db_params, database='postgres')
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = conn.cursor()
+    
+    # Check if database exists
+    cursor.execute(\"SELECT 1 FROM pg_database WHERE datname='%s'\" % db_name)
+    exists = cursor.fetchone()
+    
+    if not exists:
+        print(f'Creating database {db_name}...')
+        cursor.execute(f'CREATE DATABASE {db_name}')
+        print(f'Database {db_name} created successfully!')
+    else:
+        print(f'Database {db_name} already exists')
+    
+    cursor.close()
+    conn.close()
+    
+except Exception as e:
+    print(f'Database creation error: {e}')
+    # Continue anyway, might be a connection issue
+"
+
 # Check if alembic directory and env.py exist
 if [ ! -d "alembic" ] || [ ! -f "alembic/env.py" ]; then
     echo "Alembic not properly configured, creating tables directly..."
