@@ -17,7 +17,7 @@ db_params = {
     'password': os.getenv('POSTGRES_PASSWORD', 'password'),
 }
 
-db_name = os.getenv('POSTGRES_DB', 'vadimcastro')
+db_name = os.getenv('POSTGRES_DB', 'vadimcastro-me')
 
 try:
     # Connect to postgres default database
