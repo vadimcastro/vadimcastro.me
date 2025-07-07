@@ -132,7 +132,6 @@ d                              # 🔗 Passwordless SSH access (alias for ssh dro
 | Project path | `/Users/vadimcastro/Desktop/PROJECTS/vadimcastro.me` | `/root/vadimcastro.me` |
 
 
-
 ## 🎯 vadimOS Development Values
 
 **Core Principles:**
