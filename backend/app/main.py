@@ -36,6 +36,20 @@ async def lifespan(app: FastAPI):
     FastAPICache.init(InMemoryBackend(), prefix="vadimcastro-cache")
     logger.info("Cache initialized successfully")
     
+    # Initialize database with admin user in development
+    if ENVIRONMENT == "development":
+        logger.info("Development mode - initializing database...")
+        try:
+            db = SessionLocal()
+            try:
+                init_db(db)
+                logger.info("Database initialization completed successfully")
+            finally:
+                db.close()
+        except Exception as e:
+            logger.error(f"Database initialization failed: {str(e)}")
+            logger.info("Database initialization failed, but continuing startup...")
+    
     yield
     
     # Cleanup
