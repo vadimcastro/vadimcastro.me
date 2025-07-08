@@ -101,4 +101,8 @@ finally:
 print('Tables created successfully!')
 "
 
+# Initialize database with admin user
+echo "Initializing database..."
+python3 /app/scripts/init_db.py
+
 echo "Migration complete!"
