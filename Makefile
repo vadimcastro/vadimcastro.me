@@ -10,10 +10,15 @@ PRODUCTION_IP = 206.81.2.168
 include ../vadimOS/vadimOS.mk
 
 # Project-specific PHONY targets
-.PHONY: auth-setup
+.PHONY: auth-setup setup-local-auth
 
 # Project-specific commands (overrides or additions)
 auth-setup: setup-local-auth
+
+# Override setup-local-auth to use correct path
+setup-local-auth:
+	@echo "Setting up local development authentication..."
+	./scripts/setup-local-auth.sh
 
 # Custom down command for vadimcastro.me (override)
 down:

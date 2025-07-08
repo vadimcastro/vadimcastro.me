@@ -1,4 +1,4 @@
-# Dockerfile for vc-resume-backend-base  
+# Dockerfile for vadimcastro-me-backend-base  
 # Pre-built base image for vadimcastro.me backend with resume/cloud-specific dependencies
 
 FROM python:3.11-slim

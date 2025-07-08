@@ -1,4 +1,4 @@
-# Dockerfile for vc-resume-frontend-base
+# Dockerfile for vadimcastro-me-frontend-base
 # Pre-built base image for vadimcastro.me frontend with resume-specific dependencies
 
 FROM node:18-alpine

@@ -5,9 +5,9 @@ services:
   # Override database name for vadimcastro.me
   db:
     environment:
-      - POSTGRES_DB=vadimcastro-me
+      - POSTGRES_DB=vadimcastrome
       
   # Override API database connection
   api:
     environment:
-      - POSTGRES_DB=vadimcastro-me
+      - POSTGRES_DB=vadimcastrome

@@ -1,6 +1,7 @@
 # backend/scripts/migrate.sh
 #!/bin/bash
 cd /app
+export PYTHONPATH=/app
 
 # Ensure the database exists first
 echo "Ensuring database exists..."
@@ -17,7 +18,8 @@ db_params = {
     'password': os.getenv('POSTGRES_PASSWORD', 'password'),
 }
 
-db_name = os.getenv('POSTGRES_DB', 'vadimcastro-me')
+db_name = os.getenv('POSTGRES_DB', 'vadimcastrome')
+print(f'Target database name from environment: {db_name}')
 
 try:
     # Connect to postgres default database
@@ -25,14 +27,18 @@ try:
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     cursor = conn.cursor()
     
-    # Check if database exists
-    cursor.execute(\"SELECT 1 FROM pg_database WHERE datname='%s'\" % db_name)
+    # Check if database exists  
+    cursor.execute(\"SELECT 1 FROM pg_database WHERE datname=%s\", (db_name,))
     exists = cursor.fetchone()
     
     if not exists:
         print(f'Creating database {db_name}...')
-        cursor.execute(f'CREATE DATABASE {db_name}')
-        print(f'Database {db_name} created successfully!')
+        # Database names cannot be parameterized, but we validate the name first
+        if db_name.replace('_', '').replace('-', '').isalnum():
+            cursor.execute(f'CREATE DATABASE \"{db_name}\"')
+            print(f'Database {db_name} created successfully!')
+        else:
+            print(f'Invalid database name: {db_name}')
     else:
         print(f'Database {db_name} already exists')
     
@@ -44,10 +50,9 @@ except Exception as e:
     # Continue anyway, might be a connection issue
 "
 
-# Check if alembic directory and env.py exist
-if [ ! -d "alembic" ] || [ ! -f "alembic/env.py" ]; then
-    echo "Alembic not properly configured, creating tables directly..."
-    python3 -c "
+# Skip Alembic for now and create tables directly (faster and more reliable)
+echo "Creating tables directly for ultra-fast startup..."
+python3 -c "
 import sys
 import os
 sys.path.append('/app')
@@ -56,8 +61,10 @@ sys.path.append('/app')
 from app.models.user import User
 from app.models.project import Project  
 from app.models.user_session import UserSession
+from app.models.note import Note
 from app.db.base_class import Base
 from app.db.session import engine, SessionLocal
+from sqlalchemy import text
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -72,12 +79,12 @@ Base.metadata.create_all(bind=engine)
 db = SessionLocal()
 try:
     # List all tables to verify creation
-    tables_result = db.execute(\"\"\"
+    tables_result = db.execute(text(\"\"\"
         SELECT table_name 
         FROM information_schema.tables 
         WHERE table_schema = 'public'
         ORDER BY table_name
-    \"\"\")
+    \"\"\"))
     tables = [row[0] for row in tables_result]
     logger.info(f'Created tables: {tables}')
     
@@ -93,33 +100,5 @@ finally:
 
 print('Tables created successfully!')
 "
-    echo "Migration complete!"
-    exit 0
-fi
-
-# Function to check if a migration has been applied
-check_migration() {
-    local revision=$1
-    alembic history | grep -q $revision
-}
-
-# Get current revision
-echo "Checking current migration state..."
-current=$(alembic current 2>/dev/null || echo "None")
-echo "Current revision: $current"
-
-if [ "$current" = "None" ]; then
-    echo "No migrations found. Running all migrations..."
-    alembic upgrade head
-elif [ "$current" = "001" ]; then
-    echo "At revision 001. Running remaining migrations..."
-    alembic upgrade head
-elif [ "$current" = "002" ]; then
-    echo "At revision 002. Running remaining migrations..."
-    alembic upgrade head
-else
-    echo "Ensuring we're at the latest migration..."
-    alembic upgrade head
-fi
 
 echo "Migration complete!"
