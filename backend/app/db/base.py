@@ -8,6 +8,7 @@ from app.db.base_class import Base
 from app.models.user import User  
 from app.models.project import Project
 from app.models.user_session import UserSession
+from app.models.note import Note
 
 # Create SQLAlchemy engine
 engine = create_engine(settings.DATABASE_URL)
