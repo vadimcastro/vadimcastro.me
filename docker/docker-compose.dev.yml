@@ -10,6 +10,6 @@ services:
       
   api:
     env_file:
-      - /Users/vadimcastro/Desktop/PROJECTS/vadimcastro.me/.env.development
+      - ../.env.development
     volumes:
-      - ../../backend/.env:/app/.env:ro
+      - ../backend/.env:/app/.env:ro

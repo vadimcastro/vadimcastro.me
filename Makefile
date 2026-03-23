@@ -1,27 +1,66 @@
 # vadimcastro.me Makefile
 # Project-specific configuration for vadimOS
 
-# Project variables for vadimOS.mk
+# Project variables
 PROJECT_NAME = vadimcastro.me
 DROPLET_ALIAS = droplet
 PRODUCTION_IP = 206.81.2.168
 
-# Include universal vadimOS commands
-include ../vadimOS/vadimOS.mk
+# Compose files for development
+COMPOSE_DEV = -f docker/docker-compose.yml -f docker/docker-compose.dev.yml
+COMPOSE_ULTRA = $(COMPOSE_DEV) -f docker/docker-compose.dev.ultra.yml
+
+# Development Targets
+.PHONY: dev dev-ultra down clean logs migrate ps status
+
+dev:
+	@echo "🚀 Starting development environment..."
+	docker compose $(COMPOSE_DEV) up --build
+
+dev-ultra:
+	@echo "⚡ Starting lightning-fast ULTRA development..."
+	docker compose $(COMPOSE_ULTRA) up
+
+# Management
+down:
+	@echo "🛑 Stopping containers..."
+	docker compose $(COMPOSE_DEV) down
+
+clean:
+	@echo "🧹 Cleaning containers and orphans (Data Safe)..."
+	docker compose $(COMPOSE_DEV) down --remove-orphans
+
+clean-all:
+	@echo "🚨 WARNING: Wiping all containers, orphans, and DATA VOLUMES..."
+	docker compose $(COMPOSE_DEV) down -v --remove-orphans
+
+logs:
+	docker compose $(COMPOSE_DEV) logs -f
+
+# Database
+migrate:
+	@echo "📦 Running database migrations..."
+	docker compose $(COMPOSE_DEV) exec api /app/scripts/migrate.sh
+
+# Health & Status
+ps:
+	docker compose $(COMPOSE_DEV) ps
+
+status:
+	@./scripts/docker-health.sh
 
 # Project-specific PHONY targets
 .PHONY: auth-setup setup-local-auth
 
-# Project-specific commands (overrides or additions)
+# Project-specific commands
 auth-setup: setup-local-auth
 
-# Override setup-local-auth to use correct path
 setup-local-auth:
 	@echo "Setting up local development authentication..."
 	./scripts/setup-local-auth.sh
 
-# Custom down command for vadimcastro.me (override)
-down:
-	@echo "🛑 Stopping all services..."
+# Custom down command for production
+prod-down:
+	@echo "🛑 Stopping all production services..."
 	@docker compose -f docker/docker-compose.prod.yml down
-	@echo "✅ All services stopped"
+	@echo "✅ All production services stopped"
