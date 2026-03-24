@@ -1,10 +1,7 @@
 # vadimcastro.me Makefile
-# Project-specific configuration for vadimOS
 
 # Project variables
 PROJECT_NAME = vadimcastro.me
-DROPLET_ALIAS = droplet
-PRODUCTION_IP = 206.81.2.168
 
 # Compose files for development
 COMPOSE_DEV = -f docker/docker-compose.yml -f docker/docker-compose.dev.yml
@@ -18,7 +15,7 @@ dev:
 	docker compose $(COMPOSE_DEV) up --build
 
 dev-ultra:
-	@echo "⚡ Starting lightning-fast ULTRA development..."
+	@echo "⚡ Starting lightning-fast development..."
 	docker compose $(COMPOSE_ULTRA) up
 
 # Management
@@ -49,18 +46,11 @@ ps:
 status:
 	@./scripts/docker-health.sh
 
-# Project-specific PHONY targets
+# Authentication
 .PHONY: auth-setup setup-local-auth
 
-# Project-specific commands
 auth-setup: setup-local-auth
 
 setup-local-auth:
 	@echo "Setting up local development authentication..."
 	./scripts/setup-local-auth.sh
-
-# Custom down command for production
-prod-down:
-	@echo "🛑 Stopping all production services..."
-	@docker compose -f docker/docker-compose.prod.yml down
-	@echo "✅ All production services stopped"

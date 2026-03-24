@@ -1,5 +1,5 @@
 # vadimcastro.me ultra development overrides
-# Use with: docker compose -f ../../vadimOS/docker/docker-compose.base.yml -f docker-compose.yml -f ../../vadimOS/docker/docker-compose.dev.ultra.yml -f docker-compose.dev.ultra.yml
+# Use with: docker compose -f docker/docker-compose.yml -f docker/docker-compose.dev.yml -f docker/docker-compose.dev.ultra.yml up
 
 services:
   # Complete override for pre-built images with corrected absolute volume paths

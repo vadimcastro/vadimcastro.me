@@ -32,7 +32,7 @@ class Settings(BaseSettings):
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
     
     # Admin user settings
-    ADMIN_EMAIL: str = os.getenv("ADMIN_EMAIL", "vadim@vadimcastro.pro")
+    ADMIN_EMAIL: str = os.getenv("ADMIN_EMAIL", "admin@vadimcastro.me")
     ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "meow")
     ADMIN_USERNAME: str = os.getenv("ADMIN_USERNAME", "vadimcastro")
     ADMIN_NAME: str = os.getenv("ADMIN_NAME", "Vadim Castro")
