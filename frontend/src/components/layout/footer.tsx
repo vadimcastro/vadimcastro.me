@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { Mail, Github, Linkedin, Phone } from 'lucide-react';
+import { trackInteraction } from '../../lib/api/analytics';
 
 export default function Footer() {
   const [isBottom, setIsBottom] = useState(false);
@@ -21,6 +22,7 @@ export default function Footer() {
                 href="tel:914-222-0975"
                 className="flex items-center justify-center p-2 rounded-md hover:bg-gray-100 transition-colors duration-200"
                 title="Call"
+                onClick={() => trackInteraction('social_click', 'phone', { location: 'footer' })}
               >
                 <Phone className="w-4 h-4 text-gray-600 hover:text-gray-900" />
               </a>
@@ -29,6 +31,7 @@ export default function Footer() {
                 animate={controls}
                 className="flex items-center justify-center p-2 rounded-md hover:bg-gray-100 transition-colors duration-200"
                 title="Send Email"
+                onClick={() => trackInteraction('social_click', 'email', { location: 'footer' })}
               >
                 <Mail className="w-4 h-4 text-gray-600 hover:text-gray-900" />
               </motion.a>
@@ -38,6 +41,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="LinkedIn"
+                onClick={() => trackInteraction('social_click', 'linkedin', { location: 'footer' })}
               >
                 <Linkedin className="w-4 h-4 text-gray-600 hover:text-gray-900" />
               </a>
@@ -47,6 +51,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="GitHub"
+                onClick={() => trackInteraction('social_click', 'github', { location: 'footer' })}
               >
                 <Github className="w-4 h-4 text-gray-600 hover:text-gray-900" />
               </a>

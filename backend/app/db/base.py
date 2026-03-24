@@ -9,6 +9,7 @@ from app.models.user import User
 from app.models.project import Project
 from app.models.user_session import UserSession
 from app.models.note import Note
+from app.models.interaction import AnalyticsInteraction
 
 # Create SQLAlchemy engine
 engine = create_engine(settings.DATABASE_URL)

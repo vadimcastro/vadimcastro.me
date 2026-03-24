@@ -1,3 +1,4 @@
+'use client';
 // src/components/dashboard/DiskMetricCard.tsx
 import { HardDrive, Trash2, AlertTriangle } from 'lucide-react';
 import { useState, useEffect } from 'react';

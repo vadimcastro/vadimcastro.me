@@ -5,6 +5,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Mail, Github, Linkedin, Globe, ArrowLeft, Loader2 } from 'lucide-react';
 import { useAuth } from '../../lib/auth/AuthContext';
+import { trackInteraction } from '../../lib/api/analytics';
 
 interface ProfileDropdownProps {
   isOpen: boolean;
@@ -98,6 +99,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
               href="mailto:vadimcastro1@gmail.com?subject=Hey%20Vadim!"
               className="flex items-center justify-center p-2 rounded-md hover:bg-gray-100 transition-colors duration-200"
               title="Send Email"
+              onClick={() => trackInteraction('social_click', 'email', { location: 'profile_dropdown' })}
             >
               <Mail className="w-5 h-5 text-gray-600 hover:text-gray-900" />
             </a>
@@ -107,6 +109,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
               target="_blank"
               rel="noopener noreferrer"
               title="GitHub"
+              onClick={() => trackInteraction('social_click', 'github', { location: 'profile_dropdown' })}
             >
               <Github className="w-5 h-5 text-gray-600 hover:text-gray-900" />
             </a>
@@ -116,6 +119,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
               target="_blank"
               rel="noopener noreferrer"
               title="LinkedIn"
+              onClick={() => trackInteraction('social_click', 'linkedin', { location: 'profile_dropdown' })}
             >
               <Linkedin className="w-5 h-5 text-gray-600 hover:text-gray-900" />
             </a>
@@ -125,6 +129,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ isOpen, onClose, prof
               target="_blank"
               rel="noopener noreferrer"
               title="Decentraland"
+              onClick={() => trackInteraction('social_click', 'decentraland', { location: 'profile_dropdown' })}
             >
               <Globe className="w-5 h-5 text-gray-600 hover:text-gray-900" />
             </a>

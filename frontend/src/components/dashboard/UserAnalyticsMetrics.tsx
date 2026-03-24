@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import { Users, FileText, Activity, ChevronDown, ChevronUp } from 'lucide-react';
 import { MetricCard } from './MetricCard';
@@ -96,7 +97,7 @@ export const UserAnalyticsMetrics: React.FC<UserAnalyticsMetricsProps> = ({
   ];
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-1">
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-gray-600" />

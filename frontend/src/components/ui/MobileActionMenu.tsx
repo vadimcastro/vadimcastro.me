@@ -71,7 +71,7 @@ export const MobileActionMenu: React.FC<MobileActionMenuProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   
   // Auto-theme based on maximized state
-  const activeTheme = theme === 'auto' ? (isMaximized ? 'sand' : 'mint') : theme;
+  const activeTheme = theme === 'auto' ? 'mint' : theme;
   const colors = THEME_COLORS[activeTheme];
   
   // Auto-hide when clicking outside
