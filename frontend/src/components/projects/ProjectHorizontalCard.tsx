@@ -12,21 +12,8 @@ interface ProjectHorizontalCardProps {
 
 export function ProjectHorizontalCard({ project }: ProjectHorizontalCardProps) {
   return (
-    <div className="relative w-full rounded-lg overflow-hidden bg-white border transition-all duration-200 hover:shadow-lg">
-      {/* Project Status Tag */}
-      {project.status && (
-        <div className="absolute top-2 left-2 z-10">
-          <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-full shadow-sm border ${
-            project.status === 'in_progress' 
-              ? 'bg-blue-50 text-blue-600 border-blue-100' 
-              : project.status === 'archived'
-              ? 'bg-gray-50 text-gray-500 border-gray-100'
-              : 'bg-emerald-50 text-emerald-600 border-emerald-100'
-          }`}>
-            {project.status.replace('_', ' ')}
-          </span>
-        </div>
-      )}
+    <div className="relative w-full md:h-[260px] rounded-lg overflow-hidden bg-white border transition-all duration-200 hover:shadow-lg flex flex-col">
+      {/* GitHub Link Button stays on top right */}
       {/* GitHub Link Button */}
       {project.githubUrl && (
         <a
@@ -49,9 +36,9 @@ export function ProjectHorizontalCard({ project }: ProjectHorizontalCardProps) {
         className="block w-full h-full"
         onClick={() => trackInteraction('project_click', project.slug, { title: project.title })}
       >
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row h-full">
         {/* Image on left for medium screens and up, on top for mobile */}
-        <div className="relative w-full md:w-2/5 h-48 md:h-auto overflow-hidden">
+        <div className="relative w-full md:w-2/5 h-48 md:h-auto overflow-hidden shrink-0">
           <Image
             src={project.imageUrl}
             alt={project.title}
@@ -63,11 +50,24 @@ export function ProjectHorizontalCard({ project }: ProjectHorizontalCardProps) {
         </div>
         
         {/* Content on right for medium screens and up, below for mobile */}
-        <div className="p-4 md:p-6 flex-1 flex flex-col">
-          <h3 className="text-lg md:text-2xl font-heading font-semibold mb-1 md:mb-2 text-gray-900">
-            {project.title}
-          </h3>
-          <p className="text-base md:text-lg text-gray-600 mb-3 md:mb-4">
+        <div className="p-4 md:p-6 flex-1 flex flex-col min-w-0">
+          <div className="flex items-center gap-3 mb-1 md:mb-2">
+            <h3 className="text-lg md:text-2xl font-heading font-semibold text-gray-900 truncate">
+              {project.title}
+            </h3>
+            {project.status && (
+              <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-full shadow-sm border flex-shrink-0 ${
+                project.status === 'in_progress' 
+                  ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                  : project.status === 'archived'
+                  ? 'bg-gray-50 text-gray-500 border-gray-100'
+                  : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+              }`}>
+                {project.status.replace('_', ' ')}
+              </span>
+            )}
+          </div>
+          <p className="text-base md:text-lg text-gray-600 mb-3 md:mb-4 line-clamp-2">
             {project.shortDescription}
           </p>
           

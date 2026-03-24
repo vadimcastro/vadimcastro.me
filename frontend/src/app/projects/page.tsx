@@ -1,11 +1,31 @@
 // src/app/projects/page.tsx
 "use client";
 
-import { getAllProjects } from "../../lib/projects";
+import { useState, useEffect } from 'react';
+import { getAllProjects, Project } from "../../lib/projects";
 import { ProjectHorizontalCard } from '../../components/projects/ProjectHorizontalCard';
 
 export default function ProjectsPage() {
-  const projects = getAllProjects();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProjects() {
+      const data = await getAllProjects();
+      setProjects(data);
+      setLoading(false);
+    }
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-12 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
+        <p className="mt-4 text-gray-400">Loading projects...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-2 md:px-4 py-2 md:py-6">

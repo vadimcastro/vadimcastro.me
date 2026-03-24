@@ -14,6 +14,9 @@ class Project(Base):
     tech_stack = Column(JSON, nullable=False)  # Stored as JSON: {"Frontend": ["React", ...], ...}
     features = Column(JSON, nullable=False)  # Stored as JSON array of feature objects
     image_url = Column(String, nullable=False)
+    icon_url = Column(String, nullable=True)
+    github_url = Column(String, nullable=True)
+    technical_implementation = Column(JSON, nullable=True)  # Stored as JSON object
     status = Column(String, nullable=False, server_default="active")  # 'active', 'archived', 'in_progress'
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

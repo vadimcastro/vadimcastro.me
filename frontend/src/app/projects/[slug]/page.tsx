@@ -16,16 +16,23 @@ interface ProjectPageProps {
 }
 
 export default function ProjectPage({ params }: ProjectPageProps) {
-  const project = getProjectBySlug(params.slug);
+  const [project, setProject] = useState<Project | undefined | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  
-  if (!project) {
-    notFound();
-  }
+
+  useEffect(() => {
+    async function fetchProject() {
+      const data = await getProjectBySlug(params.slug);
+      setProject(data);
+      setLoading(false);
+    }
+    fetchProject();
+  }, [params.slug]);
 
   // Check screen size and scroll position
   useEffect(() => {
+    if (!project) return;
     // Function to determine if we should show the scroll indicator
     const checkScrollVisibility = () => {
       // Only show on smaller screens where content may not be visible
@@ -54,23 +61,38 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     };
   }, [project]);
 
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-12 text-center mt-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
+        <p className="mt-4 text-gray-400">Loading project details...</p>
+      </div>
+    );
+  }
+
+  if (project === undefined) {
+    notFound();
+  }
+
+  if (!project) return null;
+
   return (
     <>
       <div className="max-w-6xl mx-auto px-2 md:px-4 space-y-3 md:space-y-6 py-2 md:py-6">
         {/* Project Header */}
         <header className="space-y-2 md:space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 md:space-x-6">
-              <div className="relative w-8 h-8 md:w-12 md:h-12">
+            <div className="flex items-center space-x-4 md:space-x-8">
+              <div className="relative w-10 h-10 md:w-20 md:h-20 flex-shrink-0 transform translate-y-1">
                 <Image 
-                  src="/images/compass.svg"
+                  src={project.iconUrl || "/images/compass.svg"}
                   alt="Project Icon"
                   fill
                   className="object-contain"
                   priority
                 />
               </div>
-              <h1 className="text-3xl md:text-6xl font-heading font-bold text-gray-900">{project.title}</h1>
+              <h1 className="text-3xl md:text-7xl font-heading font-bold text-gray-900 leading-none">{project.title}</h1>
             </div>
             {project.githubUrl && (
               <a
@@ -137,64 +159,25 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           <div>
             <h2 className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-3 md:mb-5 pt-2 md:pt-4 ml-2 uppercase tracking-widest">TECHNOLOGY STACK</h2>
             
-            {/* Frontend */}
-            <div className="mb-3 md:mb-4 ml-2">
-              <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2">Frontend</h3>
-              <div className="flex flex-wrap gap-1 md:gap-2">
-                {project.techStack.Frontend.map((tech) => (
-                  <span 
-                    key={tech} 
-                    className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-            
-            {/* Backend */}
-            <div className="mb-3 md:mb-4 ml-2">
-              <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2">Backend</h3>
-              <div className="flex flex-wrap gap-1 md:gap-2">
-                {project.techStack.Backend.map((tech) => (
-                  <span 
-                    key={tech} 
-                    className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-            
-            {/* Database */}
-            <div className="mb-3 md:mb-4 ml-2">
-              <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2">Database</h3>
-              <div className="flex flex-wrap gap-1 md:gap-2">
-                {project.techStack.Database.map((tech) => (
-                  <span 
-                    key={tech} 
-                    className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-            
-            {/* DevOps */}
-            <div className="mb-3 md:mb-4 ml-2">
-              <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2">DevOps</h3>
-              <div className="flex flex-wrap gap-1 md:gap-2">
-                {project.techStack.DevOps.map((tech) => (
-                  <span 
-                    key={tech} 
-                    className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
+            {/* Dynamic Tech Stack Groups */}
+            <div className="space-y-4">
+              {Object.entries(project.techStack).map(([category, technologies]) => (
+                <div key={category} className="mb-3 md:mb-4 ml-2">
+                  <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2 capitalize">
+                    {category}
+                  </h3>
+                  <div className="flex flex-wrap gap-1 md:gap-2">
+                    {Array.isArray(technologies) && technologies.map((tech) => (
+                      <span 
+                        key={tech} 
+                        className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 

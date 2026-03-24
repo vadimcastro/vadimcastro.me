@@ -38,17 +38,18 @@
 
 ## 📅 Future Work & TODO
 
-### 1. Pydantic 2.0+ Upgrades 🚀
-- [ ] **Model Migration**: Audit all Pydantic models in `backend/app/schemas/`.
-- [ ] **Method Updates**: Replace `.dict()` with `.model_dump()` and `.json()` with `.model_dump_json()`.
-- [ ] **Config Update**: Update `class Config` to `model_config = ConfigDict(...)`.
-- [ ] **Validation**: Move from `v1.validator` to `v2.field_validator`.
+- [x] **Model Migration**: Audit all Pydantic models in `backend/app/schemas/`.
+- [x] **Method Updates**: Replace `.dict()` with `.model_dump()` and `.json()` with `.model_dump_json()`.
+- [x] **Config Update**: Update `class Config` to `model_config = ConfigDict(...)`.
+- [x] **Validation**: Move from `v1.validator` to `v2.field_validator`.
 
 ### 2. Alembic & DB Reliability 🗄️
 - [ ] **Alembic Standardization**: Transition fully to `alembic upgrade head` for all environments, eventually retiring the custom `migrate.sh`.
 - [ ] **Schema Audit**: Ensure all models (User, Project, Note, etc.) are perfectly synced with Alembic's `autogenerate` capability.
 
-### 3. Developer Experience (DX) ✨
+### 3. Developer Experience (DX) & Expansion ✨
+- [ ] **Project Editor**: Implement a secure admin panel to manage portfolio projects directly from the dashboard.
+- [ ] **Infrastructure Hardening**: Implement Nginx reverse proxy and SSL (Let's Encrypt).
 - [ ] **TypeScript Generation**: Implement a script to generate frontend types from the FastAPI OpenAPI JSON.
 - [ ] **Live Metrics**: Explore adding WebSockets for real-time dashboard updates.
 - [ ] **Background Health**: Add a background task to monitor disk/system health and log alerts.
