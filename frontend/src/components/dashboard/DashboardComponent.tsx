@@ -188,41 +188,37 @@ const DashboardComponent = () => {
 
             {isDashboardCollapsed ? (
               /* Thin Wide Bar View - Simplified */
-              <div className="flex items-center justify-between py-1 px-1 overflow-x-auto no-scrollbar whitespace-nowrap gap-4">
+              <div 
+                className="flex items-center justify-between py-1.5 px-3 overflow-x-auto no-scrollbar whitespace-nowrap gap-4 cursor-pointer hover:bg-gray-100/80 transition-colors rounded-lg group"
+                onClick={() => setIsDashboardCollapsed(false)}
+              >
                 <div className="flex items-center gap-4 flex-shrink-0">
-                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Dashboard</h3>
+                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider group-hover:text-blue-500 transition-colors">Dashboard</h3>
                   <div className="w-px h-3 bg-gray-200" />
                 </div>
                 
                 {metrics ? (
-                  <div className="flex items-center gap-8 flex-nowrap flex-1 justify-center">
+                  <div className="flex items-center gap-8 flex-nowrap flex-1 justify-center translate-x-[-12px]">
                     <div className="flex items-center gap-2">
                        <span className="text-[10px] text-gray-400 uppercase font-medium">Users</span>
                        <span className="text-xs font-bold text-gray-900">{formatNumber(metrics.visitors?.total ?? 0)}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                       <span className="text-[10px] text-blue-500 uppercase font-bold">Projects</span>
-                       <span className="text-xs font-bold text-gray-900">{formatNumber(metrics.visitors?.interactionCounts?.project_click ?? 0)}</span>
+                    <div className="flex items-center gap-3 group/item scale-100 hover:scale-105 transition-transform">
+                       <span className="text-[10px] text-blue-500 uppercase font-black tracking-tighter">Projects</span>
+                       <span className="text-xs font-black text-gray-900 tabular-nums">{formatNumber(metrics.visitors?.interactionCounts?.project_click ?? 0)}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                       <span className="text-[10px] text-green-500 uppercase font-bold">Resume</span>
-                       <span className="text-xs font-bold text-gray-900">{formatNumber(metrics.visitors?.interactionCounts?.resume_view ?? 0)}</span>
+                    <div className="flex items-center gap-3 group/item scale-100 hover:scale-105 transition-transform">
+                       <span className="text-[10px] text-green-500 uppercase font-black tracking-tighter">Resume</span>
+                       <span className="text-xs font-black text-gray-900 tabular-nums">{formatNumber(metrics.visitors?.interactionCounts?.resume_view ?? 0)}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                       <span className="text-[10px] text-purple-500 uppercase font-bold">Social</span>
-                       <span className="text-xs font-bold text-gray-900">{formatNumber(metrics.visitors?.interactionCounts?.social_click ?? 0)}</span>
+                    <div className="flex items-center gap-3 group/item scale-100 hover:scale-105 transition-transform">
+                       <span className="text-[10px] text-purple-500 uppercase font-black tracking-tighter">Social</span>
+                       <span className="text-xs font-black text-gray-900 tabular-nums">{formatNumber(metrics.visitors?.interactionCounts?.social_click ?? 0)}</span>
                     </div>
                   </div>
                 ) : (
                   <div className="text-[10px] text-gray-400 italic flex-1 text-center">Loading stats...</div>
                 )}
-
-                <button 
-                  onClick={() => setIsDashboardCollapsed(false)}
-                  className="text-[10px] font-bold text-blue-600 hover:text-blue-800 transition-colors uppercase whitespace-nowrap ml-2"
-                >
-                  Expand
-                </button>
               </div>
             ) : (
               /* Full Metrics View */

@@ -15,6 +15,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 # Reuse the get_db function from session.py
 get_db_dependency = Annotated[Session, Depends(get_db)]
 
+from datetime import datetime, timezone
+from app.models.user_session import UserSession
+
 async def get_current_user(
     db: get_db_dependency,
     token: Annotated[str, Depends(oauth2_scheme)]
@@ -37,6 +40,22 @@ async def get_current_user(
     user = crud_user.get_by_email(db, email=user_id)
     if user is None:
         raise credentials_exception
+        
+    # Track/Update User Session
+    try:
+        session = db.query(UserSession).filter(UserSession.user_id == user.id).first()
+        if not session:
+            session = UserSession(user_id=user.id)
+            db.add(session)
+        else:
+            session.last_activity = datetime.now(timezone.utc)
+        db.commit()
+    except Exception as e:
+        # Don't fail the request if session tracking fails, just log it
+        import logging
+        logging.getLogger(__name__).error(f"Failed to update user session: {e}")
+        db.rollback()
+
     return user
 
 async def get_current_active_user(

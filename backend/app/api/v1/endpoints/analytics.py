@@ -4,14 +4,9 @@ from sqlalchemy.orm import Session
 from typing import Dict, List, Any
 from app.api.deps import get_db, get_current_active_user
 from app.services.analytics import AnalyticsService
-from pydantic import BaseModel
+from app.schemas.analytics import InteractionCreate
 
 router = APIRouter()
-
-class InteractionCreate(BaseModel):
-    interaction_type: str
-    target_id: str
-    metadata: Dict[str, Any] = None
 
 @router.post("/track")
 async def track_interaction(
