@@ -1,5 +1,5 @@
-# scripts/start-api.sh
 #!/bin/bash
+# scripts/start-api.sh
 set -e
 
 echo "Starting API initialization..."
@@ -21,7 +21,6 @@ wait_for_service() {
 # Wait for required services
 wait_for_service db 5432 "PostgreSQL"
 wait_for_service redis 6379 "Redis"
-wait_for_service minio 9000 "MinIO"
 
 # Run migrations
 echo "Running database migrations..."

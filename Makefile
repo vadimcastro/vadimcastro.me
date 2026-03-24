@@ -8,7 +8,7 @@ COMPOSE_DEV = -f docker/docker-compose.yml -f docker/docker-compose.dev.yml
 COMPOSE_ULTRA = $(COMPOSE_DEV) -f docker/docker-compose.dev.ultra.yml
 
 # Development Targets
-.PHONY: dev dev-ultra down clean logs migrate ps status
+.PHONY: dev dev-ultra build-base down clean logs migrate ps status
 
 dev:
 	@echo "🚀 Starting development environment..."
@@ -17,6 +17,10 @@ dev:
 dev-ultra:
 	@echo "⚡ Starting lightning-fast development..."
 	docker compose $(COMPOSE_ULTRA) up
+
+build-base:
+	@chmod +x scripts/build-base-images.sh
+	./scripts/build-base-images.sh
 
 # Management
 down:

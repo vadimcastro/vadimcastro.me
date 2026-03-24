@@ -1,13 +1,15 @@
 # app/crud/crud_user.py
-from typing import Optional
+from typing import Optional, Any, Union, Dict
 from sqlalchemy.orm import Session
+from app.crud.base import CRUDBase
 from app.models.user import User
+from app.schemas.user import UserCreate, UserUpdate
 from app.core.hashing import verify_password
 import logging
 
 logger = logging.getLogger(__name__)
 
-class CRUDUser:
+class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def get_by_email(self, db: Session, *, email: str) -> Optional[User]:
         return db.query(User).filter(User.email == email).first()
     
@@ -36,4 +38,4 @@ class CRUDUser:
     def is_superuser(self, user: User) -> bool:
         return user.is_superuser
 
-crud_user = CRUDUser()
+crud_user = CRUDUser(User)
