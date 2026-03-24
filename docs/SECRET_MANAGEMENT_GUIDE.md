@@ -34,7 +34,7 @@ openssl rand -base64 16
 # Database - Use strong credentials
 POSTGRES_USER=vadim_prod
 POSTGRES_PASSWORD=PASTE_GENERATED_DB_PASSWORD_HERE
-POSTGRES_DB=vadimcastro_prod
+POSTGRES_DB=vadimcastrome_prod
 POSTGRES_HOST=db
 
 # Redis  
@@ -45,7 +45,7 @@ SECRET_KEY=PASTE_GENERATED_SECRET_KEY_HERE
 JWT_SECRET_KEY=PASTE_DIFFERENT_JWT_SECRET_HERE
 
 # Admin User - Your actual credentials
-ADMIN_EMAIL=vadim@vadimcastro.pro
+ADMIN_EMAIL=admin@vadimcastro.me
 ADMIN_PASSWORD=PASTE_GENERATED_ADMIN_PASSWORD_HERE
 ADMIN_USERNAME=vadimcastro
 ADMIN_NAME=Vadim Castro
@@ -134,11 +134,11 @@ Before deploying to production:
 make deploy
 
 # Check logs show production database
-docker logs docker-api-1 | grep -i "vadimcastro_prod"
+docker logs docker-api-1 | grep -i "vadimcastrome_prod"
 
 # Test your admin login works
 curl -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=vadim@vadimcastro.pro&password=YOUR_ADMIN_PASSWORD" \
+  -d "username=admin@vadimcastro.me&password=YOUR_ADMIN_PASSWORD" \
   http://206.81.2.168:8000/api/v1/auth/login
 ```
 

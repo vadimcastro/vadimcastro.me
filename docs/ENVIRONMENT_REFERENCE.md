@@ -8,7 +8,7 @@
 |----------|-------------|------------|-------------|
 | `POSTGRES_USER` | `postgres` | `vadim_prod` | Database username |
 | `POSTGRES_PASSWORD` | `devpassword123` | `[STRONG_GENERATED]` | Database password |
-| `POSTGRES_DB` | `vadimcastro_dev` | `vadimcastro_prod` | Database name |
+| `POSTGRES_DB` | `vadimcastro_dev` | `vadimcastrome_prod` | Database name |
 | `POSTGRES_HOST` | `db` | `db` | Database hostname |
 | `POSTGRES_PORT` | `5432` | `5432` | Database port |
 
@@ -25,7 +25,7 @@
 
 | Variable | Development | Production | Description |
 |----------|-------------|------------|-------------|
-| `ADMIN_EMAIL` | `admin@localhost` | `vadim@vadimcastro.pro` | Admin login email |
+| `ADMIN_EMAIL` | `admin@localhost` | `admin@vadimcastro.me` | Admin login email |
 | `ADMIN_PASSWORD` | `devpassword` | `[YOUR_SECURE_PASSWORD]` | Admin login password |
 | `ADMIN_USERNAME` | `admin` | `vadimcastro` | Admin username |
 | `ADMIN_NAME` | `Admin User` | `Vadim Castro` | Admin display name |
@@ -48,7 +48,7 @@
 
 | Setting | Development | Production | 
 |---------|-------------|------------|
-| Origins | `localhost:3000, 127.0.0.1:3000` | `vadimcastro.pro, 206.81.2.168:3000` |
+| Origins | `localhost:3000, 127.0.0.1:3000` | `vadimcastro.me, 206.81.2.168:3000` |
 | Credentials | `true` | `true` |
 | Methods | `GET, POST, PUT, DELETE, OPTIONS, PATCH` | `GET, POST, PUT, DELETE, OPTIONS, PATCH` |
 
@@ -114,7 +114,7 @@ docker exec -it docker-api-1 printenv | grep SECRET | sed 's/=.*/=***MASKED***/'
 # Database - Strong credentials
 POSTGRES_USER=vadim_prod
 POSTGRES_PASSWORD=YOUR_STRONG_DB_PASSWORD_HERE
-POSTGRES_DB=vadimcastro_prod
+POSTGRES_DB=vadimcastrome_prod
 POSTGRES_HOST=db
 
 # Redis
@@ -125,7 +125,7 @@ SECRET_KEY=YOUR_GENERATED_SECRET_KEY_HERE
 JWT_SECRET_KEY=YOUR_DIFFERENT_JWT_SECRET_HERE
 
 # Admin User - Your real credentials  
-ADMIN_EMAIL=vadim@vadimcastro.pro
+ADMIN_EMAIL=admin@vadimcastro.me
 ADMIN_PASSWORD=YOUR_SECURE_ADMIN_PASSWORD
 ADMIN_USERNAME=vadimcastro
 ADMIN_NAME=Vadim Castro

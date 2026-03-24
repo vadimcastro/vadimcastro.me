@@ -69,11 +69,10 @@ print("Adding CORS middleware directly...")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://206.81.2.168:3000",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://vadimcastro.pro",
-        "https://www.vadimcastro.pro"
+        "https://vadimcastro.me",
+        "https://www.vadimcastro.me"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],

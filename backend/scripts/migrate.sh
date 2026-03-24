@@ -1,5 +1,5 @@
-# backend/scripts/migrate.sh
 #!/bin/bash
+# backend/scripts/migrate.sh
 cd /app
 export PYTHONPATH=/app
 

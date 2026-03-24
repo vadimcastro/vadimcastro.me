@@ -47,7 +47,7 @@ make deploy
 
 ## Security Benefits
 
-✅ **Separate databases**: `vadimcastro_dev` vs `vadimcastro_prod`  
+✅ **Separate databases**: `vadimcastro_dev` vs `vadimcastrome_prod`  
 ✅ **Different Redis databases**: DB 0 (dev) vs DB 1 (prod)  
 ✅ **Strong secrets**: Generated per environment  
 ✅ **No hardcoded credentials**: All externalized  
@@ -57,7 +57,7 @@ make deploy
 
 | Variable | Dev Value | Prod Value | Purpose |
 |----------|-----------|------------|---------|
-| POSTGRES_DB | vadimcastro_dev | vadimcastro_prod | Database separation |
+| POSTGRES_DB | vadimcastro_dev | vadimcastrome_prod | Database separation |
 | POSTGRES_PASSWORD | devpassword123 | (your strong password) | Database security |
 | SECRET_KEY | dev-secret | (generated strong key) | App encryption |
 | ADMIN_PASSWORD | devpassword | (your secure password) | Admin access |

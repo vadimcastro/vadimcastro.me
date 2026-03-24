@@ -33,8 +33,8 @@ echo
 
 # Get user inputs
 echo "👤 Admin User Configuration:"
-read -p "Admin Email [vadim@vadimcastro.pro]: " ADMIN_EMAIL
-ADMIN_EMAIL=${ADMIN_EMAIL:-vadim@vadimcastro.pro}
+read -p "Admin Email [admin@vadimcastro.me]: " ADMIN_EMAIL
+ADMIN_EMAIL=${ADMIN_EMAIL:-admin@vadimcastro.me}
 
 echo
 echo "🔒 Admin Password Options:"
@@ -49,7 +49,7 @@ if [ "$PASSWORD_OPTION" = "2" ]; then
     read -s -p "Confirm admin password: " ADMIN_PASSWORD_CONFIRM
     echo
     
-    if [ "$ADMIN_PASSWORD" != "$ADMIN_PASSWORD_CONFIRM" ]; then
+    if [ "$ADMIN_PASSWORD" != "$ADMIN_PASSWORD_CONFIRM" ] ; then
         echo "❌ Passwords don't match!"
         exit 1
     fi
@@ -74,7 +74,7 @@ cat > .env.production.local << EOF
 # Database - Strong credentials
 POSTGRES_USER=vadim_prod
 POSTGRES_PASSWORD=$DB_PASSWORD
-POSTGRES_DB=vadimcastro_prod
+POSTGRES_DB=vadimcastrome_prod
 POSTGRES_HOST=db
 
 # Redis

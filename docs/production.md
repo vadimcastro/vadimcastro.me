@@ -67,8 +67,8 @@ curl http://206.81.2.168:8000/health | grep production
 
 ### 2. Verify Database Separation
 ```bash
-docker logs docker-api-1 | grep vadimcastro_prod
-# Should show: connecting to vadimcastro_prod database
+docker logs docker-api-1 | grep vadimcastrome_prod
+# Should show: connecting to vadimcastrome_prod database
 ```
 
 ### 3. Test Admin Login
@@ -91,7 +91,7 @@ docker exec -it docker-api-1 printenv | grep SECRET | head -1
 ## 📋 What You Get
 
 ### 🔒 Security Features
-- **Separate production database**: `vadimcastro_prod` 
+- **Separate production database**: `vadimcastrome_prod` 
 - **Strong generated secrets**: 256-bit entropy
 - **Git-ignored secrets**: No accidental commits
 - **Environment isolation**: Dev vs prod separation
@@ -147,7 +147,7 @@ Your deployment is successful when:
 
 - ✅ `curl http://206.81.2.168:8000/health` returns `"environment":"production"`
 - ✅ Admin login works at `http://206.81.2.168:3000`
-- ✅ Database is `vadimcastro_prod` (not `vadimcastro`)
+- ✅ Database is `vadimcastrome_prod` (not `vadimcastro`)
 - ✅ `.env.production.local` is not tracked by git
 - ✅ All containers are running (`docker ps`)
 

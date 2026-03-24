@@ -76,7 +76,7 @@ def create_user_sessions():
     db = SessionLocal()
     try:
         # Get admin user
-        admin = db.query(User).filter(User.email == "vadim@vadimcastro.pro").first()
+        admin = db.query(User).filter(User.email == "admin@vadimcastro.me").first()
         if admin:
             # Create a series of sessions over the past month
             for days in range(30):
