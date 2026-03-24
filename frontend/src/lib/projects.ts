@@ -1,3 +1,5 @@
+// src/lib/projects.ts
+
 export interface Project {
   id: string;
   slug: string;
@@ -13,6 +15,7 @@ export interface Project {
     icon: string;
   }>;
   imageUrl: string;
+  iconUrl?: string;
   githubUrl?: string;
   status: 'active' | 'archived' | 'in_progress';
   technicalImplementation: {
@@ -24,68 +27,67 @@ export interface Project {
   };
 }
 
-// Define this as a constant first
-const projectsList: Project[] = [
-  {
-    id: "1",
-    slug: "scenic",
-    title: "Scenic",
-    shortDescription: "A smart navigation app that finds beautiful routes for your road trips, integrating scenic points of interest while keeping your journey time-efficient.",
-    longDescription: "A modern navigation application that revolutionizes road trip planning by intelligently incorporating scenic routes and points of interest without significantly impacting journey time.",
-    techStack: {
-      "Frontend": ["React", "Google Maps JavaScript API", "Tailwind CSS"],
-      "Backend": ["Python", "FastAPI", "Uvicorn"],
-      "Database": ["PostgreSQL"],
-      "DevOps": ["Conda", "Git"]
-    },
-    features: [
-      {
-        title: "Multi-stop Navigation",
-        description: "Support for up to 5 waypoints with intelligent scenic route calculation between each stop.",
-        icon: "Navigation"
-      },
-      {
-        title: "Interactive POI System",
-        description: "Dynamic points of interest display with detailed modal views and map markers for scenic locations.",
-        icon: "Map"
-      },
-      {
-        title: "Customizable Time Range",
-        description: "User-defined acceptable time increase (10-75%) for scenic detours with real-time route updates.",
-        icon: "Clock"
-      }
-    ],
-    imageUrl: "/images/scenic_pic.png",
-    githubUrl: "https://github.com/vadimcastro/tour-guide",
-    status: "active",
-    technicalImplementation: {
-      systemArchitecture: [
-        "Scenic's architecture is built around efficient route calculation and POI integration.",
-        "The backend uses FastAPI to handle route requests, processing them through a custom algorithm that analyzes potential scenic detours within the user's specified time constraints.",
-        "PostgreSQL stores frequently accessed routes and POI data, significantly reducing API calls to Google's services.",
-        "The frontend implements a responsive design using React, with careful consideration for state management of route alternatives and POI data.",
-        "The map interface utilizes Google Maps JavaScript API for real-time route visualization, with custom overlay management for POI markers and route highlighting."
-      ],
-      algorithm: {
-        description: "The route calculation involves a sophisticated algorithm that optimizes both scenic value and travel time:",
-        steps: [
-          "Queries nearby scenic points within a configurable radius of the direct route, prioritizing highly-rated locations that minimize deviation from the optimal path",
-          "Evaluates potential detours based on user's time flexibility, calculating the time impact of each scenic addition to ensure it stays within specified constraints",
-          "Optimizes the route to include the highest-rated scenic points while maintaining time constraints, using a weighted scoring system that balances scenic value against time cost",
-          "Provides alternative route options with varying scenic ratings, giving users the flexibility to choose between different combinations of scenic stops and travel times"
-        ]
-      }
-    }
-  }
-];
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// In Docker, the internal URL for server-side fetching is http://api:8000
+const INTERNAL_API_URL = 'http://api:8000';
 
-// Export the functions and the projects array
-export const projects = projectsList;
+const isServer = typeof window === 'undefined';
+const API_BASE_URL = isServer ? INTERNAL_API_URL : NEXT_PUBLIC_API_URL;
 
-export function getAllProjects(): Project[] {
-  return projectsList;
+/**
+ * Maps backend snake_case project to frontend camelCase project
+ */
+function mapProject(data: any): Project {
+  return {
+    id: String(data.id),
+    slug: data.slug,
+    title: data.title,
+    shortDescription: data.short_description,
+    longDescription: data.long_description,
+    techStack: data.tech_stack,
+    features: data.features,
+    imageUrl: data.image_url,
+    iconUrl: data.icon_url,
+    githubUrl: data.github_url,
+    status: data.status,
+    technicalImplementation: data.technical_implementation || { systemArchitecture: [] }
+  };
 }
 
-export function getProjectBySlug(slug: string): Project | undefined {
-  return projectsList.find(project => project.slug === slug);
+export async function getAllProjects(): Promise<Project[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/projects/`, {
+      next: { revalidate: 3600 } // Cache for 1 hour, or use 0 for no cache
+    });
+    
+    if (!response.ok) {
+      console.error('Failed to fetch projects');
+      return [];
+    }
+    
+    const data = await response.json();
+    return data.map(mapProject);
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    return [];
+  }
+}
+
+export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/projects/${slug}`, {
+      next: { revalidate: 3600 }
+    });
+    
+    if (!response.ok) {
+      if (response.status === 404) return undefined;
+      throw new Error('Failed to fetch project');
+    }
+    
+    const data = await response.json();
+    return mapProject(data);
+  } catch (error) {
+    console.error(`Error fetching project by slug (${slug}):`, error);
+    return undefined;
+  }
 }

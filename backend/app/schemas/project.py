@@ -16,6 +16,9 @@ class ProjectBase(BaseModel):
     tech_stack: Dict[str, List[str]] = Field(..., description="Grouped technologies used")
     features: List[Feature] = Field(default_factory=list, description="Key features")
     image_url: str = Field(..., description="Main project image URL")
+    icon_url: Optional[str] = Field(None, description="Project icon URL")
+    github_url: Optional[str] = Field(None, description="GitHub repository URL")
+    technical_implementation: Optional[Dict] = Field(None, description="Detailed technical architecture and algorithms")
     status: Optional[str] = Field("active", description="Project status (active, archived, etc.)")
 
 class ProjectCreate(ProjectBase):
@@ -29,6 +32,9 @@ class ProjectUpdate(BaseModel):
     tech_stack: Optional[Dict[str, List[str]]] = Field(None)
     features: Optional[List[Feature]] = Field(None)
     image_url: Optional[str] = Field(None)
+    icon_url: Optional[str] = Field(None)
+    github_url: Optional[str] = Field(None)
+    technical_implementation: Optional[Dict] = Field(None)
     status: Optional[str] = Field(None)
 
 class ProjectInDBBase(ProjectBase):
