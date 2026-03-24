@@ -111,35 +111,35 @@ export const InfrastructureMetrics: React.FC<InfrastructureMetricsProps> = ({
     },
     {
       title: "CPU Usage",
-      value: `${system.cpu.usage_percent.toFixed(1)}%`,
-      change: `${system.cpu.cores} cores`,
+      value: system?.cpu ? `${system.cpu.usage_percent.toFixed(1)}%` : "N/A",
+      change: system?.cpu ? `${system.cpu.cores} cores` : "no data",
       icon: Cpu,
       description: "system load",
-      trend: system.cpu.usage_percent < 70 ? "up" as const : "down" as const,
-      healthStatus: getHealthStatus(system.cpu.usage_percent, 'cpu')
+      trend: (system?.cpu?.usage_percent || 0) < 70 ? "up" as const : "down" as const,
+      healthStatus: system?.cpu ? getHealthStatus(system.cpu.usage_percent, 'cpu') : "healthy"
     },
     {
       title: "Memory",
-      value: `${system.memory.usage_percent.toFixed(0)}%`,
-      change: `${system.memory.used_gb}GB used`,
+      value: system?.memory ? `${system.memory.usage_percent.toFixed(0)}%` : "N/A",
+      change: system?.memory ? `${system.memory.used_gb}GB used` : "no data",
       icon: Zap,
-      description: `of ${system.memory.total_gb}GB`,
-      trend: system.memory.usage_percent < 80 ? "up" as const : "down" as const,
-      healthStatus: getHealthStatus(system.memory.usage_percent, 'memory')
+      description: system?.memory ? `of ${system.memory.total_gb}GB` : "system ram",
+      trend: (system?.memory?.usage_percent || 0) < 80 ? "up" as const : "down" as const,
+      healthStatus: system?.memory ? getHealthStatus(system.memory.usage_percent, 'memory') : "healthy"
     },
     {
       title: "Disk Space",
-      value: `${system.disk.free_gb.toFixed(1)}GB`,
-      change: `${system.disk.usage_percent.toFixed(0)}% used`,
+      value: system?.disk ? `${system.disk.free_gb.toFixed(1)}GB` : "N/A",
+      change: system?.disk ? `${system.disk.usage_percent.toFixed(0)}% used` : "no data",
       icon: HardDrive,
       description: "free space",
-      trend: system.disk.usage_percent < 80 ? "up" as const : "down" as const,
-      healthStatus: getHealthStatus(system.disk.usage_percent, 'disk')
+      trend: (system?.disk?.usage_percent || 0) < 80 ? "up" as const : "down" as const,
+      healthStatus: system?.disk ? getHealthStatus(system.disk.usage_percent, 'disk') : "healthy"
     },
     {
       title: "Network",
-      value: formatBytes(network.bytes_recv),
-      change: `${network.active_connections} connections`,
+      value: network ? formatBytes(network.bytes_recv) : "0B",
+      change: network ? `${network.active_connections} connections` : "offline",
       icon: Wifi,
       description: "received",
       trend: "up" as const,
@@ -147,21 +147,21 @@ export const InfrastructureMetrics: React.FC<InfrastructureMetricsProps> = ({
     },
     {
       title: "API Health",
-      value: `${health.memory_usage_mb.toFixed(0)}MB`,
-      change: health.uptime_human,
+      value: health?.memory_usage_mb ? `${health.memory_usage_mb.toFixed(0)}MB` : "up",
+      change: health?.uptime_human || "connected",
       icon: Server,
       description: "uptime",
-      trend: health.status === 'healthy' ? "up" as const : "down" as const,
-      healthStatus: health.status === 'healthy' ? "healthy" as const : "critical" as const
+      trend: health?.status === 'healthy' ? "up" as const : "down" as const,
+      healthStatus: health?.status === 'healthy' ? "healthy" as const : "critical" as const
     },
     {
       title: "Containers",
-      value: formatNumber(system.docker.total_running || 0),
-      change: "running",
+      value: formatNumber(system?.docker?.total_running || 0),
+      change: system?.docker?.total_running ? "running" : "none",
       icon: Server,
       description: "docker",
       trend: "up" as const,
-      healthStatus: system.docker.total_running > 0 ? "healthy" as const : "warning" as const
+      healthStatus: (system?.docker?.total_running || 0) > 0 ? "healthy" as const : "warning" as const
     }
   ];
 

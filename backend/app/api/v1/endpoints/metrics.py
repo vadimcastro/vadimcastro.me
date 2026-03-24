@@ -1,12 +1,13 @@
 # app/api/v1/endpoints/metrics.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import Dict, List
+from typing import Dict, List, Any
 from app.api.deps import get_db, get_current_active_user
 # from app.api.v1.auth import get_current_active_user  # Removed incorrect import
 from app.models.user import User
 from app.crud import crud_metrics
 from app.services.system import SystemService
+from app.schemas import metrics as metrics_schemas
 from fastapi_cache.decorator import cache
 
 router = APIRouter()
@@ -17,20 +18,20 @@ async def verify_admin(current_user: User = Depends(get_current_active_user)):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     return current_user
 
-@router.get("/visitors")
+@router.get("/visitors", response_model=metrics_schemas.VisitorMetrics)
 @cache(expire=300)
 async def get_visitor_metrics(
     db: Session = Depends(get_db),
     _ = Depends(verify_admin)
-) -> Dict:
+) -> Any:
     return crud_metrics.get_visitor_metrics(db)
 
-@router.get("/sessions")
+@router.get("/sessions", response_model=metrics_schemas.SessionMetrics)
 @cache(expire=60)
 async def get_session_metrics(
     db: Session = Depends(get_db),
     _ = Depends(verify_admin)
-) -> Dict:
+) -> Any:
     return crud_metrics.get_session_metrics(db)
 
 @router.get("/users")
@@ -58,18 +59,18 @@ async def get_project_metrics(
 ) -> Dict:
     return crud_metrics.get_project_metrics(db)
 
-@router.get("/system")
+@router.get("/system", response_model=metrics_schemas.SystemMetrics)
 @cache(expire=60)
 async def get_system_metrics(
     _ = Depends(verify_admin)
-) -> Dict:
+) -> Any:
     return SystemService.get_system_metrics()
 
-@router.get("/network")
+@router.get("/network", response_model=metrics_schemas.NetworkMetrics)
 @cache(expire=60)
 async def get_network_metrics(
     _ = Depends(verify_admin)
-) -> Dict:
+) -> Any:
     return SystemService.get_network_metrics()
 
 @router.get("/health")
@@ -79,16 +80,16 @@ async def get_application_health(
 ) -> Dict:
     return SystemService.get_application_health()
 
-@router.get("/deployment")
+@router.get("/deployment", response_model=metrics_schemas.DeploymentInfo)
 @cache(expire=300)
 async def get_deployment_info(
     _ = Depends(verify_admin)
-) -> Dict:
+) -> Any:
     return SystemService.get_deployment_info()
 
-@router.get("/disk")
+@router.get("/disk", response_model=metrics_schemas.DiskMetrics)
 @cache(expire=300)
 async def get_disk_metrics(
     _ = Depends(verify_admin)
-) -> Dict:
+) -> Any:
     return SystemService.get_disk_details()

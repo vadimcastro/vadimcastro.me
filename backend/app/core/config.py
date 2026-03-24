@@ -1,4 +1,5 @@
 # app/core/config.py
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 from typing import List
 from functools import lru_cache
@@ -87,9 +88,6 @@ class Settings(BaseSettings):
     ]
     CORS_MAX_AGE: int = 3600
 
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
-        extra = "allow"
+    model_config = ConfigDict(case_sensitive=True, env_file=".env", extra="allow")
 
 settings = Settings()

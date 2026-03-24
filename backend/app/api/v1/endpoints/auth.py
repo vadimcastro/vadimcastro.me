@@ -6,13 +6,14 @@ from app.db.utils import get_db
 from app.crud.crud_user import crud_user
 from app.core.security import create_access_token, get_current_user
 from app.core.config import settings
+from app.schemas.token import Token
 import logging
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
-@router.post("/login")
+@router.post("/login", response_model=Token)
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)

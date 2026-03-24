@@ -1,12 +1,13 @@
 # app/schemas/token.py
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional
 
-class TokenResponse(BaseModel):
-    access_token: str
-    refresh_token: str
-    token_type: str
+class Token(BaseModel):
+    access_token: str = Field(..., description="JWT access token")
+    token_type: str = Field(..., description="Type of token (e.g. bearer)")
+    refresh_token: Optional[str] = Field(None, description="Optional refresh token")
 
 class TokenPayload(BaseModel):
-    sub: str | None = None
-    exp: int | None = None
-    type: str | None = None
+    sub: Optional[str] = Field(None, description="Subject (usually user email or ID)")
+    exp: Optional[int] = Field(None, description="Expiration timestamp")
+    type: Optional[str] = Field(None, description="Token type label")

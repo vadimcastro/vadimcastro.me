@@ -3,7 +3,9 @@ from app.schemas.user import (
     User,
     UserCreate,
     UserUpdate,
-    UserInDB,
+    UserInDB
+)
+from app.schemas.token import (
     Token,
     TokenPayload
 )
@@ -12,4 +14,22 @@ from app.schemas.project import (
     ProjectCreate,
     ProjectUpdate,
     ProjectInDB
+)
+from app.schemas.note import (
+    Note,
+    NoteCreate,
+    NoteUpdate
+)
+from app.schemas.analytics import (
+    InteractionCreate,
+    AnalyticsInteraction,
+    InteractionStats
+)
+from app.schemas.metrics import (
+    VisitorMetrics,
+    SessionMetrics,
+    SystemMetrics,
+    DiskMetrics,
+    NetworkMetrics,
+    DeploymentInfo
 )

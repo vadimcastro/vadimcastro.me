@@ -1,12 +1,10 @@
-# app/crud/crud_metrics.py
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from datetime import datetime, timedelta
 from typing import Dict, List
 from app.models.user import User
 from app.models.user_session import UserSession
 from app.models.project import Project
-
 from app.models.interaction import AnalyticsInteraction
 
 def get_visitor_metrics(db: Session) -> Dict:
@@ -20,7 +18,7 @@ def get_visitor_metrics(db: Session) -> Dict:
     interaction_counts = {i.interaction_type: i.count for i in interactions}
     total_interactions = sum(interaction_counts.values())
     
-    current_month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    current_month_start = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     last_month_start = (current_month_start - timedelta(days=1)).replace(day=1)
     
     # Get unique visitors (users with sessions) for current month
@@ -50,7 +48,7 @@ def get_visitor_metrics(db: Session) -> Dict:
 
 def get_session_metrics(db: Session) -> Dict:
     """Get active session metrics with hourly comparison"""
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     active_cutoff = now - timedelta(minutes=15)  # Sessions active in last 15 minutes
     previous_hour = now - timedelta(hours=1)
     
@@ -86,7 +84,7 @@ def get_session_metrics(db: Session) -> Dict:
 
 def get_user_metrics(db: Session) -> Dict:
     """Get user registration metrics"""
-    current_month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    current_month_start = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     last_month_start = (current_month_start - timedelta(days=1)).replace(day=1)
     
     # Get total active users
@@ -166,7 +164,7 @@ def get_recent_activity(db: Session, limit: int = 5) -> List[Dict]:
 
 def get_project_metrics(db: Session) -> Dict:
     """Get project metrics with month-over-month comparison"""
-    current_month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    current_month_start = datetime.now(timezone.utc).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     last_month_start = (current_month_start - timedelta(days=1)).replace(day=1)
     
     # Get total projects
