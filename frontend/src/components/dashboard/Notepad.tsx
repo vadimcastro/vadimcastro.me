@@ -297,8 +297,8 @@ export const Notepad = () => {
               width: '34px',
               height: '34px',
               borderRadius: '50%',
-              backgroundColor: '#D2B48C',
-              color: '#8B4513',
+              backgroundColor: '#475569',
+              color: '#f8fafc',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
@@ -332,8 +332,8 @@ export const Notepad = () => {
                 width: '34px',
                 height: '34px',
                 borderRadius: '50%',
-                backgroundColor: '#E6D3B7',
-                color: '#8B4513',
+                backgroundColor: '#94a3b8',
+                color: '#f8fafc',
                 border: 'none',
                 display: 'flex',
                 alignItems: 'center',
@@ -367,8 +367,8 @@ export const Notepad = () => {
               width: '34px',
               height: '34px',
               borderRadius: '50%',
-              backgroundColor: '#DDD0B4',
-              color: '#8B4513',
+              backgroundColor: '#cbd5e1',
+              color: '#1e293b',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
@@ -442,8 +442,8 @@ export const Notepad = () => {
               width: '34px',
               height: '34px',
               borderRadius: '50%',
-              backgroundColor: saving ? '#F3F4F6' : '#D2B48C',
-              color: saving ? '#9CA3AF' : '#8B4513',
+              backgroundColor: saving ? '#F3F4F6' : '#64748b',
+              color: saving ? '#9CA3AF' : '#ffffff',
               border: 'none',
               display: 'flex',
               alignItems: 'center',
@@ -463,7 +463,7 @@ export const Notepad = () => {
         </div>
       )}
 
-      <section ref={notepadSectionRef} className={`${isMaximized ? `fixed inset-0 ${showNoteSelector ? 'z-40' : 'z-50'} h-screen w-screen bg-gradient-to-br from-amber-50 via-orange-25 to-yellow-50 shadow-2xl` : 'h-[600px] md:h-[450px] max-w-full border rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300'} overflow-hidden`} style={isMaximized ? {width: '100vw', height: '100vh', left: 0, top: 0, margin: 0, padding: 0} : {}}>
+      <section ref={notepadSectionRef} className={`${isMaximized ? `fixed inset-0 ${showNoteSelector ? 'z-40' : 'z-50'} h-screen w-screen bg-gradient-to-br from-slate-50 via-zinc-50 to-slate-50 shadow-2xl` : 'h-full min-h-[500px] max-w-full border rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300'} overflow-hidden`} style={isMaximized ? {width: '100vw', height: '100vh', left: 0, top: 0, margin: 0, padding: 0} : {}}>
       <div className="h-full flex flex-col lg:flex-row min-w-0">
         {/* Notes List Sidebar - Hidden when maximized, stacked on mobile */}
         {!isMaximized && (
@@ -526,9 +526,9 @@ export const Notepad = () => {
 
         {/* Note Editor */}
         <div className={`flex-1 flex flex-col min-w-0 ${isMaximized ? 'bg-transparent' : 'bg-gray-50'}`}>
-          <div className={`px-4 lg:px-6 py-1.5 lg:py-1.5 border-b min-w-0 ${isMaximized ? 'border-amber-200/60 bg-amber-100/50 backdrop-blur-sm' : 'border-gray-200 bg-gray-50'}`}>
+          <div className={`px-4 lg:px-6 py-1.5 lg:py-1.5 border-b min-w-0 ${isMaximized ? 'border-slate-200/60 bg-slate-100/50 backdrop-blur-sm' : 'border-gray-200 bg-gray-50'}`}>
             <div className="flex items-center gap-2 min-w-0">
-              <FileText className={`w-4 h-4 flex-shrink-0 hidden lg:block ${isMaximized ? 'text-amber-800' : 'text-gray-600'}`} />
+              <FileText className={`w-4 h-4 flex-shrink-0 hidden lg:block ${isMaximized ? 'text-slate-800' : 'text-gray-600'}`} />
               
               {/* Note title editor - flex-1 to take available space */}
               <div className="flex-1 min-w-0">
@@ -548,7 +548,7 @@ export const Notepad = () => {
                     }
                   }}
                   rows={1}
-                  className={`text-lg lg:text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 px-0 py-0 w-full font-heading resize-none ${isMaximized ? 'text-amber-900' : 'text-gray-900'} leading-tight tracking-wide`}
+                  className={`text-lg lg:text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 px-0 py-0 w-full font-heading resize-none ${isMaximized ? 'text-slate-900' : 'text-gray-900'} leading-tight tracking-wide`}
                   placeholder="New Note"
                   style={{
                     minHeight: '1.5rem',
@@ -613,7 +613,7 @@ export const Notepad = () => {
                   
                   {/* Auto-saved timer */}
                   {lastSaved && (
-                    <span className={`text-xs px-2 py-1 rounded-full ${isMaximized ? 'text-amber-600 bg-amber-100' : 'text-gray-500 bg-gray-100'}`}>
+                    <span className={`text-xs px-2 py-1 rounded-full ${isMaximized ? 'text-slate-600 bg-slate-100' : 'text-gray-500 bg-gray-100'}`}>
                       Auto-saved: {lastSaved.toLocaleTimeString()}
                     </span>
                   )}
@@ -644,7 +644,7 @@ export const Notepad = () => {
 
                   <button
                     onClick={() => setIsMaximized(!isMaximized)}
-                    className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center justify-center gap-1 ${isMaximized ? 'bg-amber-600 hover:bg-amber-700' : 'bg-gray-600 hover:bg-gray-700'}`}
+                    className={`px-2 py-1 text-white rounded text-sm transition-colors flex items-center justify-center gap-1 ${isMaximized ? 'bg-slate-600 hover:bg-slate-700' : 'bg-gray-600 hover:bg-gray-700'}`}
                     title={isMaximized ? 'Exit Focus Mode' : 'Enter Focus Mode'}
                   >
                     {isMaximized ? (
@@ -685,13 +685,13 @@ export const Notepad = () => {
                     onClick={() => setShowMobileActions(!showMobileActions)}
                     className={`px-2.5 py-2 rounded-md text-gray-600 transition-all duration-300 shadow-md flex items-center justify-center hover:scale-105`}
                     style={{
-                      backgroundColor: isMaximized ? '#D2B48C' : '#B8D4C7' // sand in max mode, minty silver in normal
+                      backgroundColor: isMaximized ? '#475569' : '#e2e8f0' // slate in max mode, light gray in normal
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = isMaximized ? '#C19A6B' : '#A5C6B8'; // darker on hover
+                      e.currentTarget.style.backgroundColor = isMaximized ? '#334155' : '#cbd5e1'; // darker on hover
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = isMaximized ? '#D2B48C' : '#B8D4C7'; // back to base
+                      e.currentTarget.style.backgroundColor = isMaximized ? '#475569' : '#e2e8f0'; // back to base
                     }}
                     title="Tools"
                   >

@@ -98,7 +98,7 @@ export const DesktopActionMenu: React.FC<DesktopActionMenuProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Auto-theme based on maximized state
-  const activeTheme = theme === 'auto' ? (isMaximized ? 'sand' : 'mint') : theme;
+  const activeTheme = theme === 'auto' ? 'mint' : theme;
   const colors = THEME_COLORS[activeTheme];
   const sizeClasses = SIZE_CLASSES[size];
   const spacingClass = SPACING_CLASSES[spacing];
@@ -106,7 +106,12 @@ export const DesktopActionMenu: React.FC<DesktopActionMenuProps> = ({
   // Auto-hide dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      const target = event.target as Element;
+      // Check if click was inside the dropdown container or the portal
+      const isDropdownClick = dropdownRef.current && dropdownRef.current.contains(target);
+      const isPortalClick = target.closest('[data-dropdown-portal]');
+      
+      if (!isDropdownClick && !isPortalClick) {
         onDropdownClose?.();
       }
     };
@@ -182,7 +187,11 @@ export const DesktopActionMenu: React.FC<DesktopActionMenuProps> = ({
           {action.dropdown && openDropdownId === action.id && (
             isMaximized && typeof window !== 'undefined' ? 
               createPortal(
-                <div className="fixed top-16 right-4 bg-white/95 backdrop-blur-sm border border-amber-200 rounded-xl shadow-xl max-h-64 overflow-y-auto w-[280px]" style={{ zIndex: 999999999 }}>
+                <div 
+                  className="fixed top-16 right-4 bg-white/95 backdrop-blur-sm border border-slate-200 rounded-xl shadow-xl max-h-64 overflow-y-auto w-[280px]" 
+                  style={{ zIndex: 999999999 }}
+                  data-dropdown-portal="true"
+                >
                   <div className="p-1">
                     {action.dropdown.map((item) => (
                       <button

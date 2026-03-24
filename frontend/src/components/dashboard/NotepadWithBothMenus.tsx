@@ -273,6 +273,13 @@ export const NotepadWithBothMenus = () => {
   // Define desktop actions
   const getDesktopActions = (): DesktopAction[] => [
     {
+      id: 'focus',
+      icon: isMaximized ? Minimize2 : Maximize2,
+      label: isMaximized ? 'Exit Focus Mode' : 'Focus Mode',
+      onClick: () => setIsMaximized(!isMaximized),
+      variant: isMaximized ? 'secondary' : 'default'
+    },
+    {
       id: 'notes',
       icon: BookOpen,
       label: 'Notes',
@@ -296,13 +303,6 @@ export const NotepadWithBothMenus = () => {
       variant: 'destructive'
     },
     {
-      id: 'focus',
-      icon: isMaximized ? Minimize2 : Maximize2,
-      label: isMaximized ? 'Exit Focus Mode' : 'Focus Mode',
-      onClick: () => setIsMaximized(!isMaximized),
-      variant: isMaximized ? 'secondary' : 'default'
-    },
-    {
       id: 'save',
       icon: Save,
       label: 'Save Note',
@@ -323,12 +323,12 @@ export const NotepadWithBothMenus = () => {
 
   return (
     <>
-      <section ref={notepadSectionRef} className={`${isMaximized ? `fixed inset-0 ${showNoteSelector ? 'z-40' : 'z-50'} h-screen w-screen bg-gradient-to-br from-amber-50 via-orange-25 to-yellow-50 shadow-2xl` : 'h-[600px] md:h-[450px] max-w-full border rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300'} overflow-hidden`} style={isMaximized ? {width: '100vw', height: '100vh', left: 0, top: 0, margin: 0, padding: 0} : {}}>
-      <div className="h-full flex flex-col lg:flex-row min-w-0">
+      <section ref={notepadSectionRef} className={`${isMaximized ? `fixed inset-0 ${showNoteSelector ? 'z-40' : 'z-50'} h-screen w-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 shadow-2xl` : 'flex-1 h-full min-h-[750px] w-full border rounded-lg bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col'} overflow-hidden`} style={isMaximized ? {width: '100vw', height: '100vh', left: 0, top: 0, margin: 0, padding: 0} : {}}>
+      <div className={`flex-1 flex flex-col lg:flex-row min-h-0 min-w-0 ${isMaximized ? 'h-full' : ''}`}>
         {/* Notes List Sidebar - Hidden when maximized, stacked on mobile */}
         {!isMaximized && (
-          <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col bg-gray-50 max-h-40 lg:max-h-none">
-            <div className="pl-4 pr-2 lg:px-6 py-3 lg:py-4 border-b border-gray-200 flex items-center justify-between">
+          <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col bg-gray-50/80 max-h-40 lg:max-h-none">
+            <div className="pl-4 pr-2 lg:px-6 py-2 border-b border-gray-200 flex items-center justify-between h-[52px]">
               <Edit3 className="w-5 h-5 text-gray-700" />
               <button
                 onClick={createNewNote}
@@ -385,10 +385,10 @@ export const NotepadWithBothMenus = () => {
         )}
 
         {/* Note Editor */}
-        <div className={`flex-1 flex flex-col min-w-0 ${isMaximized ? 'bg-transparent' : 'bg-gray-50'}`}>
-          <div className={`px-4 lg:px-6 py-1.5 lg:py-1.5 border-b min-w-0 ${isMaximized ? 'border-amber-200/60 bg-amber-100/50 backdrop-blur-sm' : 'border-gray-200 bg-gray-50'}`}>
-            <div className="flex items-center gap-2 min-w-0">
-              <FileText className={`w-4 h-4 flex-shrink-0 hidden lg:block ${isMaximized ? 'text-amber-800' : 'text-gray-600'}`} />
+        <div className={`flex-1 flex flex-col min-h-0 ${isMaximized ? 'bg-transparent h-full' : 'bg-gray-50'}`}>
+          <div className={`px-4 lg:px-6 py-2 border-b min-w-0 h-[52px] flex items-center ${isMaximized ? 'border-slate-200 bg-white/80 backdrop-blur-md' : 'border-gray-200 bg-gray-50/80'}`}>
+            <div className="flex items-center gap-2 min-w-0 w-full justify-between">
+              <FileText className={`w-4 h-4 flex-shrink-0 hidden lg:block ${isMaximized ? 'text-slate-600' : 'text-gray-600'}`} />
               
               {/* Note title editor */}
               <div className="flex-1 min-w-0">
@@ -408,7 +408,7 @@ export const NotepadWithBothMenus = () => {
                     }
                   }}
                   rows={1}
-                  className={`text-lg lg:text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 px-0 py-0 w-full font-heading resize-none ${isMaximized ? 'text-amber-900' : 'text-gray-900'} leading-tight tracking-wide`}
+                  className={`text-lg lg:text-xl font-bold bg-transparent border-none focus:outline-none focus:ring-0 px-0 py-0 w-full font-heading resize-none ${isMaximized ? 'text-slate-900' : 'text-gray-900'} leading-tight tracking-wide`}
                   placeholder="New Note"
                   style={{
                     minHeight: '1.5rem',
@@ -510,7 +510,7 @@ export const NotepadWithBothMenus = () => {
                         }}
                       />
                       <div 
-                        className="fixed top-16 left-1/2 transform -translate-x-1/2 bg-white border border-amber-200 rounded-lg shadow-2xl max-h-96 overflow-y-auto w-[300px]"
+                        className="fixed top-16 left-1/2 transform -translate-x-1/2 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-96 overflow-y-auto w-[300px]"
                         style={{ zIndex: 9999 }}
                       >
                         <div className="p-1">
@@ -557,14 +557,14 @@ export const NotepadWithBothMenus = () => {
             </div>
           </div>
           
-          <div className={`flex-1 ${isMaximized ? 'mx-2 lg:mx-12 my-2 lg:my-8 rounded-xl shadow-2xl border border-amber-200/30 bg-white/95 backdrop-blur-md' : 'shadow-inner border border-gray-200/50'}`}>
+          <div className={`flex-1 min-h-0 flex flex-col ${isMaximized ? 'h-full mx-2 lg:mx-24 my-4 lg:my-12 rounded-xl shadow-2xl border border-slate-200/50 bg-white shadow-xl' : 'shadow-inner border border-gray-200/50'}`}>
             <textarea
               ref={contentTextareaRef}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className={`w-full h-full resize-none focus:outline-none focus:ring-0 border-0 text-base leading-relaxed ${
                 isMaximized 
-                  ? 'p-4 lg:p-12 bg-transparent text-amber-950 placeholder-amber-500/60 lg:text-xl font-light tracking-wide' 
+                  ? 'p-8 lg:p-16 bg-transparent text-slate-800 placeholder-slate-400 lg:text-xl font-light tracking-wide' 
                   : 'p-3 lg:p-4 bg-white text-gray-900 placeholder-gray-500'
               }`}
               placeholder={isMaximized ? "Let your thoughts flow..." : "Start writing your thoughts..."}

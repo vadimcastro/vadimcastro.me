@@ -1,8 +1,10 @@
+'use client';
 // src/components/projects/ProjectHorizontalCard.tsx
 import Image from 'next/image';
 import Link from 'next/link';
 import { Github, ExternalLink } from 'lucide-react';
 import type { Project } from '../../lib/projects';
+import { trackInteraction } from '../../lib/api/analytics';
 
 interface ProjectHorizontalCardProps {
   project: Project;
@@ -11,6 +13,20 @@ interface ProjectHorizontalCardProps {
 export function ProjectHorizontalCard({ project }: ProjectHorizontalCardProps) {
   return (
     <div className="relative w-full rounded-lg overflow-hidden bg-white border transition-all duration-200 hover:shadow-lg">
+      {/* Project Status Tag */}
+      {project.status && (
+        <div className="absolute top-2 left-2 z-10">
+          <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-full shadow-sm border ${
+            project.status === 'in_progress' 
+              ? 'bg-blue-50 text-blue-600 border-blue-100' 
+              : project.status === 'archived'
+              ? 'bg-gray-50 text-gray-500 border-gray-100'
+              : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+          }`}>
+            {project.status.replace('_', ' ')}
+          </span>
+        </div>
+      )}
       {/* GitHub Link Button */}
       {project.githubUrl && (
         <a
@@ -19,6 +35,10 @@ export function ProjectHorizontalCard({ project }: ProjectHorizontalCardProps) {
           rel="noopener noreferrer"
           className="absolute top-2 right-2 z-10 p-2 bg-white/90 hover:bg-white rounded-full shadow-sm border hover:shadow-md transition-all duration-200 group"
           title="View on GitHub"
+          onClick={(e) => {
+            e.stopPropagation();
+            trackInteraction('social_click', 'github_project', { project: project.slug });
+          }}
         >
           <Github className="w-4 h-4 text-gray-600 group-hover:text-gray-900" />
         </a>
@@ -27,6 +47,7 @@ export function ProjectHorizontalCard({ project }: ProjectHorizontalCardProps) {
       <Link 
         href={`/projects/${project.slug}`} 
         className="block w-full h-full"
+        onClick={() => trackInteraction('project_click', project.slug, { title: project.title })}
       >
         <div className="flex flex-col md:flex-row">
         {/* Image on left for medium screens and up, on top for mobile */}

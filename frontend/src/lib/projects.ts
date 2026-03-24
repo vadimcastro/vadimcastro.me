@@ -14,6 +14,7 @@ export interface Project {
   }>;
   imageUrl: string;
   githubUrl?: string;
+  status: 'active' | 'archived' | 'in_progress';
   technicalImplementation: {
     systemArchitecture: string[];
     algorithm?: {
@@ -56,6 +57,7 @@ const projectsList: Project[] = [
     ],
     imageUrl: "/images/scenic_pic.png",
     githubUrl: "https://github.com/vadimcastro/tour-guide",
+    status: "active",
     technicalImplementation: {
       systemArchitecture: [
         "Scenic's architecture is built around efficient route calculation and POI integration.",

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Github } from 'lucide-react';
+import { trackInteraction } from '../../../lib/api/analytics';
 
 interface ProjectPageProps {
   params: {
@@ -42,11 +43,16 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     window.addEventListener('resize', checkScrollVisibility);
     window.addEventListener('scroll', checkScrollVisibility);
     
+    // Track project view
+    if (project) {
+      trackInteraction('project_click', project.slug, { location: 'details_page', title: project.title });
+    }
+
     return () => {
       window.removeEventListener('resize', checkScrollVisibility);
       window.removeEventListener('scroll', checkScrollVisibility);
     };
-  }, []);
+  }, [project]);
 
   return (
     <>

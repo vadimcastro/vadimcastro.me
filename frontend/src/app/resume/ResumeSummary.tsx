@@ -1,9 +1,15 @@
+'use client';
 // src/components/resume/ResumeSummary.tsx
 import Link from 'next/link';
+import { trackInteraction } from '../../lib/api/analytics';
 
 export const ResumeSummary = () => {
   return (
-    <Link href="/resume" className="block h-full group cursor-pointer">
+    <Link 
+      href="/resume" 
+      className="block h-full group cursor-pointer"
+      onClick={() => trackInteraction('resume_view', 'home_summary')}
+    >
       <div className="flex flex-col bg-white rounded-lg overflow-hidden border-0 md:border md:border-gray-200 transition-all duration-300 hover:shadow-md hover:scale-[1.02] hover:bg-gray-50 p-4 md:p-6">
         {/* Skills section */}
         <div className="shrink-0 pb-6">

@@ -16,6 +16,7 @@ class ProjectBase(BaseModel):
     tech_stack: Dict[str, List[str]]
     features: List[Feature]
     image_url: str
+    status: Optional[str] = "active"
 
 class ProjectCreate(ProjectBase):
     pass
@@ -28,6 +29,7 @@ class ProjectUpdate(BaseModel):
     tech_stack: Optional[Dict[str, List[str]]] = None
     features: Optional[List[Feature]] = None
     image_url: Optional[str] = None
+    status: Optional[str] = None
 
 class ProjectInDBBase(ProjectBase):
     model_config = ConfigDict(from_attributes=True)

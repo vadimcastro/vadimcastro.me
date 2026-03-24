@@ -2,6 +2,7 @@
 "use client";
 import Image from 'next/image';
 import { Mail, Github, Linkedin, Phone } from 'lucide-react';
+import { trackInteraction } from '../../lib/api/analytics';
 
 interface Experience {
   company: string;
@@ -98,6 +99,7 @@ export default function ResumePage() {
                   href="tel:914-222-0975"
                   className="flex items-center justify-center p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
                   title="Call"
+                  onClick={() => trackInteraction('social_click', 'phone', { location: 'resume' })}
                 >
                   <Phone className="w-6 h-6 text-gray-700 hover:text-gray-900" />
                 </a>
@@ -105,6 +107,7 @@ export default function ResumePage() {
                   href="mailto:vadimcastro1@gmail.com?subject=Hey%20Vadim!"
                   className="flex items-center justify-center p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 border border-gray-200"
                   title="Send Email"
+                  onClick={() => trackInteraction('social_click', 'email', { location: 'resume' })}
                 >
                   <Mail className="w-6 h-6 text-gray-700 hover:text-gray-900" />
                 </a>
@@ -114,6 +117,7 @@ export default function ResumePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title="LinkedIn"
+                  onClick={() => trackInteraction('social_click', 'linkedin', { location: 'resume' })}
                 >
                   <Linkedin className="w-6 h-6 text-gray-700 hover:text-gray-900" />
                 </a>
@@ -123,6 +127,7 @@ export default function ResumePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title="GitHub"
+                  onClick={() => trackInteraction('social_click', 'github', { location: 'resume' })}
                 >
                   <Github className="w-6 h-6 text-gray-700 hover:text-gray-900" />
                 </a>

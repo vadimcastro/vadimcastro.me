@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import { GitBranch, Cpu, Zap, HardDrive, Wifi, Server, ChevronDown, ChevronUp } from 'lucide-react';
 import { MetricCard } from './MetricCard';
@@ -62,6 +63,7 @@ interface InfrastructureMetricsProps {
   network: NetworkMetrics;
   health: HealthMetrics;
   deployment: DeploymentMetrics;
+  compact?: boolean;
 }
 
 const formatBytes = (bytes: number): string => {
@@ -79,7 +81,8 @@ export const InfrastructureMetrics: React.FC<InfrastructureMetricsProps> = ({
   system,
   network,
   health,
-  deployment
+  deployment,
+  compact = false
 }) => {
   const [showAllMetrics, setShowAllMetrics] = useState(false);
   // Helper function to determine health status based on usage
@@ -161,6 +164,28 @@ export const InfrastructureMetrics: React.FC<InfrastructureMetricsProps> = ({
       healthStatus: system.docker.total_running > 0 ? "healthy" as const : "warning" as const
     }
   ];
+
+  if (compact) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 px-1">
+          <Server className="w-4 h-4 text-gray-500" />
+          <h2 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Infrastructure</h2>
+        </div>
+      <div className="space-y-1">
+          {metrics.slice(1, 4).map((metric, index) => (
+            <div key={index} className="flex items-center justify-between p-2 bg-white rounded border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2">
+                <metric.icon className={`w-3 h-3 ${metric.healthStatus === 'critical' ? 'text-red-500' : 'text-gray-400'}`} />
+                <span className="text-[10px] text-gray-600 font-medium">{metric.title}</span>
+              </div>
+              <span className="text-xs font-bold text-gray-900">{metric.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">

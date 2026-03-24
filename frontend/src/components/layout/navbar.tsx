@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { useAuth } from '../../lib/auth/AuthContext';
 import ProfileDropdown from './ProfileDropdown';
 import AdminMenu from './AdminMenu';
+import { trackInteraction } from '../../lib/api/analytics';
 
 export default function Navbar() {
   const { user } = useAuth();
@@ -27,10 +28,18 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="flex items-center">
-            <Link href="/resume" className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base">
+            <Link 
+              href="/resume" 
+              className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base"
+              onClick={() => trackInteraction('resume_view', 'navbar')}
+            >
               Resume
             </Link>
-            <Link href="/projects" className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base">
+            <Link 
+              href="/projects" 
+              className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base"
+              onClick={() => trackInteraction('project_click', 'navbar')}
+            >
               Projects
             </Link>
             {user ? (

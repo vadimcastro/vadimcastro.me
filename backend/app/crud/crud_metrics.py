@@ -7,8 +7,19 @@ from app.models.user import User
 from app.models.user_session import UserSession
 from app.models.project import Project
 
+from app.models.interaction import AnalyticsInteraction
+
 def get_visitor_metrics(db: Session) -> Dict:
-    """Get visitor metrics with month-over-month comparison"""
+    """Get visitor metrics with month-over-month comparison and total interactions"""
+    # Individual interaction counts
+    interactions = db.query(
+        AnalyticsInteraction.interaction_type,
+        func.count(AnalyticsInteraction.id).label('count')
+    ).group_by(AnalyticsInteraction.interaction_type).all()
+    
+    interaction_counts = {i.interaction_type: i.count for i in interactions}
+    total_interactions = sum(interaction_counts.values())
+    
     current_month_start = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     last_month_start = (current_month_start - timedelta(days=1)).replace(day=1)
     
@@ -32,7 +43,9 @@ def get_visitor_metrics(db: Session) -> Dict:
     return {
         "total": current_visitors,
         "percentageChange": round(percentage_change, 1),
-        "lastMonthTotal": last_month_visitors
+        "lastMonthTotal": last_month_visitors,
+        "totalInteractions": total_interactions,
+        "interactionCounts": interaction_counts
     }
 
 def get_session_metrics(db: Session) -> Dict:
