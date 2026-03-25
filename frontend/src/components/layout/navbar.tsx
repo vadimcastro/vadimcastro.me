@@ -29,18 +29,18 @@ export default function Navbar() {
           </div>
           <div className="flex items-center">
             <Link 
-              href="/resume" 
-              className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base"
-              onClick={() => trackInteraction('resume_view', 'navbar')}
-            >
-              Resume
-            </Link>
-            <Link 
               href="/projects" 
               className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base"
               onClick={() => trackInteraction('project_click', 'navbar')}
             >
               Projects
+            </Link>
+            <Link 
+              href="/resume" 
+              className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base"
+              onClick={() => trackInteraction('resume_view', 'navbar')}
+            >
+              Resume
             </Link>
             {user ? (
               <AdminMenu />

@@ -7,9 +7,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from app.db.seeds.projects import seed_projects
+
 def init_db(db: Session) -> None:
     logger.info("Starting database initialization...")
     try:
+        # Seed projects
+        logger.info("Seeding projects...")
+        seed_projects(db)
+        
         # Check if admin user exists
         admin = db.query(User).filter(
             User.email == settings.ADMIN_EMAIL
