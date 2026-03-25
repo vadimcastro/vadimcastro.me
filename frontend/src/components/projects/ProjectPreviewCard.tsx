@@ -54,6 +54,8 @@ export function ProjectPreviewCard({ project }: ProjectPreviewCardProps) {
                 <span className={`px-4 py-1.5 text-[12px] font-bold uppercase rounded-full shadow-sm border flex-shrink-0 ${
                   project.status === 'in_progress' 
                     ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                  : project.status === 'concept'
+                  ? 'bg-purple-50 text-purple-600 border-purple-100'
                     : project.status === 'archived'
                     ? 'bg-gray-50 text-gray-500 border-gray-100'
                     : 'bg-emerald-50 text-emerald-600 border-emerald-100'

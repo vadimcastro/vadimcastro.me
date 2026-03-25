@@ -1,6 +1,7 @@
 # app/db/seeds/projects.py
 from app.models.project import Project
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta
 
 def seed_projects(db: Session) -> None:
     projects = [
@@ -34,25 +35,23 @@ def seed_projects(db: Session) -> None:
             ],
             "image_url": "/images/scenic_pic.png",
             "icon_url": "/images/compass.svg",
-            "github_url": "https://github.com/vadimcastro/tour-guide",
+            "github_url": "https://github.com/vadimcastro/scenic",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "Scenic's architecture is built around efficient route calculation and POI integration.",
-                    "The backend uses FastAPI to handle route requests, processing them through a custom algorithm that analyzes potential scenic detours within the user's specified time constraints.",
-                    "PostgreSQL stores frequently accessed routes and POI data, significantly reducing API calls to Google's services.",
-                    "The frontend implements a responsive design using React, with careful consideration for state management of route alternatives and POI data.",
-                    "The map interface utilizes Google Maps JavaScript API for real-time route visualization, with custom overlay management for POI markers and route highlighting."
+                    "The system utilizes a dual-engine approach to route calculation. The primary engine handles standard point-to-point navigation using the Google Maps Directions API, while a secondary 'Scenic Discovery' engine processes POI data from a custom-indexed PostgreSQL database.",
+                    "Route optimization is performed asynchronously via a Python-based worker that evaluates potential detours against user-defined time constraints, ensuring that scenic additions never exceed a specific percentage of the original ETA."
                 ],
                 "algorithm": {
-                    "description": "The route calculation involves a sophisticated algorithm that optimizes both scenic value and travel time:",
+                    "description": "Our proprietary Scenic-Detour-Optimizer (SDO) selects high-value POIs along a corridor surrounding the optimal route.",
                     "steps": [
-                        "Queries nearby scenic points within a configurable radius of the direct route, prioritizing highly-rated locations that minimize deviation from the optimal path",
-                        "Evaluates potential detours based on user's time flexibility, calculating the time impact of each scenic addition to ensure it stays within specified constraints",
-                        "Optimizes the route to include the highest-rated scenic points while maintaining time constraints, using a weighted scoring system that balances scenic value against time cost",
-                        "Provides alternative route options with varying scenic ratings, giving users the flexibility to choose between different combinations of scenic stops and travel times"
+                        "Generate a baseline optimal route using the A* algorithm variant.",
+                        "Construct a search corridor (buffer) with a radius based on the user's available detour time.",
+                        "Score nearby POIs based on scenic ratings, category preferences, and detour overhead.",
+                        "Iteratively insert high-scoring waypoints into the route while verifying time constraints."
                     ]
                 }
-            }
+            },
+            "status": "concept"
         },
         {
             "slug": "vadimcastro-me",
@@ -82,15 +81,12 @@ def seed_projects(db: Session) -> None:
                 }
             ],
             "image_url": "/images/portfolio_pic.png",
-            "icon_url": "/images/activity.png",
+            "icon_url": "/images/image-generator.png",
             "github_url": "https://github.com/vadimcastro/vadimcastro.me",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "Monolithic-style modular architecture with clear separation between API, Services, and CRUD layers.",
-                    "Next.js 14 App Router for the frontend, utilizing Server Components for performance and Client Components for interactivity.",
-                    "FastAPI backend with Pydantic v2 for high-speed data validation and seamless OpenAPI documentation.",
-                    "Infrastructure monitoring using optimized subprocess calls and Docker socket integration for real-time container stats.",
-                    "PostgreSQL and Redis for persistent storage and high-speed caching of system metrics."
+                    "The platform is engineered as a monolithic-style modular system, ensuring a strict separation between the FastAPI backend services and the Next.js 14 frontend. On the server side, we leverage Pydantic v2 for high-performance data validation and type safety, while the frontend utilizes the modern Next.js App Router to optimize performance through a strategic mix of Server Components for SEO and Client Components for interactivity.",
+                    "Infrastructure health and engagement analytics are powered by a robust data layer consisting of PostgreSQL for persistent storage and Redis for high-speed metric caching. Real-time system monitoring is achieved through optimized subprocess execution and direct Docker socket integration, providing live, low-latency visibility into CPU, memory, and container performance."
                 ]
             }
         }

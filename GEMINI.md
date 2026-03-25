@@ -31,21 +31,23 @@
 - **User Lookup Fix**: Updated the JWT dependency resolver to use Email (string) instead of ID (int).
 - **CRUD Standard**: Inherited `CRUDUser` from `CRUDBase` for standardized data access.
 
-## 🚀 Modernization Goals (Completed)
 - [x] **Doc Consolidation**: Created a single source of truth in `README.md` + `docs/`.
 - [x] **Performance**: Optimized Docker builds and startup logic.
 - [x] **CRUD Standardization**: Updated `CRUDUser` to inherit from `CRUDBase`.
+- [x] **Dynamic Project System**: Transitioned from hardcoded frontend projects to an API-driven, database-backed infrastructure with async Server Components.
+- [x] **UI Polish**: Implemented a high-density, 5xl typography centerpiece and uniform project grid.
 
 ## 📅 Future Work & TODO
 
+### 1. Pydantic 2.0+ Upgrades 🚀
 - [x] **Model Migration**: Audit all Pydantic models in `backend/app/schemas/`.
 - [x] **Method Updates**: Replace `.dict()` with `.model_dump()` and `.json()` with `.model_dump_json()`.
 - [x] **Config Update**: Update `class Config` to `model_config = ConfigDict(...)`.
 - [x] **Validation**: Move from `v1.validator` to `v2.field_validator`.
 
 ### 2. Alembic & DB Reliability 🗄️
-- [ ] **Alembic Standardization**: Transition fully to `alembic upgrade head` for all environments, eventually retiring the custom `migrate.sh`.
-- [ ] **Schema Audit**: Ensure all models (User, Project, Note, etc.) are perfectly synced with Alembic's `autogenerate` capability.
+- [x] **Alembic Standardization**: Transitioned to `alembic upgrade head` in `migrate.sh` for reliable, non-destructive migrations.
+- [x] **Schema Audit**: Fixed missing fields in migration history (`github_url`, `technical_implementation`) to ensure models are perfectly synced with Alembic.
 
 ### 3. Developer Experience (DX) & Expansion ✨
 - [ ] **Project Editor**: Implement a secure admin panel to manage portfolio projects directly from the dashboard.

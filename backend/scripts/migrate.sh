@@ -50,56 +50,11 @@ except Exception as e:
     # Continue anyway, might be a connection issue
 "
 
-# Skip Alembic for now and create tables directly (faster and more reliable)
-echo "Creating tables directly for ultra-fast startup..."
-python3 -c "
-import sys
-import os
-sys.path.append('/app')
-
-# Import models to register them with Base
-from app.models.user import User
-from app.models.project import Project  
-from app.models.user_session import UserSession
-from app.models.note import Note
-from app.db.base_class import Base
-from app.db.session import engine, SessionLocal
-from sqlalchemy import text
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-print('Creating all tables...')
-# Force table creation
-Base.metadata.drop_all(bind=engine)  # Clean slate
-Base.metadata.create_all(bind=engine)
-
-# Test connection and ensure tables are visible
-db = SessionLocal()
-try:
-    # List all tables to verify creation
-    tables_result = db.execute(text(\"\"\"
-        SELECT table_name 
-        FROM information_schema.tables 
-        WHERE table_schema = 'public'
-        ORDER BY table_name
-    \"\"\"))
-    tables = [row[0] for row in tables_result]
-    logger.info(f'Created tables: {tables}')
-    
-    # Verify the users table exists specifically
-    if 'user' in tables or 'users' in tables:
-        logger.info('Users table confirmed to exist')
-    else:
-        logger.error(f'Users table not found in: {tables}')
-    
-    db.commit()
-finally:
-    db.close()
-
-print('Tables created successfully!')
-"
+# Run migrations via Alembic
+echo "Running database migrations with Alembic..."
+cd /app
+export PYTHONPATH=/app
+python3 -m alembic upgrade head
 
 # Initialize database with admin user
 echo "Initializing database..."

@@ -221,10 +221,10 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   <div className="space-y-4 md:space-y-5">
                     {project.technicalImplementation.algorithm.steps.map((step, index) => (
                       <div key={index} className="flex items-start space-x-3 md:space-x-4">
-                        <span className="flex-shrink-0 w-6 h-6 md:w-7 md:h-7 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium text-xs md:text-sm mt-8 md:mt-2">
+                        <span className="flex-shrink-0 w-6 h-6 md:w-7 md:h-7 rounded-full bg-mint-500/10 flex items-center justify-center text-mint-500 font-bold text-xs md:text-sm mt-0.5">
                           {index + 1}
                         </span>
-                        <p className="text-sm md:text-base leading-relaxed">{step}</p>
+                        <p className="text-sm md:text-base leading-relaxed text-gray-700 mt-0.5">{step}</p>
                       </div>
                     ))}
                   </div>
