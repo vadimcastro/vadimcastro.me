@@ -2,6 +2,7 @@
 
 # Project variables
 PROJECT_NAME = vadimcastro.me
+PROJECT_SLUG ?= vpt-core
 
 # Compose files for development
 COMPOSE_DEV = -f docker/docker-compose.yml -f docker/docker-compose.dev.yml
@@ -12,15 +13,27 @@ COMPOSE_ULTRA = $(COMPOSE_DEV) -f docker/docker-compose.dev.ultra.yml
 
 dev:
 	@echo "🚀 Starting development environment..."
-	docker compose $(COMPOSE_DEV) up --build
+	@if docker image inspect $(PROJECT_SLUG)-frontend-base:latest >/dev/null 2>&1 && docker image inspect $(PROJECT_SLUG)-backend-base:latest >/dev/null 2>&1; then \
+		echo "Using shared base images: $(PROJECT_SLUG)-*"; \
+	else \
+		echo "Base images missing. Building for PROJECT_SLUG=$(PROJECT_SLUG)..."; \
+		PROJECT_SLUG=$(PROJECT_SLUG) ./scripts/build-base-images.sh; \
+	fi
+	PROJECT_SLUG=$(PROJECT_SLUG) docker compose $(COMPOSE_ULTRA) up
 
 dev-ultra:
 	@echo "⚡ Starting lightning-fast development..."
-	docker compose $(COMPOSE_ULTRA) up
+	@if docker image inspect $(PROJECT_SLUG)-frontend-base:latest >/dev/null 2>&1 && docker image inspect $(PROJECT_SLUG)-backend-base:latest >/dev/null 2>&1; then \
+		echo "Using shared base images: $(PROJECT_SLUG)-*"; \
+	else \
+		echo "Base images missing. Building for PROJECT_SLUG=$(PROJECT_SLUG)..."; \
+		PROJECT_SLUG=$(PROJECT_SLUG) ./scripts/build-base-images.sh; \
+	fi
+	PROJECT_SLUG=$(PROJECT_SLUG) docker compose $(COMPOSE_ULTRA) up
 
 build-base:
 	@chmod +x scripts/build-base-images.sh
-	./scripts/build-base-images.sh
+	PROJECT_SLUG=$(PROJECT_SLUG) ./scripts/build-base-images.sh
 
 # Management
 down:

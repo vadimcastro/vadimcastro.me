@@ -4,7 +4,7 @@
 services:
   # Complete override for pre-built images with corrected absolute volume paths
   frontend:
-    image: vadimcastro-me-frontend-base:latest
+    image: ${PROJECT_SLUG:-vpt-core}-frontend-base:latest
     volumes:
       - ../frontend:/app
       - frontend_node_modules:/app/node_modules
@@ -18,7 +18,7 @@ services:
       - NEXT_PUBLIC_ADMIN_INITIALS=VC
       
   api:
-    image: vadimcastro-me-backend-base:latest
+    image: ${PROJECT_SLUG:-vpt-core}-backend-base:latest
     volumes:
       - ../backend:/app
     env_file:

@@ -61,3 +61,6 @@
 - [x] Resolved JWT user lookup bug (int vs str email).
 - [x] Cleaned up all "vadimOS" artifacts and legacy LLM files.
 - [x] Fixed Disk Metrics payload mismatch for frontend.
+- [x] Completed Pydantic 2.0 modernization across all backend schemas.
+- [x] Standardized Alembic migration chain and restored missing project data fields.
+- [x] Refined Project UI: Aligned algorithm steps with tech-stack styling and introduced lavender "Concept" status branding.
