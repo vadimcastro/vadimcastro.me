@@ -1,5 +1,6 @@
 # docker/frontend/Dockerfile.dev
-FROM vadimcastro-me-frontend-base:latest
+ARG PROJECT_SLUG=vpt-core
+FROM ${PROJECT_SLUG}-frontend-base:latest
 WORKDIR /app
 
 # Set environment variables

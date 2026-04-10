@@ -54,6 +54,8 @@ services:
     build:
       context: ..
       dockerfile: docker/frontend/Dockerfile.dev
+      args:
+        PROJECT_SLUG: ${PROJECT_SLUG:-vpt-core}
     ports:
       - "3000:3000"
     env_file:
