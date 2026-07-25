@@ -3,7 +3,7 @@
 
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image'
+import Image from 'next/image';
 import { useAuth } from '../../lib/auth/AuthContext';
 import ProfileDropdown from './ProfileDropdown';
 import AdminMenu from './AdminMenu';
@@ -19,25 +19,28 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white/60 md:bg-white/80 backdrop-blur-sm shadow-none md:shadow-sm border-b border-gray-50 md:border-gray-200">
-      <div className="w-full px-2 md:px-4">
-        <div className="flex justify-between h-14 sm:h-12 items-center">
+    <nav className="w-full bg-white/80 backdrop-blur-md shadow-xs border-b border-gray-200/80 sticky top-0 z-50">
+      <div className="w-full max-w-[92%] mx-auto">
+        <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
-            <Link href="/" className="font-bold text-lg sm:text-xl ml-2 md:ml-4">
+            <Link 
+              href="/" 
+              className="font-heading font-bold text-xl md:text-2xl text-gray-900 tracking-tight hover:text-emerald-600 transition-colors leading-none"
+            >
               Vadim Castro
             </Link>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-6 md:gap-8">
             <Link 
               href="/projects" 
-              className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base"
+              className="text-sm md:text-base font-medium text-gray-700 hover:text-emerald-600 transition-colors"
               onClick={() => trackInteraction('project_click', 'navbar')}
             >
               Projects
             </Link>
             <Link 
               href="/resume" 
-              className="hover:text-gray-600 transition-colors duration-200 px-2 sm:px-4 md:px-6 text-sm sm:text-base"
+              className="text-sm md:text-base font-medium text-gray-700 hover:text-emerald-600 transition-colors"
               onClick={() => trackInteraction('resume_view', 'navbar')}
             >
               Resume
@@ -49,9 +52,10 @@ export default function Navbar() {
                 <button
                   ref={profileButtonRef}
                   onClick={toggleDropdown}
-                  className="flex items-center hover:opacity-80 transition-opacity duration-200 pl-2 sm:pl-4 md:pl-6"
+                  className="flex items-center hover:opacity-80 transition-opacity duration-200"
+                  aria-label="Account Menu"
                 >
-                  <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                  <div className="relative w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-emerald-500/30 shadow-xs">
                     <Image
                       src="/images/profile.jpg"
                       alt="Profile"

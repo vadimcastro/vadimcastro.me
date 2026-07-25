@@ -1,71 +1,42 @@
-// src/app/projects/[slug]/page.tsx - Complete file
+// src/app/projects/[slug]/page.tsx
 "use client";
 
-import { getProjectBySlug } from '../../../lib/projects';
+import { getProjectBySlug, Project } from '../../../lib/projects';
 import { ImageModal } from '../../../components/projects/ImageModal';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { Github } from 'lucide-react';
 import { trackInteraction } from '../../../lib/api/analytics';
 
 interface ProjectPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default function ProjectPage({ params }: ProjectPageProps) {
+  const resolvedParams = use(params);
+  const slug = resolvedParams.slug;
   const [project, setProject] = useState<Project | undefined | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
 
   useEffect(() => {
     async function fetchProject() {
-      const data = await getProjectBySlug(params.slug);
+      if (!slug) return;
+      const data = await getProjectBySlug(slug);
       setProject(data);
       setLoading(false);
     }
     fetchProject();
-  }, [params.slug]);
-
-  // Check screen size and scroll position
-  useEffect(() => {
-    if (!project) return;
-    // Function to determine if we should show the scroll indicator
-    const checkScrollVisibility = () => {
-      // Only show on smaller screens where content may not be visible
-      const isSmallerScreen = window.innerHeight < 800;
-      
-      // Check if we've scrolled already
-      const hasScrolled = window.scrollY > 100;
-      
-      // Show indicator only on smaller screens and when at the top of the page
-      setShowScrollIndicator(isSmallerScreen && !hasScrolled);
-    };
-
-    // Check immediately and on resize
-    checkScrollVisibility();
-    window.addEventListener('resize', checkScrollVisibility);
-    window.addEventListener('scroll', checkScrollVisibility);
-    
-    // Track project view
-    if (project) {
-      trackInteraction('project_click', project.slug, { location: 'details_page', title: project.title });
-    }
-
-    return () => {
-      window.removeEventListener('resize', checkScrollVisibility);
-      window.removeEventListener('scroll', checkScrollVisibility);
-    };
-  }, [project]);
+  }, [slug]);
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-12 text-center mt-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
-        <p className="mt-4 text-gray-400">Loading project details...</p>
+      <div className="w-full max-w-[92%] mx-auto py-12 text-center mt-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500 mx-auto"></div>
+        <p className="mt-4 text-gray-600 font-medium">Loading project details...</p>
       </div>
     );
   }
@@ -78,12 +49,12 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto px-2 md:px-4 space-y-3 md:space-y-6 py-2 md:py-6">
+      <div className="w-full max-w-[92%] mx-auto space-y-4 md:space-y-6 py-4 md:py-6">
         {/* Project Header */}
         <header className="space-y-2 md:space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 md:space-x-8">
-              <div className="relative w-10 h-10 md:w-20 md:h-20 flex-shrink-0 transform translate-y-1">
+            <div className="flex items-center space-x-4 md:space-x-6">
+              <div className="relative w-12 h-12 md:w-16 md:h-16 flex-shrink-0">
                 <Image 
                   src={project.iconUrl || "/images/compass.svg"}
                   alt="Project Icon"
@@ -92,85 +63,54 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   priority
                 />
               </div>
-              <h1 className="text-3xl md:text-7xl font-heading font-bold text-gray-900 leading-none">{project.title}</h1>
+              <h1 className="text-3xl md:text-5xl font-heading font-bold text-gray-900 leading-none">{project.title}</h1>
             </div>
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1.5 md:p-2 bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm border hover:shadow-md transition-all duration-200 group flex-shrink-0"
+                className="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm border hover:shadow-md transition-all duration-200 group flex-shrink-0"
                 title="View on GitHub"
               >
-                <Github className="w-4 h-4 md:w-5 md:h-5 text-gray-600 group-hover:text-gray-900" />
+                <Github className="w-5 h-5 text-gray-600 group-hover:text-gray-900" />
               </a>
             )}
           </div>
-          <p className="text-lg md:text-2xl text-gray-600 w-full font-medium">
+          <p className="text-base md:text-xl text-gray-600 w-full font-medium leading-relaxed">
             {project.longDescription}
           </p>
         </header>
 
-        {/* Project Image - Using aspect ratio approach */}
-        <div className="rounded-xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200">
+        {/* Project Showcase Image - Un-cropped using object-contain */}
+        <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-200/80 cursor-pointer hover:shadow-md transition-all duration-200 bg-gray-50/80 p-2 md:p-3 flex items-center justify-center">
           <div 
-            className="relative w-full"
-            style={{ paddingBottom: '56.25%' }} // 16:9 aspect ratio
+            className="relative w-full aspect-video flex items-center justify-center"
             onClick={() => setSelectedImage(project.imageUrl)}
           >
-            <Image
+            <img
               src={project.imageUrl}
               alt={`${project.title} Showcase`}
-              fill
-              className="object-fill"
-              sizes="(max-width: 1200px) 100vw, 1200px"
-              priority
+              className="w-full h-full object-contain rounded-xl"
             />
-            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">
-              <span className="opacity-0 hover:opacity-100 text-white bg-black/50 px-4 py-2 rounded-full transition-opacity">
-                Click to enlarge
-              </span>
-            </div>
           </div>
         </div>
 
-        {/* Scroll Indicator - Only on smaller screens */}
-        {showScrollIndicator && (
-          <div className="flex justify-center animate-bounce mt-4 mb-2">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-6 w-6 text-gray-400" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M19 14l-7 7m0 0l-7-7m7 7V3" 
-              />
-            </svg>
-          </div>
-        )}
-
         {/* Tech Stack and Features */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-8 mt-3 md:mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 pt-4">
           <div>
-            <h2 className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-3 md:mb-5 pt-2 md:pt-4 ml-2 uppercase tracking-widest">TECHNOLOGY STACK</h2>
-            
-            {/* Dynamic Tech Stack Groups */}
+            <h2 className="text-xl font-heading font-bold text-gray-900 mb-4 uppercase tracking-widest">TECHNOLOGY STACK</h2>
             <div className="space-y-4">
-              {Object.entries(project.techStack).map(([category, technologies]) => (
-                <div key={category} className="mb-3 md:mb-4 ml-2">
-                  <h3 className="text-sm md:text-base font-medium text-gray-700 mb-1 md:mb-2 capitalize">
+              {Object.entries(project.techStack || {}).map(([category, technologies]) => (
+                <div key={category} className="mb-3">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2 capitalize">
                     {category}
                   </h3>
-                  <div className="flex flex-wrap gap-1 md:gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {Array.isArray(technologies) && technologies.map((tech) => (
                       <span 
                         key={tech} 
-                        className="px-2 md:px-3 py-1 md:py-1.5 bg-mint-500/10 text-mint-500 rounded-full font-medium text-xs md:text-sm"
+                        className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 rounded-full font-medium text-xs md:text-sm"
                       >
                         {tech}
                       </span>
@@ -182,12 +122,12 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           </div>
 
           <div>
-            <h2 className="text-xl md:text-2xl font-heading font-bold text-gray-900 mb-3 md:mb-5 pt-1 md:pt-2 ml-2 uppercase tracking-widest">KEY FEATURES</h2>
-            <div className="space-y-3 md:space-y-5">
-              {project.features.map((feature) => (
-                <div key={feature.title} className="p-3 md:p-5 bg-white rounded-lg shadow-sm border border-gray-100">
-                  <h3 className="text-base md:text-xl font-medium mb-1 md:mb-2 text-gray-900">{feature.title}</h3>
-                  <p className="text-sm md:text-base text-gray-600">{feature.description}</p>
+            <h2 className="text-xl font-heading font-bold text-gray-900 mb-4 uppercase tracking-widest">KEY FEATURES</h2>
+            <div className="space-y-4">
+              {Array.isArray(project.features) && project.features.map((feature) => (
+                <div key={feature.title} className="p-4 bg-white rounded-xl shadow-xs border border-gray-200/80">
+                  <h3 className="text-base font-bold mb-1 text-gray-900">{feature.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -196,35 +136,32 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Technical Implementation */}
         {project.technicalImplementation && (
-          <section className="space-y-3 md:space-y-6">
-            <h2 className="text-xl md:text-2xl font-heading font-bold text-gray-900 pt-2 md:pt-4 ml-2 uppercase tracking-widest">TECHNICAL IMPLEMENTATION</h2>
-            
-            {/* Architecture Overview Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
-              <h3 className="text-lg md:text-2xl font-medium text-gray-900 mb-3 md:mb-6">System Architecture</h3>
-              <div className="space-y-2 md:space-y-4 text-sm md:text-lg leading-relaxed text-gray-700">
-                {project.technicalImplementation.systemArchitecture.map((paragraph, index) => (
+          <section className="space-y-4 pt-4">
+            <h2 className="text-xl font-heading font-bold text-gray-900 uppercase tracking-widest">TECHNICAL IMPLEMENTATION</h2>
+            <div className="bg-white rounded-2xl shadow-xs border border-gray-200/80 p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-3">System Architecture</h3>
+              <div className="space-y-3 text-sm md:text-base leading-relaxed text-gray-700">
+                {Array.isArray(project.technicalImplementation.systemArchitecture) && project.technicalImplementation.systemArchitecture.map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
               </div>
             </div>
 
-            {/* Algorithm Card - Only display if project has algorithm data */}
             {project.technicalImplementation.algorithm && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
-                <h3 className="text-lg md:text-2xl font-bold text-gray-900 mb-2 md:mb-4">Route Calculation Algorithm</h3>
-                <div className="space-y-2 md:space-y-4 text-sm md:text-lg leading-relaxed text-gray-700">
-                  <p className="font-medium text-gray-900">
+              <div className="bg-white rounded-2xl shadow-xs border border-gray-200/80 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-3">Route Calculation Algorithm</h3>
+                <div className="space-y-4 text-sm md:text-base leading-relaxed text-gray-700">
+                  <p className="font-semibold text-gray-900">
                     {project.technicalImplementation.algorithm.description}
                   </p>
                   
-                  <div className="space-y-4 md:space-y-5">
-                    {project.technicalImplementation.algorithm.steps.map((step, index) => (
-                      <div key={index} className="flex items-start space-x-3 md:space-x-4">
-                        <span className="flex-shrink-0 w-6 h-6 md:w-7 md:h-7 rounded-full bg-mint-500/10 flex items-center justify-center text-mint-500 font-bold text-xs md:text-sm mt-0.5">
+                  <div className="space-y-3">
+                    {Array.isArray(project.technicalImplementation.algorithm.steps) && project.technicalImplementation.algorithm.steps.map((step, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center justify-center font-bold text-xs">
                           {index + 1}
                         </span>
-                        <p className="text-sm md:text-base leading-relaxed text-gray-700 mt-0.5">{step}</p>
+                        <p className="text-sm leading-relaxed text-gray-700">{step}</p>
                       </div>
                     ))}
                   </div>
@@ -235,7 +172,6 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         )}
       </div>
 
-      {/* Image Modal */}
       {selectedImage && (
         <ImageModal
           src={selectedImage}

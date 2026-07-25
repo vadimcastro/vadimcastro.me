@@ -20,29 +20,16 @@ ENV GIT_COMMIT_HASH=${GIT_COMMIT_HASH}
 ENV GIT_COMMIT_MESSAGE=${GIT_COMMIT_MESSAGE}
 ENV GIT_COMMIT_DATE=${GIT_COMMIT_DATE}
 
-# Install system dependencies including Docker CLI
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    curl \
-    gnupg \
-    lsb-release \
-    && mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
-    && apt-get update \
-    && apt-get install -y docker-ce-cli \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements first for better caching
+# Copy requirements first for caching
 COPY backend/requirements-minimal.txt /app/
-RUN python3 -m pip install -r requirements-minimal.txt
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python3 -m pip install --no-cache-dir --default-timeout=1000 --retries 10 -r requirements-minimal.txt
 
-# Copy the rest of the application
+# Copy backend code
 COPY backend/ /app/
 
-# Make the migration script executable
-RUN chmod +x /app/scripts/migrate.sh
+# Make scripts executable
+RUN chmod +x /app/scripts/*.sh 2>/dev/null || true
 
-# Command to run the application
+# Default command
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

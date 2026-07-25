@@ -8,8 +8,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://206.81.2.168:8000
-    # Explicitly no volumes - use built files only
+      - NEXT_PUBLIC_API_URL=https://vadimcastro.me
 
   api:
     build:
@@ -24,11 +23,10 @@ services:
       sh -c '
         echo "Running migrations..." &&
         /app/scripts/migrate.sh &&
-        echo "Waiting for tables to be ready..." &&
-        sleep 5 &&
+        sleep 3 &&
         echo "Initializing database..." &&
         python3 /app/scripts/init_db.py || echo "Database init failed, continuing..." &&
-        echo "Starting server..." &&
+        echo "Starting production server..." &&
         uvicorn app.main:app --host 0.0.0.0 --port 8000
       '
     ports:
@@ -37,8 +35,6 @@ services:
       - ../.env.production.local
     environment:
       - PYTHONPATH=/app:/app/app
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       db:
         condition: service_healthy
@@ -46,13 +42,11 @@ services:
         condition: service_healthy
 
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     env_file:
       - ../.env.production.local
-    ports:
-      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - vadimcastro_prod_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -60,12 +54,10 @@ services:
       retries: 3
 
   redis:
-    image: redis:6
+    image: redis:7-alpine
     command: redis-server --appendonly yes
-    ports:
-      - "6379:6379"
     volumes:
-      - redis_data:/data
+      - vadimcastro_prod_redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -73,5 +65,5 @@ services:
       retries: 3
 
 volumes:
-  postgres_data:
-  redis_data:
+  vadimcastro_prod_postgres_data:
+  vadimcastro_prod_redis_data:

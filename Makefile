@@ -1,60 +1,101 @@
 # vadimcastro.me Makefile
+# Personal Website & Cloud Storage Stack
 
-# Project variables
-PROJECT_NAME = vadimcastro.me
+PROJECT_NAME ?= vadimcastro
+PROJECT_NAME_SAFE ?= $(shell printf '%s' "$(PROJECT_NAME)" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9_-]+/-/g')
+COMPOSE = COMPOSE_PROJECT_NAME=$(PROJECT_NAME_SAFE) docker compose
+REBUILD ?= 0
 
-# Compose files for development
-COMPOSE_DEV = -f docker/docker-compose.yml -f docker/docker-compose.dev.yml
-COMPOSE_ULTRA = $(COMPOSE_DEV) -f docker/docker-compose.dev.ultra.yml
-
-# Development Targets
-.PHONY: dev dev-ultra build-base down clean logs migrate ps status
+.PHONY: dev dev-build dev-fast dev-debug prod down logs clean clean-all \
+	migrate migrate-create db auth setup-prod-env help doctor disk-usage prune-safe
 
 dev:
-	@echo "🚀 Starting development environment..."
-	docker compose $(COMPOSE_DEV) up --build
+	@echo "🚀 Starting vadimcastro development environment..."
+	cd docker && $(COMPOSE) -f docker-compose.dev.fast.yml up $(if $(filter 1 true yes,$(REBUILD)),--build,)
 
-dev-ultra:
-	@echo "⚡ Starting lightning-fast development..."
-	docker compose $(COMPOSE_ULTRA) up
+dev-fast:
+	@echo "⚡ Starting fast development environment..."
+	cd docker && $(COMPOSE) -f docker-compose.dev.fast.yml up
 
-build-base:
-	@chmod +x scripts/build-base-images.sh
-	./scripts/build-base-images.sh
+dev-build:
+	@echo "dev-build is deprecated. Use 'make dev REBUILD=1'."
+	@$(MAKE) dev REBUILD=1
 
-# Management
+dev-debug:
+	@echo " Starting development environment with debug logs..."
+	cd docker && $(COMPOSE) -f docker-compose.dev.fast.yml up 2>&1 | tee debug.log
+
+prod:
+	@echo "🌐 Starting production environment..."
+	docker compose -f docker/docker-compose.prod.yml up --build -d
+
 down:
 	@echo "🛑 Stopping containers..."
-	docker compose $(COMPOSE_DEV) down
-
-clean:
-	@echo "🧹 Cleaning containers and orphans (Data Safe)..."
-	docker compose $(COMPOSE_DEV) down --remove-orphans
-
-clean-all:
-	@echo "🚨 WARNING: Wiping all containers, orphans, and DATA VOLUMES..."
-	docker compose $(COMPOSE_DEV) down -v --remove-orphans
+	-cd docker && $(COMPOSE) -f docker-compose.dev.fast.yml down --remove-orphans
+	-COMPOSE_PROJECT_NAME=$(PROJECT_NAME_SAFE) docker compose -f docker/docker-compose.prod.yml down
 
 logs:
-	docker compose $(COMPOSE_DEV) logs -f
+	@echo "📋 Tail development logs..."
+	cd docker && $(COMPOSE) -f docker-compose.dev.fast.yml logs -f
 
-# Database
+clean:
+	@echo "🧹 Cleaning Docker resources..."
+	docker system prune -f
+
+clean-all:
+	@echo "🚨 Removing local volumes for a fresh start..."
+	cd docker && $(COMPOSE) -f docker-compose.dev.fast.yml down -v --remove-orphans
+	COMPOSE_PROJECT_NAME=$(PROJECT_NAME_SAFE) docker compose -f docker/docker-compose.prod.yml down -v
+
+doctor:
+	@echo "🩺 Running environment preflight checks..."
+	PROJECT_NAME=$(PROJECT_NAME) ./scripts/docker-doctor.sh
+
+disk-usage:
+	@echo "📊 Inspecting Docker disk usage..."
+	PROJECT_NAME=$(PROJECT_NAME) ./scripts/docker-disk-usage.sh
+
+prune-safe:
+	@echo "🧹 Pruning unused Docker artifacts (safe mode)..."
+	./scripts/docker-prune-safe.sh
+
 migrate:
-	@echo "📦 Running database migrations..."
-	docker compose $(COMPOSE_DEV) exec api /app/scripts/migrate.sh
+	@echo "📦 Running Alembic migrations..."
+	cd docker && $(COMPOSE) -f docker-compose.dev.fast.yml exec api /app/scripts/migrate.sh
 
-# Health & Status
-ps:
-	docker compose $(COMPOSE_DEV) ps
+migrate-create:
+	@if [ -z "$(name)" ]; then \
+		echo "Error: Migration name not provided. Use 'make migrate-create name=your_migration_name'"; \
+		exit 1; \
+	fi
+	@echo "Creating migration: $(name)"
+	cd docker && $(COMPOSE) -f docker-compose.dev.fast.yml exec api alembic revision --autogenerate -m "$(name)"
 
-status:
-	@./scripts/docker-health.sh
+db: migrate
 
-# Authentication
-.PHONY: auth-setup setup-local-auth
-
-auth-setup: setup-local-auth
-
-setup-local-auth:
-	@echo "Setting up local development authentication..."
+auth:
+	@echo "🔐 Setting up local development authentication..."
 	./scripts/setup-local-auth.sh
+
+setup-prod-env:
+	@echo "⚙️ Setting up production environment..."
+	./scripts/setup-production-env.sh
+
+help:
+	@echo "Available commands for vadimcastro.me:"
+	@echo "Core:"
+	@echo "  make dev                     - Start dev stack (reuse cached images)"
+	@echo "  make dev REBUILD=1           - Rebuild images, then start dev stack"
+	@echo "  make down                    - Stop all stacks"
+	@echo "  make logs                    - Tail development logs"
+	@echo ""
+	@echo "Maintenance & Health:"
+	@echo "  make doctor                  - Preflight checks (docker/env/ports)"
+	@echo "  make disk-usage              - Show Docker image/volume/cache usage"
+	@echo "  make prune-safe              - Safe Docker cleanup"
+	@echo "  make migrate                 - Run database migrations"
+	@echo "  make migrate-create name=X   - Create Alembic migration"
+	@echo ""
+	@echo "Setup:"
+	@echo "  make auth                    - Validate local auth using .env credentials"
+	@echo "  make setup-prod-env          - Configure production env file"

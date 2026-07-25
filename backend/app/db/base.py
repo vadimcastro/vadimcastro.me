@@ -4,10 +4,11 @@ from sqlalchemy import create_engine
 from app.core.config import settings
 from app.db.base_class import Base
 
-# Import all models to ensure they are registered with Base
+# Import all models so Alembic registers them
 from app.models.user import User  
-from app.models.project import Project
 from app.models.user_session import UserSession
+from app.models.oauth_account import OAuthAccount
+from app.models.project import Project
 from app.models.note import Note
 from app.models.interaction import AnalyticsInteraction
 

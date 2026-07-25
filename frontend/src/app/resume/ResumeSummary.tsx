@@ -1,6 +1,7 @@
 'use client';
 // src/components/resume/ResumeSummary.tsx
 import Link from 'next/link';
+import Image from 'next/image';
 import { trackInteraction } from '../../lib/api/analytics';
 
 export const ResumeSummary = () => {
@@ -10,13 +11,13 @@ export const ResumeSummary = () => {
       className="block h-full group cursor-pointer"
       onClick={() => trackInteraction('resume_view', 'home_summary')}
     >
-      <div className="flex flex-col bg-white rounded-lg overflow-hidden border-0 md:border md:border-gray-200 transition-all duration-300 hover:shadow-md hover:scale-[1.02] hover:bg-gray-50 p-4 md:p-6">
-        {/* Skills section */}
-        <div className="shrink-0 pb-6">
-          <h3 className="text-base md:text-lg font-medium text-gray-900 mb-3">
+      <div className="flex flex-col h-full justify-between space-y-4">
+        {/* Key Skills section */}
+        <div className="shrink-0 pb-3 border-b border-gray-100">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
             Key Skills
           </h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {[
               "React",
               "Python",
@@ -29,8 +30,7 @@ export const ResumeSummary = () => {
             ].map((skill) => (
               <span 
                 key={skill}
-                className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs md:text-sm rounded-full 
-                         border border-emerald-200 hover:bg-emerald-100 transition-colors duration-200"
+                className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-md border border-emerald-200/80"
               >
                 {skill}
               </span>
@@ -38,71 +38,131 @@ export const ResumeSummary = () => {
           </div>
         </div>
 
-        {/* Experience section */}
-        <div className="flex-1">
-          <h3 className="text-base md:text-lg font-medium text-gray-900 mb-4">Recent Experience</h3>
+        {/* Experience section with ALL 4 roles */}
+        <div className="flex-1 space-y-3">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-700">Experience</h3>
           
-          <div className="space-y-6">
-            <div className="border-l-2 border-emerald-200 pl-4 md:pl-5">
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm md:text-base">Senior Software Engineer, UI/UX</h4>
-                <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-                  <p className="text-gray-700 text-sm">Stickshift AI</p>
-                  <p className="text-xs text-gray-500 md:whitespace-nowrap">
-                    Dec 2023 - Oct 2024
-                  </p>
+          <div className="space-y-3">
+            {/* Stickshift AI */}
+            <div className="p-3 bg-gray-50/70 rounded-xl border border-gray-100 group-hover:border-emerald-200/80 transition-all duration-200 space-y-1">
+              <div className="flex items-center gap-3">
+                <div className="relative w-8 h-8 p-0.5 bg-white border border-gray-200/80 rounded-lg shadow-xs shrink-0 flex items-center justify-center">
+                  <Image
+                    src="/images/companies/stickshift-logo.png"
+                    alt="Stickshift AI"
+                    fill
+                    className="object-contain p-0.5"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
+                    <h4 className="font-bold text-xs md:text-sm text-gray-900 truncate">Senior Software Engineer, UI/UX</h4>
+                    <span className="text-[11px] text-gray-500 font-medium shrink-0">Dec 2023 - Oct 2024</span>
+                  </div>
+                  <p className="text-xs font-semibold text-emerald-600">Stickshift AI</p>
                 </div>
               </div>
-              <ul className="mt-3 text-xs md:text-sm text-gray-600 space-y-1">
-                <li>• Added GPT-4 Turbo and Claude 3 Haiku integration</li>
-                <li>• Implemented Bing Autosuggest for real-time search</li>
+              <ul className="text-xs text-gray-600 space-y-0.5 pl-11">
+                <li>• Integrated GPT-4 Turbo & Claude 3 search assistant</li>
+                <li>• Implemented Bing Autosuggest API for real-time search</li>
                 <li>• Designed & built mobile-friendly React UI</li>
               </ul>
             </div>
 
-            <div className="border-l-2 border-emerald-200 pl-4 md:pl-5">
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm md:text-base">Software Engineer, Platform & Data</h4>
-                <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-                  <p className="text-gray-700 text-sm">Goldman Sachs & Co.</p>
-                  <p className="text-xs text-gray-500 md:whitespace-nowrap">
-                    Feb 2022 - Apr 2023
-                  </p>
+            {/* Goldman Sachs */}
+            <div className="p-3 bg-gray-50/70 rounded-xl border border-gray-100 group-hover:border-emerald-200/80 transition-all duration-200 space-y-1">
+              <div className="flex items-center gap-3">
+                <div className="relative w-8 h-8 p-0.5 bg-white border border-gray-200/80 rounded-lg shadow-xs shrink-0 flex items-center justify-center">
+                  <Image
+                    src="/images/companies/goldman-sachs-logo.png"
+                    alt="Goldman Sachs"
+                    fill
+                    className="object-contain p-0.5"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
+                    <h4 className="font-bold text-xs md:text-sm text-gray-900 truncate">Software Engineer, Platform & Data</h4>
+                    <span className="text-[11px] text-gray-500 font-medium shrink-0">Feb 2022 - Apr 2023</span>
+                  </div>
+                  <p className="text-xs font-semibold text-emerald-600">Goldman Sachs & Co.</p>
                 </div>
               </div>
-              <ul className="mt-3 text-xs md:text-sm text-gray-600 space-y-1">
-                <li>• Developed streamlined data pipeline strategy</li>
-                <li>• Created custom internal Python libraries</li>
-                <li>• Managed CI/CD pipelines in Gitlab CI</li>
+              <ul className="text-xs text-gray-600 space-y-0.5 pl-11">
+                <li>• Developed data pipeline strategy for Digital Loan Agent system</li>
+                <li>• Created internal Python libraries & GitLab CI/CD pipelines</li>
+                <li>• Developed Demo Service for testing new features</li>
               </ul>
             </div>
 
-            <div className="border-l-2 border-emerald-200 pl-4 md:pl-5">
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm md:text-base">Associate Software Developer</h4>
-                <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-                  <p className="text-gray-700 text-sm">IBM</p>
-                  <p className="text-xs text-gray-500 md:whitespace-nowrap">
-                    Aug 2020 - Dec 2021
-                  </p>
+            {/* IBM */}
+            <div className="p-3 bg-gray-50/70 rounded-xl border border-gray-100 group-hover:border-emerald-200/80 transition-all duration-200 space-y-1">
+              <div className="flex items-center gap-3">
+                <div className="relative w-8 h-8 p-0.5 bg-white border border-gray-200/80 rounded-lg shadow-xs shrink-0 flex items-center justify-center">
+                  <Image
+                    src="/images/companies/ibm-logo.png"
+                    alt="IBM"
+                    fill
+                    className="object-contain p-0.5"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
+                    <h4 className="font-bold text-xs md:text-sm text-gray-900 truncate">Associate Software Developer</h4>
+                    <span className="text-[11px] text-gray-500 font-medium shrink-0">Aug 2020 - Dec 2021</span>
+                  </div>
+                  <p className="text-xs font-semibold text-emerald-600">IBM</p>
                 </div>
               </div>
-              <ul className="mt-3 text-xs md:text-sm text-gray-600 space-y-1">
-                <li>• Developed REST services with Java Spring Boot</li>
-                <li>• Implemented APIs for GSA Data Scientists</li>
-                <li>• Created automated DB configuration scripts</li>
+              <ul className="text-xs text-gray-600 space-y-0.5 pl-11">
+                <li>• Developed REST services with Java Spring Boot, PostgreSQL & AWS</li>
+                <li>• Created Python scripts for automated DB configuration & data ingestion</li>
+              </ul>
+            </div>
+
+            {/* UAlbany Research Lab */}
+            <div className="p-3 bg-gray-50/70 rounded-xl border border-gray-100 group-hover:border-emerald-200/80 transition-all duration-200 space-y-1">
+              <div className="flex items-center gap-3">
+                <div className="relative w-8 h-8 p-0.5 bg-white border border-gray-200/80 rounded-lg shadow-xs shrink-0 flex items-center justify-center">
+                  <Image
+                    src="/images/companies/ualbany-logo.png"
+                    alt="UAlbany"
+                    fill
+                    className="object-contain p-0.5"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
+                    <h4 className="font-bold text-xs md:text-sm text-gray-900 truncate">Research Assistant</h4>
+                    <span className="text-[11px] text-gray-500 font-medium shrink-0">Aug 2018 - Feb 2019</span>
+                  </div>
+                  <p className="text-xs font-semibold text-emerald-600">Data Mining & Management Lab, UAlbany</p>
+                </div>
+              </div>
+              <ul className="text-xs text-gray-600 space-y-0.5 pl-11">
+                <li>• Analyzed time-evolving networks for anomalous event patterns</li>
+                <li>• Engineered software to identify dynamic communities in temporal graphs</li>
               </ul>
             </div>
           </div>
         </div>
 
         {/* Education section */}
-        <div className="shrink-0 mt-6 pt-6 border-t border-gray-100">
-          <h3 className="text-base md:text-lg font-medium text-gray-900 mb-3">Education</h3>
-          <div className="border-l-2 border-emerald-200 pl-4 md:pl-5">
-            <h4 className="font-medium text-sm md:text-base">B.S. Computer Science and Applied Mathematics</h4>
-            <p className="text-gray-700 text-sm">University at Albany, SUNY</p>
-            <p className="text-xs text-gray-500">2015 - 2019</p>
+        <div className="shrink-0 pt-3 border-t border-gray-100">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Education</h3>
+          <div className="p-2.5 bg-gray-50/70 rounded-xl border border-gray-100 flex items-center gap-3">
+            <div className="relative w-8 h-8 p-0.5 bg-white border border-gray-200/80 rounded-lg shadow-xs shrink-0 flex items-center justify-center">
+              <Image
+                src="/images/companies/ualbany-logo.png"
+                alt="UAlbany"
+                fill
+                className="object-contain p-0.5"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-bold text-xs text-gray-900 truncate">B.S. Computer Science & Applied Mathematics</h4>
+              <p className="text-xs text-gray-600">University at Albany, SUNY (2015 - 2019)</p>
+            </div>
           </div>
         </div>
       </div>

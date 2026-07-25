@@ -1,22 +1,22 @@
-# Vadim Castro - Personal Website & Cloud Storage
+# Vadim Castro - Developer Portfolio & Infrastructure Dashboard
 
-A full-stack web application featuring a personal portfolio, admin dashboard, and cloud storage capabilities.
+A modern, high-performance full-stack web application featuring a personal developer portfolio, administrative dashboard, and infrastructure metrics telemetry.
 
 ## 🚀 Quick Links
 
 - [🛠️ Development Setup](docs/development.md) - Get up and running locally.
-- [🌐 Production Guide](docs/production.md) - How to deploy to your server.
+- [🌐 Production Guide](docs/production.md) - How to deploy to production (`vadimcastro.com`).
 - [🔐 Security & Secrets](docs/SECRET_MANAGEMENT_GUIDE.md) - Best practices for security.
 - [📝 Environment Reference](docs/ENVIRONMENT_REFERENCE.md) - Detailed environment variable list.
 
-## 🏗️ Tech Stack
+## 🏗️ Modern Tech Stack
 
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
-- **Backend**: FastAPI, Python, SQLAlchemy
-- **Database**: PostgreSQL with Alembic migrations
-- **Cache**: Redis
-- **Infrastructure**: Docker Compose
-- **Authentication**: JWT tokens with secure cookie storage
+- **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, Framer Motion 12, Lucide React
+- **Backend**: FastAPI, Python 3.11+, Pydantic v2, SQLAlchemy, Alembic
+- **Database & Cache**: PostgreSQL 15, Redis 7 (Rate Limiting & Session Revocation)
+- **Security**: JWT Access/Refresh Token Rotation, OAuth2 (Google & GitHub), Redis Rate Limiting, HTTP Security Headers, CSP
+- **Infrastructure**: Docker Compose (`docker-compose.dev.fast.yml`, `docker-compose.prod.yml`), Nginx reverse proxy
+- **CI/CD & Quality**: GitHub Actions, GitLeaks secret scanner, Makefile tooling
 
 ## 🛠️ Rapid Startup
 
@@ -28,7 +28,7 @@ A full-stack web application featuring a personal portfolio, admin dashboard, an
    ```
 2. **Setup authentication** (first time):
    ```bash
-   make setup-local-auth
+   make auth
    ```
 3. **Access**:
    - Frontend: [http://localhost:3000](http://localhost:3000)
@@ -36,19 +36,22 @@ A full-stack web application featuring a personal portfolio, admin dashboard, an
 
 ## 📁 Project Structure
 
-- `frontend/` - Next.js application
-- `backend/` - FastAPI Python backend
+- `frontend/` - Next.js 16 & React 19 application
+- `backend/` - FastAPI Python backend with OAuth & Redis security
 - `docker/` - Docker configuration and Compose files
-- `docs/` - Comprehensive documentation
-- `scripts/` - Automation and setup scripts
+- `docs/` - Comprehensive architecture and deployment guides
+- `scripts/` - Diagnostics (`docker-doctor.sh`), cleanup (`docker-prune-safe.sh`), and setup scripts
 
 ## 📋 Available Make Commands
 
 - `make dev` - Start development environment
-- `make dev-ultra` - Fast startup with pre-built images
-- `make migrate` - Run database migrations & seed admin user
-- `make logs` - Show all container logs
-- `make clean` - Stop and remove containers
+- `make dev REBUILD=1` - Rebuild images and start dev environment
+- `make doctor` - Run system diagnostic check
+- `make auth` - Setup local admin authentication credentials
+- `make migrate` - Run database migrations & seed project data
+- `make disk-usage` - Inspect Docker container disk consumption
+- `make prune-safe` - Safe cleanup of unused Docker build caches
+- `make logs` - Stream all container logs
 
 ---
-*Maintained as part of the standalone portable project modernization.*
+*Maintained by Vadim Castro (vadimcastro.com)*

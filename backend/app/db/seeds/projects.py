@@ -55,11 +55,11 @@ def seed_projects(db: Session) -> None:
         },
         {
             "slug": "vadimcastro-me",
-            "title": "vadimcastro.me",
+            "title": "vadimcastro.com",
             "short_description": "A modern, high-performance developer portfolio and infrastructure dashboard.",
-            "long_description": "A sophisticated portfolio built with Next.js 14 and FastAPI. Features real-time infrastructure monitoring, engagement tracking, and a premium glassmorphic UI.",
+            "long_description": "A sophisticated portfolio built with Next.js 16 (App Router), React 19, and FastAPI. Features real-time infrastructure monitoring, engagement tracking, and a fluid responsive design system.",
             "tech_stack": {
-                "Frontend": ["Next.js", "Tailwind CSS", "Lucide React"],
+                "Frontend": ["Next.js 16", "React 19", "Tailwind CSS v4", "Lucide React"],
                 "Backend": ["FastAPI", "SQLAlchemy", "Pydantic v2"],
                 "Infrastructure": ["Docker", "PostgreSQL", "Redis"]
             },
@@ -82,13 +82,14 @@ def seed_projects(db: Session) -> None:
             ],
             "image_url": "/images/portfolio_pic.png",
             "icon_url": "/images/image-generator.png",
-            "github_url": "https://github.com/vadimcastro/vadimcastro.me",
+            "github_url": "https://github.com/vadimcastro/vadimcastro.com",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "The platform is engineered as a monolithic-style modular system, ensuring a strict separation between the FastAPI backend services and the Next.js 14 frontend. On the server side, we leverage Pydantic v2 for high-performance data validation and type safety, while the frontend utilizes the modern Next.js App Router to optimize performance through a strategic mix of Server Components for SEO and Client Components for interactivity.",
-                    "Infrastructure health and engagement analytics are powered by a robust data layer consisting of PostgreSQL for persistent storage and Redis for high-speed metric caching. Real-time system monitoring is achieved through optimized subprocess execution and direct Docker socket integration, providing live, low-latency visibility into CPU, memory, and container performance."
+                    "The platform is engineered as a monolithic-style modular system, ensuring a strict separation between the FastAPI backend services and the Next.js 16 frontend. On the server side, we leverage Pydantic v2 for high-performance data validation and type safety, while the frontend utilizes the modern Next.js 16 App Router & React 19 to optimize performance through a strategic mix of Server Components for SEO and Client Components for interactivity.",
+                    "Infrastructure health and engagement analytics are powered by a robust data layer consisting of PostgreSQL for persistent storage and Redis for high-speed metric caching & rate limiting. Real-time system monitoring is achieved through optimized subprocess execution and direct Docker socket integration, providing live, low-latency visibility into CPU, memory, and container performance."
                 ]
-            }
+            },
+            "status": "active"
         }
     ]
 

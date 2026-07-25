@@ -17,7 +17,7 @@ export interface Project {
   imageUrl: string;
   iconUrl?: string;
   githubUrl?: string;
-  status: 'active' | 'archived' | 'in_progress';
+  status: 'active' | 'archived' | 'in_progress' | 'concept';
   technicalImplementation: {
     systemArchitecture: string[];
     algorithm?: {
@@ -28,15 +28,29 @@ export interface Project {
 }
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-// In Docker, the internal URL for server-side fetching is http://api:8000
 const INTERNAL_API_URL = 'http://api:8000';
 
 const isServer = typeof window === 'undefined';
 const API_BASE_URL = isServer ? INTERNAL_API_URL : NEXT_PUBLIC_API_URL;
 
-/**
- * Maps backend snake_case project to frontend camelCase project
- */
+const STATUS_PRIORITY: Record<string, number> = {
+  active: 1,
+  in_progress: 2,
+  concept: 3,
+  archived: 4,
+};
+
+function sortProjects(projects: Project[]): Project[] {
+  return [...projects].sort((a, b) => {
+    const priorityA = STATUS_PRIORITY[a.status] || 99;
+    const priorityB = STATUS_PRIORITY[b.status] || 99;
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB;
+    }
+    return Number(b.id) - Number(a.id);
+  });
+}
+
 function mapProject(data: any): Project {
   return {
     id: String(data.id),
@@ -57,7 +71,7 @@ function mapProject(data: any): Project {
 export async function getAllProjects(): Promise<Project[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/v1/projects/`, {
-      next: { revalidate: 3600 } // Cache for 1 hour, or use 0 for no cache
+      next: { revalidate: 3600 }
     });
     
     if (!response.ok) {
@@ -66,7 +80,8 @@ export async function getAllProjects(): Promise<Project[]> {
     }
     
     const data = await response.json();
-    return data.map(mapProject);
+    const mapped = data.map(mapProject);
+    return sortProjects(mapped);
   } catch (error) {
     console.error('Error fetching projects:', error);
     return [];
