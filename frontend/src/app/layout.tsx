@@ -18,8 +18,36 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Vadim Castro',
-  description: 'Personal website of Vadim Castro',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://vadimcastro.com'),
+  title: {
+    default: 'Vadim Castro — Software Engineer | Platform & Data',
+    template: '%s | Vadim Castro'
+  },
+  description: 'Senior Software Engineer specializing in distributed data pipelines, cloud infrastructure, AI platform engineering, and high-performance web applications.',
+  keywords: ['Vadim Castro', 'Software Engineer', 'Platform Engineer', 'Data Engineer', 'React', 'FastAPI', 'Next.js', 'Python', 'PostgreSQL'],
+  authors: [{ name: 'Vadim Castro' }],
+  openGraph: {
+    title: 'Vadim Castro — Software Engineer | Platform & Data',
+    description: 'Senior Software Engineer specializing in distributed data pipelines, cloud infrastructure, AI platform engineering, and high-performance web applications.',
+    url: 'https://vadimcastro.com',
+    siteName: 'Vadim Castro Portfolio',
+    images: [
+      {
+        url: '/images/portfolio_pic.png',
+        width: 1200,
+        height: 630,
+        alt: 'Vadim Castro Portfolio Preview',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Vadim Castro — Software Engineer | Platform & Data',
+    description: 'Senior Software Engineer specializing in distributed data pipelines, cloud infrastructure, AI platform engineering, and high-performance web applications.',
+    images: ['/images/portfolio_pic.png'],
+  },
 };
 
 export default function RootLayout({

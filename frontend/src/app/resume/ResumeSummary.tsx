@@ -38,7 +38,7 @@ export const ResumeSummary = () => {
           </div>
         </div>
 
-        {/* Experience section with ALL 4 roles */}
+        {/* Experience section */}
         <div className="flex-1 space-y-3">
           <h3 className="text-xs font-bold uppercase tracking-wider text-gray-700">Experience</h3>
           
@@ -51,21 +51,22 @@ export const ResumeSummary = () => {
                     src="/images/companies/stickshift-logo.png"
                     alt="Stickshift AI"
                     fill
+                    sizes="32px"
                     className="object-contain p-0.5"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
-                    <h4 className="font-bold text-xs md:text-sm text-gray-900 truncate">Senior Software Engineer, UI/UX</h4>
-                    <span className="text-[11px] text-gray-500 font-medium shrink-0">Dec 2023 - Oct 2024</span>
+                    <h4 className="font-bold text-xs md:text-sm text-gray-900 truncate">Senior Software Engineer</h4>
+                    <span className="text-[11px] text-gray-500 font-medium shrink-0">Dec 2023 - Dec 2025</span>
                   </div>
                   <p className="text-xs font-semibold text-emerald-600">Stickshift AI</p>
                 </div>
               </div>
               <ul className="text-xs text-gray-600 space-y-0.5 pl-11">
-                <li>• Integrated GPT-4 Turbo & Claude 3 search assistant</li>
-                <li>• Implemented Bing Autosuggest API for real-time search</li>
-                <li>• Designed & built mobile-friendly React UI</li>
+                <li>• Full-stack AI platform (React, Node, Postgres) with multi-LLM access</li>
+                <li>• Provider-agnostic abstraction for OpenAI, Anthropic, & xAI APIs</li>
+                <li>• Managed full LLM upgrade lifecycle (GPT-5, Claude 4.5, Grok 4)</li>
               </ul>
             </div>
 
@@ -77,21 +78,22 @@ export const ResumeSummary = () => {
                     src="/images/companies/goldman-sachs-logo.png"
                     alt="Goldman Sachs"
                     fill
+                    sizes="32px"
                     className="object-contain p-0.5"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline">
-                    <h4 className="font-bold text-xs md:text-sm text-gray-900 truncate">Software Engineer, Platform & Data</h4>
+                    <h4 className="font-bold text-xs md:text-sm text-gray-900 truncate">Platform & Data Engineer</h4>
                     <span className="text-[11px] text-gray-500 font-medium shrink-0">Feb 2022 - Apr 2023</span>
                   </div>
                   <p className="text-xs font-semibold text-emerald-600">Goldman Sachs & Co.</p>
                 </div>
               </div>
               <ul className="text-xs text-gray-600 space-y-0.5 pl-11">
-                <li>• Developed data pipeline strategy for Digital Loan Agent system</li>
-                <li>• Created internal Python libraries & GitLab CI/CD pipelines</li>
-                <li>• Developed Demo Service for testing new features</li>
+                <li>• Retrofitted Legend models into Pydantic & Postgres for DLA system</li>
+                <li>• Dynamic semantic versioned PyPI libraries via GitLab CI/CD</li>
+                <li>• Full-stack Demo Service for feature testing & data pipeline REST APIs</li>
               </ul>
             </div>
 
@@ -103,6 +105,7 @@ export const ResumeSummary = () => {
                     src="/images/companies/ibm-logo.png"
                     alt="IBM"
                     fill
+                    sizes="32px"
                     className="object-contain p-0.5"
                   />
                 </div>
@@ -115,8 +118,8 @@ export const ResumeSummary = () => {
                 </div>
               </div>
               <ul className="text-xs text-gray-600 space-y-0.5 pl-11">
-                <li>• Developed REST services with Java Spring Boot, PostgreSQL & AWS</li>
-                <li>• Created Python scripts for automated DB configuration & data ingestion</li>
+                <li>• Java Spring Boot, PostgreSQL & AWS microservices for GSA and FDA</li>
+                <li>• Data access APIs and Python DevOps automation scripts</li>
               </ul>
             </div>
 
@@ -128,6 +131,7 @@ export const ResumeSummary = () => {
                     src="/images/companies/ualbany-logo.png"
                     alt="UAlbany"
                     fill
+                    sizes="32px"
                     className="object-contain p-0.5"
                   />
                 </div>
@@ -140,8 +144,8 @@ export const ResumeSummary = () => {
                 </div>
               </div>
               <ul className="text-xs text-gray-600 space-y-0.5 pl-11">
-                <li>• Analyzed time-evolving networks for anomalous event patterns</li>
-                <li>• Engineered software to identify dynamic communities in temporal graphs</li>
+                <li>• Analyzed time-evolving networks for anomalous patterns & communities</li>
+                <li>• Optimized graph parameters with ROC AUC metrics on temporal data</li>
               </ul>
             </div>
           </div>
@@ -156,6 +160,7 @@ export const ResumeSummary = () => {
                 src="/images/companies/ualbany-logo.png"
                 alt="UAlbany"
                 fill
+                sizes="32px"
                 className="object-contain p-0.5"
               />
             </div>

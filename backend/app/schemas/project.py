@@ -2,13 +2,16 @@
 from datetime import datetime
 from typing import Optional, Dict, List
 from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
 
 class Feature(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
     title: str = Field(..., description="Feature title")
     description: str = Field(..., description="Feature description")
     icon: str = Field(..., description="Icon name (e.g. from Lucide)")
 
 class ProjectBase(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True, from_attributes=True)
     slug: str = Field(..., description="Unique URL-friendly identifier")
     title: str = Field(..., description="Project title")
     short_description: str = Field(..., description="Brief summary")
@@ -25,6 +28,7 @@ class ProjectCreate(ProjectBase):
     pass
 
 class ProjectUpdate(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
     slug: Optional[str] = Field(None)
     title: Optional[str] = Field(None)
     short_description: Optional[str] = Field(None)
@@ -38,8 +42,7 @@ class ProjectUpdate(BaseModel):
     status: Optional[str] = Field(None)
 
 class ProjectInDBBase(ProjectBase):
-    model_config = ConfigDict(from_attributes=True)
-    
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True, from_attributes=True)
     id: int = Field(..., description="Database ID")
     created_at: datetime
     updated_at: Optional[datetime] = None

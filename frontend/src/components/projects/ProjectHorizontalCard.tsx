@@ -75,19 +75,14 @@ export function ProjectHorizontalCard({ project }: ProjectHorizontalCardProps) {
             <div className="mt-auto pt-3 border-t border-gray-100">
               <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Technologies</h4>
               <div className="flex flex-wrap gap-1.5">
-                {Object.values(project.techStack).flat().slice(0, 6).map((tech) => (
+                {Array.from(new Set(Object.values(project.techStack).flat())).map((tech) => (
                   <span 
                     key={tech} 
-                    className="px-2.5 py-1 bg-gray-100 rounded-lg text-xs font-mono text-gray-700"
+                    className="px-2.5 py-1 bg-gray-100 rounded-lg text-xs font-mono text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 border border-transparent transition-colors duration-150"
                   >
                     {tech}
                   </span>
                 ))}
-                {Object.values(project.techStack).flat().length > 6 && (
-                  <span className="px-2.5 py-1 bg-gray-100 rounded-lg text-xs font-mono text-gray-700">
-                    +{Object.values(project.techStack).flat().length - 6} more
-                  </span>
-                )}
               </div>
             </div>
           </div>

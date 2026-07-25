@@ -18,58 +18,59 @@ const experiences: Experience[] = [
   {
     company: "Stickshift AI",
     logo: "/images/companies/stickshift-logo.png",
-    role: "Senior Software Engineer, UI/UX",
-    period: "Dec 2023 - Oct 2024",
-    location: "Austin, Texas",
+    role: "Senior Software Engineer",
+    period: "Dec 2023 - Dec 2025",
+    location: "Austin, TX",
     description: [
-      "Added integration for GPT-4 Turbo and Claude 3 Haiku based search assistant",
-      "Implemented Bing Autosuggest API for real-time search suggestions",
-      "Designed & implemented mobile friendly UI using React",
-      "Upgraded existing UI components to better conform to proximity & consistency design principles"
+      "Architected and launched a full-stack AI platform from the ground up — built with React.js, Node.js, and PostgreSQL — enabling conversational access to multiple LLM providers from a single interface.",
+      "Designed a provider-agnostic LLM abstraction layer standardizing request/response handling across OpenAI, Anthropic, and xAI APIs, enabling rapid model swaps with zero front-end changes.",
+      "Owned the full model integration lifecycle across two years: GPT-4 → GPT-5, Claude 3 → Claude 4.5, Grok → Grok 4 — maintaining backward compatibility through every upgrade cycle.",
+      "Designed and shipped multiple iterations of a fully mobile-responsive UI using React.js and Material-UI, improving usability and engagement across all device types.",
+      "Led performance profiling of streaming response handling and token budget management; hardened API error handling and retry logic across all integrations, measurably reducing user-facing failure rates.",
+      "Refactored component architecture with shared context providers, reducing initial load time and improving render performance at scale."
     ],
-    technologies: ["React", "GPT-4", "Claude 3", "Bing API", "UI/UX", "Mobile Design"]
+    technologies: ["React.js", "Node.js", "PostgreSQL", "OpenAI", "Anthropic", "xAI", "GPT-5", "Claude 4.5", "Grok 4", "Material-UI"]
   },
   {
     company: "Goldman Sachs & Co.",
     logo: "/images/companies/goldman-sachs-logo.png",
-    role: "Software Engineer, Platform & Data",
-    period: "Feb 2022 - April 2023",
-    location: "Dallas, Texas",
+    role: "Platform & Data Engineer",
+    period: "Feb 2022 - Apr 2023",
+    location: "Dallas, TX",
     description: [
-      "Developed and implemented a streamlined data pipeline strategy to ensure data integrity across all stages of the data lifecycle for Digital Loan Agent system",
-      "Developed and published custom internal Python libraries to GS private PyPi via Gitlab CI pipeline with automated dynamic versioning",
-      "Developed and managed CI/CD pipelines in Gitlab CI including testing, packaging & deployment jobs across multiple services",
-      "Developed a Demo Service for testing new features due to infancy and instability of DLA system",
-      "Implemented Gitlab and Jira integration to allow team to reference Jira tickets in Git commit messages"
+      "Retrofitted proprietary Goldman Sachs Legend financial models into type-safe Pydantic schemas and PostgreSQL models for the Digital Loan Agent (DLA) system — ensuring auditable data integrity across schema definition, in-app state, and at-rest storage.",
+      "Packaged and published the DLA data model libraries to a private Goldman Sachs PyPI registry via GitLab CI, implementing automated PEP 440 semantic versioning — enabling consistent, versioned consumption across all dependent services.",
+      "Built the entire CI/CD infrastructure from scratch using GitLab CI YAML, Docker, and Makefiles — covering automated testing, packaging, and multi-service deployment across Orchestration, Payments, and Demo environments.",
+      "Designed and delivered REST APIs enabling the DLA system to query processed data from the pipeline and database, bridging the data layer to downstream consumers and unlocking real-time loan decisioning workflows.",
+      "Developed a full-stack Demo Service (React frontend, Node.js/Python backend) to safely validate new DLA features in isolation, reducing production risk during the system's early high-instability phase.",
+      "Integrated GitLab + Jira into the CI/CD pipeline to auto-track, update, and close tickets from commit events — eliminating manual project management overhead for the engineering team."
     ],
-    technologies: ["Python", "GitLab CI", "PyPi", "Data Pipeline", "CI/CD", "Jira"]
+    technologies: ["Python", "Pydantic", "PostgreSQL", "PyPI", "GitLab CI", "Docker", "Makefiles", "REST APIs", "React", "Node.js", "Jira"]
   },
   {
     company: "IBM",
     logo: "/images/companies/ibm-logo.png",
     role: "Associate Software Developer",
-    period: "August 2020 - December 2021",
+    period: "Aug 2020 - Dec 2021",
     location: "Washington, D.C.",
     description: [
-      "Developed several REST services with Java, Spring Boot, PostgreSQL and AWS for GSA and FDA",
-      "Iteratively designed and implemented DB schema, as well as developed an API and REST service for Data Scientists",
-      "Created Python scripts to automate DB instance configuration, data ingestion and data removal",
-      "Occasionally performed code reviews for Data Scientists on GSA project"
+      "Developed multiple REST APIs and microservices using Java, Spring Boot, PostgreSQL, and AWS for federal clients including the GSA and FDA.",
+      "Designed iterative database schemas and built a data access API for Data Scientists on the GSA project, accelerating their analytical workflows.",
+      "Authored Python automation scripts for database configuration, data ingestion, and teardown — eliminating hours of manual DevOps work per sprint.",
+      "Conducted peer code reviews for Data Scientist contributors, improving code quality and enforcing API standards across a cross-functional team."
     ],
-    technologies: ["Java", "Spring Boot", "PostgreSQL", "AWS", "Python", "REST API"]
+    technologies: ["Java", "Spring Boot", "PostgreSQL", "AWS", "Python", "REST APIs", "Microservices"]
   },
   {
     company: "Data Mining and Management Lab, UAlbany",
     logo: "/images/companies/ualbany-logo.png",
     role: "Research Assistant",
-    period: "August 2018 - February 2019",
-    location: "Albany, New York",
+    period: "Aug 2018 - Feb 2019",
+    location: "Albany, NY",
     description: [
-      "Analyzed time-evolving networks for anomalous event patterns",
-      "Engineered software to identify and mine dynamic communities in temporal graphs",
-      "Utilized metrics such as ROC AUC to optimize parameter values",
-      "Synthesized mock data for testing",
-      "Worked around a messy legacy codebase to implement new functionality"
+      "Analyzed time-evolving networks for anomalous event patterns and dynamic community evolution.",
+      "Engineered software to identify and mine dynamic communities in temporal graphs using ROC AUC metrics.",
+      "Synthesized mock datasets for analytical model verification and refactored core graph mining routines."
     ],
     technologies: ["Data Mining", "Network Analysis", "ROC AUC", "Data Synthesis", "Graph Theory"]
   }
@@ -167,6 +168,7 @@ export default function ResumePage() {
                 src="/images/companies/ualbany-logo.png"
                 alt="University at Albany logo"
                 fill
+                sizes="56px"
                 className="object-contain p-1"
               />
             </div>
@@ -218,6 +220,7 @@ const ExperienceCard = ({ experience }: { experience: Experience }) => {
             src={experience.logo}
             alt={`${experience.company} logo`}
             fill
+            sizes="56px"
             className="object-contain p-1"
           />
         </div>
