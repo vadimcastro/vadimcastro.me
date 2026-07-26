@@ -80,10 +80,10 @@ export default function ResumePage() {
   return (
     <div className="w-full max-w-[92%] mx-auto py-4 md:py-6 space-y-6">
       {/* Header Profile Info */}
-      <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-4 sm:p-5 hover:shadow-xs transition-all duration-200">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
-          <div className="flex items-center space-x-4 min-w-0">
-            <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-emerald-500/30 shadow-xs shrink-0 bg-white p-0.5">
+      <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-5 sm:p-6 hover:shadow-xs transition-all duration-200">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
+          <div className="flex items-start space-x-4 min-w-0 flex-1">
+            <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-emerald-500/30 shadow-xs shrink-0 bg-white p-0.5 mt-0.5">
               <Image
                 src="/images/profile.jpg"
                 alt="Vadim Castro"
@@ -93,18 +93,18 @@ export default function ResumePage() {
                 priority
               />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h1 className="text-xl sm:text-2xl font-heading font-bold text-gray-900">Vadim Castro</h1>
               <p className="text-xs sm:text-sm font-semibold text-emerald-600 mt-0.5">
                 Software Engineer — Distributed Systems, Cloud & Data Infrastructure
               </p>
-              <p className="text-xs sm:text-sm text-gray-600 max-w-2xl mt-1.5 leading-relaxed">
+              <p className="text-xs sm:text-sm text-gray-600 max-w-3xl lg:max-w-4xl mt-1.5 leading-relaxed">
                 Full-stack software engineer with 5+ years of experience engineering high-throughput distributed systems, cloud platform infrastructure, and high-performance applications across enterprise fintech, AI, and federal systems.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
             <a
               href="tel:914-222-0975"
               className="p-2.5 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 text-gray-700 hover:text-gray-900 shadow-2xs"
