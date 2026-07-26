@@ -128,7 +128,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           {/* Key Features Column (Left) */}
           <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-6 sm:p-7 space-y-5 flex flex-col justify-between">
             <div>
-              <h2 className="text-xs font-bold text-gray-700 uppercase tracking-widest pb-3 border-b border-gray-100 mb-4">
+              <h2 className="text-sm sm:text-base font-bold text-gray-900 uppercase tracking-wider pb-3 border-b border-gray-100 mb-4">
                 Key Features
               </h2>
               <div className="space-y-4">
@@ -145,7 +145,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
           {/* Tech Stack Column (Right) */}
           <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-6 sm:p-7 space-y-5 flex flex-col justify-between">
             <div>
-              <h2 className="text-xs font-bold text-gray-700 uppercase tracking-widest pb-3 border-b border-gray-100 mb-4">
+              <h2 className="text-sm sm:text-base font-bold text-gray-900 uppercase tracking-wider pb-3 border-b border-gray-100 mb-4">
                 Technology Stack
               </h2>
               <div className="space-y-5 sm:space-y-6">
