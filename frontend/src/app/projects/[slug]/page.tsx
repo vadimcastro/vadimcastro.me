@@ -126,37 +126,39 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         {/* Key Features and Tech Stack Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Key Features Column (Left) */}
-          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-5 sm:p-6 space-y-4">
-            <h2 className="text-xs font-bold text-gray-700 uppercase tracking-widest pb-2.5 border-b border-gray-100">
-              Key Features
-            </h2>
-            <div className="space-y-3">
-              {Array.isArray(project.features) && project.features.map((feature) => (
-                <div key={feature.title} className="p-3.5 bg-gray-50/60 rounded-xl border border-gray-200/60 space-y-1">
-                  <h3 className="text-xs sm:text-sm font-bold text-gray-900">{feature.title}</h3>
-                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{feature.description}</p>
-                </div>
-              ))}
+          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-6 sm:p-7 space-y-5 flex flex-col justify-between">
+            <div>
+              <h2 className="text-xs font-bold text-gray-700 uppercase tracking-widest pb-3 border-b border-gray-100 mb-4">
+                Key Features
+              </h2>
+              <div className="space-y-4">
+                {Array.isArray(project.features) && project.features.map((feature) => (
+                  <div key={feature.title} className="p-4 bg-gray-50/50 rounded-xl border border-gray-200/60 space-y-1.5">
+                    <h3 className="text-sm font-bold text-gray-900">{feature.title}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
 
           {/* Tech Stack Column (Right) */}
-          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-5 sm:p-6 space-y-4 flex flex-col justify-between">
+          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-6 sm:p-7 space-y-5 flex flex-col justify-between">
             <div>
-              <h2 className="text-xs font-bold text-gray-700 uppercase tracking-widest pb-2.5 border-b border-gray-100">
+              <h2 className="text-xs font-bold text-gray-700 uppercase tracking-widest pb-3 border-b border-gray-100 mb-4">
                 Technology Stack
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-5 sm:space-y-6">
                 {Object.entries(project.techStack || {}).map(([category, technologies]) => (
-                  <div key={category} className="space-y-1.5">
-                    <h3 className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                  <div key={category} className="space-y-2">
+                    <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
                       {category}
                     </h3>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {Array.isArray(technologies) && technologies.map((tech) => (
                         <span 
                           key={tech} 
-                          className="px-2.5 py-1 bg-emerald-50/70 text-emerald-800 border border-emerald-200/70 rounded-lg font-mono text-xs font-semibold"
+                          className="px-3 py-1.5 bg-emerald-50/70 text-emerald-900 border border-emerald-200/70 rounded-lg font-mono text-xs sm:text-sm font-semibold shadow-2xs"
                         >
                           {tech}
                         </span>
@@ -171,58 +173,47 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Technical Implementation Section */}
         {project.technicalImplementation && (
-          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-6 sm:p-8 space-y-5">
+          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-6 sm:p-8 space-y-6">
             <div className="border-b border-gray-100 pb-3">
-              <h2 className="text-base sm:text-lg font-heading font-bold text-gray-900">
+              <h2 className="text-lg sm:text-xl font-heading font-bold text-gray-900 tracking-tight">
                 Technical Implementation & Deep Dive
               </h2>
             </div>
 
             {/* System Architecture */}
-            <div className="space-y-2.5">
-              <h3 className="text-sm font-bold text-gray-900 tracking-tight">
+            <div className="space-y-3">
+              <h3 className="text-sm sm:text-base font-bold text-gray-900 tracking-tight">
                 System Architecture & Data Pipeline
               </h3>
-              <div className="space-y-3">
+              <div className="bg-gray-50/40 rounded-xl border border-gray-200/70 p-5 sm:p-6 space-y-3.5">
                 {Array.isArray(project.technicalImplementation.systemArchitecture) && project.technicalImplementation.systemArchitecture.map((paragraph, index) => (
-                  <div 
-                    key={index} 
-                    className="p-4 rounded-xl bg-gray-50/60 border border-gray-200/60"
-                  >
-                    <p className="text-xs sm:text-sm leading-relaxed text-gray-700 font-normal">
-                      {paragraph}
-                    </p>
-                  </div>
+                  <p key={index} className="text-sm sm:text-base leading-relaxed text-gray-700 font-normal">
+                    {paragraph}
+                  </p>
                 ))}
               </div>
             </div>
 
             {/* Core Algorithm & Execution Model */}
             {project.technicalImplementation.algorithm && (
-              <div className="space-y-3 pt-4 border-t border-gray-100">
-                <h3 className="text-sm font-bold text-gray-900 tracking-tight">
+              <div className="space-y-4 pt-5 border-t border-gray-100">
+                <h3 className="text-sm sm:text-base font-bold text-gray-900 tracking-tight">
                   Core Algorithm & Execution Model
                 </h3>
 
-                <p className="text-xs sm:text-sm font-medium text-gray-800 bg-gray-50/60 p-3.5 rounded-xl border border-gray-200/60 leading-relaxed">
-                  {project.technicalImplementation.algorithm.description}
-                </p>
-                
-                <ol className="space-y-2 pt-1 list-none pl-0">
-                  {Array.isArray(project.technicalImplementation.algorithm.steps) && project.technicalImplementation.algorithm.steps.map((step, index) => (
-                    <li 
-                      key={index} 
-                      className="flex items-start gap-3 p-3 rounded-xl bg-gray-50/60 border border-gray-200/50"
-                    >
-                      <span className="font-mono font-bold text-emerald-700 text-xs shrink-0 mt-0.5 w-5">
-                        {index + 1}.
-                      </span>
-                      <span className="text-xs sm:text-sm leading-relaxed text-gray-700 font-normal">
-                        {step}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
+                <div className="bg-gray-50/40 rounded-xl border border-gray-200/70 p-5 sm:p-6 space-y-4">
+                  <p className="text-sm sm:text-base font-semibold text-gray-900 leading-relaxed border-b border-gray-200/60 pb-3">
+                    {project.technicalImplementation.algorithm.description}
+                  </p>
+                  
+                  <ol className="space-y-3 pl-5 list-decimal text-sm sm:text-base text-gray-700 leading-relaxed font-normal">
+                    {Array.isArray(project.technicalImplementation.algorithm.steps) && project.technicalImplementation.algorithm.steps.map((step, index) => (
+                      <li key={index} className="pl-1.5">
+                        <span className="text-gray-800">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
               </div>
             )}
           </section>
