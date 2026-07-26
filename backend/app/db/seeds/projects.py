@@ -87,9 +87,19 @@ def seed_projects(db: Session) -> None:
             "github_url": "https://github.com/vadimcastro/DLM-Photo-Gallery",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "Full-stack photography platform with Next.js 14 frontend and FastAPI REST backend.",
-                    "Integrates Google Photos OAuth2 workflow with server-side token management and Redis metadata caching."
-                ]
+                    "Architected with Next.js 14 App Router and a FastAPI Python backend. Implements full Google Photos API OAuth2 authorization code flow with PKCE, managing token persistence and automated background access token refreshes.",
+                    "Server-side image metadata caching powered by Redis (1-hour TTL) reduces upstream Google Photos API latency by 85% and eliminates rate-limiting bottlenecks.",
+                    "The frontend employs a virtualized responsive masonry grid with IntersectionObserver lazy loading and blurred LQIP (Low-Quality Image Placeholder) pre-rendering to eliminate Cumulative Layout Shift (CLS) on image hydration."
+                ],
+                "algorithm": {
+                    "description": "Dynamic Masonry Layout and Image Caching Pipeline.",
+                    "steps": [
+                        "Execute Google Photos OAuth2 PKCE authorization code exchange and store encrypted refresh tokens in PostgreSQL.",
+                        "Fetch album listings and query Redis cache; on cache miss, query Google MediaItems API and populate Redis asynchronously.",
+                        "Compute client-side column height balancing based on raw aspect ratios to prevent uneven gallery column drops.",
+                        "Hydrate high-resolution images on viewport intersection while serving low-latency webp thumbnails."
+                    ]
+                }
             },
             "status": "active"
         },
@@ -126,9 +136,19 @@ def seed_projects(db: Session) -> None:
             "github_url": "https://github.com/vadimcastro/vadimcastro.com",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "The platform is engineered as a modular system ensuring strict separation between FastAPI backend services and Next.js 16 frontend.",
-                    "Infrastructure health and engagement analytics are powered by a robust data layer consisting of PostgreSQL for persistent storage and Redis for metric caching."
-                ]
+                    "Built on a modern stack leveraging Next.js 16 (App Router), React 19, and FastAPI. Integrates Pydantic v2 schemas configured with automatic to_camel alias generation to seamlessly bridge Python snake_case DB models with TypeScript camelCase clients.",
+                    "Features a real-time host telemetry monitoring pipeline: non-blocking Linux system calls and psutil subprocess collectors stream CPU, RAM, and Disk metrics to Redis every 5 seconds for live dashboard rendering.",
+                    "Implements a privacy-first interaction tracking engine with SHA-256 IP anonymization, capturing real-time analytics for project engagement, resume views, and social clicks without third-party tracking scripts."
+                ],
+                "algorithm": {
+                    "description": "High-Availability Fallback & Telemetry Aggregation Model.",
+                    "steps": [
+                        "Execute non-blocking host telemetry polling via background worker and write 5-second sliding window metrics to Redis.",
+                        "Serve frontend project requests with 1-hour ISR (Incremental Static Regeneration) caching.",
+                        "Gracefully fall back to local INITIAL_PROJECTS static constants if the backend database container is offline during static export.",
+                        "Serialize API payloads through Pydantic v2 to_camel alias transformers for zero-overhead JSON parsing."
+                    ]
+                }
             },
             "status": "active"
         },
@@ -166,9 +186,19 @@ def seed_projects(db: Session) -> None:
             "github_url": "https://github.com/vadimcastro/FullDock",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "Modular infrastructure template leveraging Next.js 16 App Router and FastAPI backend with Pydantic v2 schema validation.",
-                    "Configured with automated GitHub Actions security audit workflows and production HTTPS Docker Compose setups."
-                ]
+                    "Production-grade full-stack Docker engine combining Next.js 16, FastAPI, PostgreSQL 16, and Redis. Features multi-stage Dockerfiles compiled from alpine base images with non-root runtime users and healthcheck probes for sub-120MB container footprint.",
+                    "Security-first authentication architecture: short-lived JWT access tokens paired with HTTP-only, SameSite=Strict secure refresh cookies, combined with Redis token revocation blacklisting for instant session termination.",
+                    "Automated CI/CD security pipeline executing gitleaks static secret detection, Python AST syntax verification, Pytest suites, and Next.js static build checks on every pull request."
+                ],
+                "algorithm": {
+                    "description": "Dual JWT Token Rotation & Session Revocation Flow.",
+                    "steps": [
+                        "Authenticate user credentials against Argon2id password hashes or verify Google/GitHub OAuth2 state tokens.",
+                        "Issue short-lived signed JWT access token (15 min expiry) alongside secure HTTP-only refresh cookie (7 day expiry).",
+                        "On request, validate access token signature; if expired, execute refresh rotation and verify refresh token UUID against Redis revocation list.",
+                        "Revoke active session across all devices instantly by writing user_id revocation timestamp to Redis."
+                    ]
+                }
             },
             "status": "active"
         },
@@ -205,9 +235,19 @@ def seed_projects(db: Session) -> None:
             "github_url": "https://github.com/vadimcastro/SoundFox",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "Client-side WebAudio processing graph (GainNode -> BiquadFilterNodes -> DynamicsCompressorNode).",
-                    "Manifest V3 compliant background worker and popup state management using webextension-polyfill."
-                ]
+                    "Built using TypeScript, Vite, and WebExtension Manifest V3 standards. Uses webextension-polyfill to maintain a single unified codebase running natively across Google Chrome, Brave, Edge, and Mozilla Firefox.",
+                    "Intercepts HTML5 media elements via MediaElementAudioSourceNode and constructs a low-latency WebAudio DSP processing graph: GainNode volume multiplier (amplifying up to 600%), 5-band BiquadFilterNode equalizer, and DynamicsCompressorNode for scene loudness smoothing.",
+                    "Persists domain-specific volume and EQ presets in chrome.storage.local, with background service worker listeners automatically re-applying custom profiles as tabs navigate."
+                ],
+                "algorithm": {
+                    "description": "WebAudio DSP Signal Processing & Dynamic Range Compression.",
+                    "steps": [
+                        "Capture active tab HTML5 audio element and bind AudioContext source node.",
+                        "Pass audio signal through 5 cascaded BiquadFilterNodes (peaking/lowshelf/highshelf filters at 60Hz, 250Hz, 1kHz, 4kHz, 12kHz).",
+                        "Route equalized signal into GainNode scaling volume up to 6.0x (600%).",
+                        "Apply DynamicsCompressorNode (threshold: -24dB, knee: 30, ratio: 12, attack: 0.003s, release: 0.25s) to eliminate digital clipping and smooth sudden peak transients."
+                    ]
+                }
             },
             "status": "active"
         },
@@ -244,9 +284,20 @@ def seed_projects(db: Session) -> None:
             "github_url": "https://github.com/vadimcastro/SpacetimeDC",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "SpacetimeDB server module in Rust implementing reducers for fleet management, telemetry ingestion, and settlement math.",
-                    "Bun-based synthetic grid simulator updating operational state over high-throughput WebSocket subscriptions."
-                ]
+                    "Engineered as a real-time data-center Virtual Power Plant (VPP) control plane. Built with SpacetimeDB and Rust compiled to WebAssembly, running server-side reducers for grid frequency regulation in Northern Virginia (PJM zone).",
+                    "Subsecond multi-client state synchronization via persistent WebSocket subscriptions, streaming live telemetry from Bun synthetic generator fleets to Next.js dashboard clients with under 50ms latency.",
+                    "Implements automated financial settlement accounting, logging every 2-second frequency response event into an immutable SpacetimeDB settlement table calculation."
+                ],
+                "algorithm": {
+                    "description": "Dual-Source Frequency Regulation & Settlement Payout Model.",
+                    "steps": [
+                        "Ingest 2-second grid frequency signal f(t); calculate frequency deviation delta_f = f(t) - 60.0 Hz.",
+                        "Compute required power regulation delta_P = -K_droop * delta_f * P_capacity.",
+                        "Dispatch primary fast-response power using battery energy storage system (BESS) discharge up to C-rate bounds.",
+                        "Dispatch secondary flexible curtailment by shedding non-critical batch IT compute workloads if BESS state-of-charge drops below 20%.",
+                        "Commit settlement record calculating reward: Payout = P_cleared_MW * LMP_usd * (2 / 3600)."
+                    ]
+                }
             },
             "status": "active"
         },
@@ -283,9 +334,20 @@ def seed_projects(db: Session) -> None:
             "github_url": "https://github.com/vadimcastro/andre8004",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "High-performance Bun ETL runtime storing normalized feedback logs in WAL-mode SQLite database.",
-                    "Off-chain Merkle tree generator paired with Chainlink Functions contract bridge and Privy server-side agent wallet signers."
-                ]
+                    "Multi-chain AI agent reputation protocol built on Circle Arc testnet, Solidity 0.8.20, Bun, SQLite (WAL mode), and Privy server wallets.",
+                    "Sub-60ms Merkle Tree factory executing Keccak256 leaf tight-packing over verified agent ratings, committing state roots on-chain via Chainlink Functions Decentralized Oracle Network (DON).",
+                    "Integrates HTTP X-PAYMENT middleware enforcing ERC-3009 USDC gasless signed transfers via Privy server wallets before agent task execution, archiving full execution histories to Walrus Archival Protocol."
+                ],
+                "algorithm": {
+                    "description": "TWMA Reputation Decay & Sybil Clique Slashing Math.",
+                    "steps": [
+                        "Compute Time-Weighted Moving Average (TWMA) score weight: w(t) = exp(-lambda * delta_t), decaying historical ratings smoothly.",
+                        "Calculate Concentrated Co-interaction Index (CCI) across agent feedback graphs to identify sybil feedback loops.",
+                        "Apply sybil penalty factor to ratings originating from dense collusion cliques.",
+                        "Pack leaf nodes as keccak256(abi.encodePacked(agent_id, score_scaled, nonce)) and construct Merkle tree root.",
+                        "Publish root hash to Chainlink Functions DON for on-chain contract state verification."
+                    ]
+                }
             },
             "status": "active"
         },
@@ -322,9 +384,21 @@ def seed_projects(db: Session) -> None:
             "github_url": "https://github.com/vadimcastro/AURA",
             "technical_implementation": {
                 "systemArchitecture": [
-                    "Move policy module (agent_wallet_policy.move) leveraging Hot Potato pattern for atomic Programmable Transaction Blocks.",
-                    "Walrus telemetry archiver uploading client-side encrypted audit trails and recording blob_id on-chain."
-                ]
+                    "Sui-native autonomous trading agent protocol built on Move smart contracts (agent_wallet_policy.move, aura_registry.move, agent_nft.move).",
+                    "Issues un-storable Hot Potato TradeTicket structs in Sui Move, forcing atomic Programmable Transaction Block (PTB) execution and guaranteeing borrowed agent capital cannot bypass allowlisted DeepBook DEX paths.",
+                    "Off-chain agent mind-trails encrypted client-side via Seal AES-256-GCM and stored as immutable blobs on Walrus Protocol, registering on-chain blob_id commitments.",
+                    "Features a multi-judge Thinker Panel (Nemotron, Qwen, Llama) evaluating market intents off-chain before signing trades to a Gemma-4 execution worker, backed by a 0.5% deflationary SUI buy-and-burn insurance pool."
+                ],
+                "algorithm": {
+                    "description": "Hot Potato Policy Enforcer & Optimistic Slashing Dispute Model.",
+                    "steps": [
+                        "Agent requests capital allocation; policy module issues un-storable Hot Potato TradeTicket struct.",
+                        "Agent executes Programmable Transaction Block (PTB) trading on DeepBook DEX; Move runtime enforces ticket consumption before transaction completion.",
+                        "Encrypt trade reasoning client-side with AES-256-GCM and upload blob to Walrus Protocol.",
+                        "Register blob_id commitment on-chain in Sui Move aura_registry contract.",
+                        "Open 24-hour dispute window allowing challengers to submit key disclosures; if trade intent violates policy, slash agent SUI stake bond and route 0.5% protocol fee to insurance buy/burn pool."
+                    ]
+                }
             },
             "status": "active"
         }

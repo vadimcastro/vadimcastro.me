@@ -49,123 +49,180 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <>
-      <div className="w-full max-w-[92%] mx-auto space-y-4 md:space-y-6 py-4 md:py-6">
+      <div className="w-full max-w-[92%] mx-auto py-4 md:py-6 space-y-6">
         {/* Project Header */}
-        <header className="space-y-2 md:space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 md:space-x-6">
-              <div className="relative w-12 h-12 md:w-16 md:h-16 flex-shrink-0">
+        <header className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-5 sm:p-7 space-y-4 hover:shadow-xs transition-all duration-200">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center space-x-3.5 sm:space-x-4 min-w-0">
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 p-1 bg-gray-50 border border-gray-200/80 rounded-xl shadow-2xs flex-shrink-0 flex items-center justify-center">
                 <Image 
                   src={project.iconUrl || "/images/compass.svg"}
-                  alt="Project Icon"
+                  alt={`${project.title} icon`}
                   fill
-                  className="object-contain"
+                  sizes="48px"
+                  className="object-contain p-1"
                   priority
                 />
               </div>
-              <h1 className="text-3xl md:text-5xl font-heading font-bold text-gray-900 leading-none">{project.title}</h1>
+              <div className="flex items-center gap-3 min-w-0 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-gray-900 tracking-tight truncate">
+                  {project.title}
+                </h1>
+                {project.status && (
+                  <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full border shadow-2xs shrink-0 ${
+                    project.status === 'in_progress' 
+                      ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                      : project.status === 'concept'
+                      ? 'bg-purple-50 text-purple-600 border-purple-100'
+                      : project.status === 'archived'
+                      ? 'bg-gray-50 text-gray-500 border-gray-100'
+                      : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                  }`}>
+                    {project.status.replace('_', ' ')}
+                  </span>
+                )}
+              </div>
             </div>
+
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm border hover:shadow-md transition-all duration-200 group flex-shrink-0"
+                className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl shadow-2xs border border-gray-200 text-gray-700 hover:text-gray-900 transition-all duration-200 shrink-0 flex items-center gap-2 text-xs font-semibold"
                 title="View on GitHub"
+                onClick={() => trackInteraction('social_click', 'github_project', { project: project.slug })}
               >
-                <Github className="w-5 h-5 text-gray-600 group-hover:text-gray-900" />
+                <Github className="w-4 h-4 text-gray-700" />
+                <span className="hidden sm:inline">GitHub</span>
               </a>
             )}
           </div>
-          <p className="text-base md:text-xl text-gray-600 w-full font-medium leading-relaxed">
+
+          <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-normal border-t border-gray-100 pt-3.5">
             {project.longDescription}
           </p>
         </header>
 
-        {/* Project Showcase Image - Un-cropped using object-contain */}
-        <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-200/80 cursor-pointer hover:shadow-md transition-all duration-200 bg-gray-50/80 p-2 md:p-3 flex items-center justify-center">
+        {/* Project Showcase Image */}
+        <section className="bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-2xs p-2 sm:p-3 hover:shadow-xs transition-all duration-200">
           <div 
-            className="relative w-full aspect-video flex items-center justify-center"
+            className="relative w-full bg-gray-50/40 rounded-xl overflow-hidden flex items-center justify-center cursor-pointer group"
             onClick={() => setSelectedImage(project.imageUrl)}
           >
             <img
               src={project.imageUrl}
               alt={`${project.title} Showcase`}
-              className="w-full h-full object-contain rounded-xl"
+              className="w-full h-auto max-h-[600px] object-contain rounded-xl transition-transform duration-500 group-hover:scale-[1.01]"
             />
-          </div>
-        </div>
-
-        {/* Tech Stack and Features */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 pt-4">
-          <div>
-            <h2 className="text-xl font-heading font-bold text-gray-900 mb-4 uppercase tracking-widest">TECHNOLOGY STACK</h2>
-            <div className="space-y-4">
-              {Object.entries(project.techStack || {}).map(([category, technologies]) => (
-                <div key={category} className="mb-3">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2 capitalize">
-                    {category}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {Array.isArray(technologies) && technologies.map((tech) => (
-                      <span 
-                        key={tech} 
-                        className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 rounded-full font-medium text-xs md:text-sm"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+            <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+              <span className="px-3.5 py-1.5 bg-white/95 text-gray-900 text-xs font-semibold rounded-lg shadow-md border border-gray-200/80">
+                Click to expand
+              </span>
             </div>
           </div>
+        </section>
 
-          <div>
-            <h2 className="text-xl font-heading font-bold text-gray-900 mb-4 uppercase tracking-widest">KEY FEATURES</h2>
-            <div className="space-y-4">
+        {/* Key Features and Tech Stack Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          {/* Key Features Column (Left) */}
+          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-5 sm:p-6 space-y-4">
+            <h2 className="text-xs font-bold text-gray-700 uppercase tracking-widest pb-2.5 border-b border-gray-100">
+              Key Features
+            </h2>
+            <div className="space-y-3">
               {Array.isArray(project.features) && project.features.map((feature) => (
-                <div key={feature.title} className="p-4 bg-white rounded-xl shadow-xs border border-gray-200/80">
-                  <h3 className="text-base font-bold mb-1 text-gray-900">{feature.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+                <div key={feature.title} className="p-3.5 bg-gray-50/60 rounded-xl border border-gray-200/60 space-y-1">
+                  <h3 className="text-xs sm:text-sm font-bold text-gray-900">{feature.title}</h3>
+                  <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">{feature.description}</p>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
+
+          {/* Tech Stack Column (Right) */}
+          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-5 sm:p-6 space-y-4 flex flex-col justify-between">
+            <div>
+              <h2 className="text-xs font-bold text-gray-700 uppercase tracking-widest pb-2.5 border-b border-gray-100">
+                Technology Stack
+              </h2>
+              <div className="space-y-4">
+                {Object.entries(project.techStack || {}).map(([category, technologies]) => (
+                  <div key={category} className="space-y-1.5">
+                    <h3 className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                      {category}
+                    </h3>
+                    <div className="flex flex-wrap gap-1.5">
+                      {Array.isArray(technologies) && technologies.map((tech) => (
+                        <span 
+                          key={tech} 
+                          className="px-2.5 py-1 bg-emerald-50/70 text-emerald-800 border border-emerald-200/70 rounded-lg font-mono text-xs font-semibold"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         </div>
 
-        {/* Technical Implementation */}
+        {/* Technical Implementation Section */}
         {project.technicalImplementation && (
-          <section className="space-y-4 pt-4">
-            <h2 className="text-xl font-heading font-bold text-gray-900 uppercase tracking-widest">TECHNICAL IMPLEMENTATION</h2>
-            <div className="bg-white rounded-2xl shadow-xs border border-gray-200/80 p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-3">System Architecture</h3>
-              <div className="space-y-3 text-sm md:text-base leading-relaxed text-gray-700">
+          <section className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs p-6 sm:p-8 space-y-5">
+            <div className="border-b border-gray-100 pb-3">
+              <h2 className="text-base sm:text-lg font-heading font-bold text-gray-900">
+                Technical Implementation & Deep Dive
+              </h2>
+            </div>
+
+            {/* System Architecture */}
+            <div className="space-y-2.5">
+              <h3 className="text-sm font-bold text-gray-900 tracking-tight">
+                System Architecture & Data Pipeline
+              </h3>
+              <div className="space-y-3">
                 {Array.isArray(project.technicalImplementation.systemArchitecture) && project.technicalImplementation.systemArchitecture.map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
+                  <div 
+                    key={index} 
+                    className="p-4 rounded-xl bg-gray-50/60 border border-gray-200/60"
+                  >
+                    <p className="text-xs sm:text-sm leading-relaxed text-gray-700 font-normal">
+                      {paragraph}
+                    </p>
+                  </div>
                 ))}
               </div>
             </div>
 
+            {/* Core Algorithm & Execution Model */}
             {project.technicalImplementation.algorithm && (
-              <div className="bg-white rounded-2xl shadow-xs border border-gray-200/80 p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Route Calculation Algorithm</h3>
-                <div className="space-y-4 text-sm md:text-base leading-relaxed text-gray-700">
-                  <p className="font-semibold text-gray-900">
-                    {project.technicalImplementation.algorithm.description}
-                  </p>
-                  
-                  <div className="space-y-3">
-                    {Array.isArray(project.technicalImplementation.algorithm.steps) && project.technicalImplementation.algorithm.steps.map((step, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center justify-center font-bold text-xs">
-                          {index + 1}
-                        </span>
-                        <p className="text-sm leading-relaxed text-gray-700">{step}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              <div className="space-y-3 pt-4 border-t border-gray-100">
+                <h3 className="text-sm font-bold text-gray-900 tracking-tight">
+                  Core Algorithm & Execution Model
+                </h3>
+
+                <p className="text-xs sm:text-sm font-medium text-gray-800 bg-gray-50/60 p-3.5 rounded-xl border border-gray-200/60 leading-relaxed">
+                  {project.technicalImplementation.algorithm.description}
+                </p>
+                
+                <ol className="space-y-2 pt-1 list-none pl-0">
+                  {Array.isArray(project.technicalImplementation.algorithm.steps) && project.technicalImplementation.algorithm.steps.map((step, index) => (
+                    <li 
+                      key={index} 
+                      className="flex items-start gap-3 p-3 rounded-xl bg-gray-50/60 border border-gray-200/50"
+                    >
+                      <span className="font-mono font-bold text-emerald-700 text-xs shrink-0 mt-0.5 w-5">
+                        {index + 1}.
+                      </span>
+                      <span className="text-xs sm:text-sm leading-relaxed text-gray-700 font-normal">
+                        {step}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
               </div>
             )}
           </section>
