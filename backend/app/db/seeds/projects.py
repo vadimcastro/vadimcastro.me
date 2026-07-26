@@ -279,7 +279,7 @@ def seed_projects(db: Session) -> None:
                     "icon": "FileText"
                 }
             ],
-            "image_url": "/images/spacetimedc_pic.jpg",
+            "image_url": "/images/spacetimedc_pic.png",
             "icon_url": "/images/browser.svg",
             "github_url": "https://github.com/vadimcastro/SpacetimeDC",
             "technical_implementation": {

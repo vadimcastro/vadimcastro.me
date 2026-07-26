@@ -309,7 +309,7 @@ const INITIAL_PROJECTS: Project[] = [
         icon: "FileText"
       }
     ],
-    imageUrl: "/images/spacetimedc_pic.jpg",
+    imageUrl: "/images/spacetimedc_pic.png",
     iconUrl: "/images/browser.svg",
     githubUrl: "https://github.com/vadimcastro/SpacetimeDC",
     status: "active",
