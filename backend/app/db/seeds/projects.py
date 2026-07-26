@@ -329,7 +329,7 @@ def seed_projects(db: Session) -> None:
                     "icon": "CreditCard"
                 }
             ],
-            "image_url": "/images/andre8004_pic.jpg",
+            "image_url": "/images/andre8004_pic.png",
             "icon_url": "/images/browser.svg",
             "github_url": "https://github.com/vadimcastro/andre8004",
             "technical_implementation": {

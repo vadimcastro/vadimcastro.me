@@ -359,7 +359,7 @@ const INITIAL_PROJECTS: Project[] = [
         icon: "CreditCard"
       }
     ],
-    imageUrl: "/images/andre8004_pic.jpg",
+    imageUrl: "/images/andre8004_pic.png",
     iconUrl: "/images/browser.svg",
     githubUrl: "https://github.com/vadimcastro/andre8004",
     status: "active",
