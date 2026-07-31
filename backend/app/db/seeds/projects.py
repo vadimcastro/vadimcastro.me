@@ -57,8 +57,8 @@ def seed_projects(db: Session) -> None:
             "id": 2,
             "slug": "dlm",
             "title": "DLM Photo Gallery",
-            "short_description": "A high-performance personal photo gallery with Google Photos API integration, masonry layouts, and production-ready Docker infrastructure.",
-            "long_description": "DLM Photo Gallery v2 combines custom photography management with seamless Google Photos OAuth2 integration. Built with Next.js 14 and FastAPI, it features dynamic masonry layouts, category filtering, fullscreen touch-optimized lightbox views, and image caching.",
+            "short_description": "[Freelance / Client Contract] High-performance photo gallery system engineered for a private client with Google Photos API integration, masonry layouts, and Docker infrastructure.",
+            "long_description": "DLM Photo Gallery is a custom freelance client contract project engineered for a private client (Dan). It combines bespoke photo management with direct Google Photos OAuth2 API integration. Built with Next.js 14 and FastAPI, it features dynamic masonry layouts, category filtering, fullscreen touch-optimized lightbox views, and Redis image caching.",
             "tech_stack": {
                 "Frontend": ["Next.js 14", "React", "TypeScript", "Tailwind CSS"],
                 "Backend": ["FastAPI", "Python", "SQLAlchemy", "Alembic"],
@@ -82,7 +82,7 @@ def seed_projects(db: Session) -> None:
                     "icon": "Zap"
                 }
             ],
-            "image_url": "/images/dlm_pic.jpg",
+            "image_url": "/images/dlm_pic.png",
             "icon_url": "/images/browser.svg",
             "github_url": "https://github.com/vadimcastro/DLM-Photo-Gallery",
             "technical_implementation": {
@@ -181,7 +181,7 @@ def seed_projects(db: Session) -> None:
                     "icon": "Terminal"
                 }
             ],
-            "image_url": "/images/fulldock_pic.jpg",
+            "image_url": "/images/fulldock_pic.png",
             "icon_url": "/images/browser.svg",
             "github_url": "https://github.com/vadimcastro/FullDock",
             "technical_implementation": {
@@ -230,7 +230,7 @@ def seed_projects(db: Session) -> None:
                     "icon": "Command"
                 }
             ],
-            "image_url": "/images/soundfox_pic.jpg",
+            "image_url": "/images/soundfox_pic.png",
             "icon_url": "/images/browser.svg",
             "github_url": "https://github.com/vadimcastro/SoundFox",
             "technical_implementation": {

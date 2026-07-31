@@ -1,12 +1,12 @@
-# Dockerfile for vadimcastro-me-backend-base  
-# Pre-built base image for vadimcastro.me backend with resume/cloud-specific dependencies
+# Dockerfile for vadimcastro-com-backend-base  
+# Pre-built base image for vadimcastro.com backend with resume/cloud-specific dependencies
 
 FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies for vadimcastro.me (resume/cloud specific)
+# Install system dependencies for vadimcastro.com (resume/cloud specific)
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -21,7 +21,7 @@ COPY backend/requirements.txt .
 # Install Python dependencies (resume/portfolio specific)
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-install vadimcastro.me specific packages for resume/cloud functionality
+# Pre-install vadimcastro.com specific packages for resume/cloud functionality
 RUN pip install --no-cache-dir \
     boto3==1.34.0 \
     psutil==5.9.8

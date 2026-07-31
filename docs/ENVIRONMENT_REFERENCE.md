@@ -8,7 +8,7 @@
 |----------|-------------|------------|-------------|
 | `POSTGRES_USER` | `postgres` | `vadim_prod` | Database username |
 | `POSTGRES_PASSWORD` | `devpassword123` | `[STRONG_GENERATED]` | Database password |
-| `POSTGRES_DB` | `vadimcastro_dev` | `vadimcastrome_prod` | Database name |
+| `POSTGRES_DB` | `vadimcastro_dev` | `vadimcastro_prod` | Database name |
 | `POSTGRES_HOST` | `db` | `db` | Database hostname |
 | `POSTGRES_PORT` | `5432` | `5432` | Database port |
 
@@ -25,7 +25,7 @@
 
 | Variable | Development | Production | Description |
 |----------|-------------|------------|-------------|
-| `ADMIN_EMAIL` | `admin@localhost` | `admin@vadimcastro.me` | Admin login email |
+| `ADMIN_EMAIL` | `admin@vadimcastro.com` | `admin@vadimcastro.com` | Admin login email |
 | `ADMIN_PASSWORD` | `devpassword` | `[YOUR_SECURE_PASSWORD]` | Admin login password |
 | `ADMIN_USERNAME` | `admin` | `vadimcastro` | Admin username |
 | `ADMIN_NAME` | `Admin User` | `Vadim Castro` | Admin display name |
@@ -48,7 +48,7 @@
 
 | Setting | Development | Production | 
 |---------|-------------|------------|
-| Origins | `localhost:3000, 127.0.0.1:3000` | `vadimcastro.me, 206.81.2.168:3000` |
+| Origins | `localhost:3000, 127.0.0.1:3000` | `vadimcastro.com, https://vadimcastro.com` |
 | Credentials | `true` | `true` |
 | Methods | `GET, POST, PUT, DELETE, OPTIONS, PATCH` | `GET, POST, PUT, DELETE, OPTIONS, PATCH` |
 
@@ -65,7 +65,7 @@
 ### Current Files in Project
 
 ```
-📁 vadimcastro.me/
+📁 vadimcastro/
 ├── .env.production.local     # 🔒 YOUR PRODUCTION SECRETS
 ├── .env.production          # 📄 Production template
 ├── .env.development         # 📄 Development defaults
@@ -90,7 +90,7 @@ cp .env.production .env.production.local
 nano .env.production.local
 
 # 4. Deploy
-make deploy
+make prod
 ```
 
 ### Verification Commands
@@ -114,7 +114,7 @@ docker exec -it docker-api-1 printenv | grep SECRET | sed 's/=.*/=***MASKED***/'
 # Database - Strong credentials
 POSTGRES_USER=vadim_prod
 POSTGRES_PASSWORD=YOUR_STRONG_DB_PASSWORD_HERE
-POSTGRES_DB=vadimcastrome_prod
+POSTGRES_DB=vadimcastro_prod
 POSTGRES_HOST=db
 
 # Redis
@@ -125,7 +125,7 @@ SECRET_KEY=YOUR_GENERATED_SECRET_KEY_HERE
 JWT_SECRET_KEY=YOUR_DIFFERENT_JWT_SECRET_HERE
 
 # Admin User - Your real credentials  
-ADMIN_EMAIL=admin@vadimcastro.me
+ADMIN_EMAIL=admin@vadimcastro.com
 ADMIN_PASSWORD=YOUR_SECURE_ADMIN_PASSWORD
 ADMIN_USERNAME=vadimcastro
 ADMIN_NAME=Vadim Castro
@@ -153,7 +153,7 @@ SECRET_KEY=dev-secret-key-not-for-production
 JWT_SECRET_KEY=dev-jwt-secret-key-not-for-production
 
 # Admin User - Dev credentials
-ADMIN_EMAIL=admin@localhost
+ADMIN_EMAIL=admin@vadimcastro.com
 ADMIN_PASSWORD=devpassword
 ADMIN_USERNAME=admin
 ADMIN_NAME=Admin User
@@ -174,7 +174,7 @@ make dev
 ### Scenario 2: Production Deployment
 ```bash
 # Uses .env.production.local
-make deploy
+make prod
 ```
 
 ### Scenario 3: Staging Environment
@@ -207,10 +207,10 @@ nano .env.production.local
 ```bash
 # For temporary testing
 export ADMIN_PASSWORD=temporary_test_password
-make deploy
+make prod
 
 # For one-time deployments
-POSTGRES_PASSWORD=different_password make deploy
+POSTGRES_PASSWORD=different_password make prod
 ```
 
 ## 🧪 Testing Different Configurations
@@ -219,7 +219,7 @@ POSTGRES_PASSWORD=different_password make deploy
 ```bash
 # Temporarily override database
 echo "POSTGRES_DB=vadimcastro_test" >> .env.production.local
-make deploy
+make prod
 # Remember to change it back!
 ```
 
@@ -227,7 +227,7 @@ make deploy
 ```bash
 # Enable debug in production (temporarily)
 echo "DEBUG=true" >> .env.production.local
-make deploy
+make prod
 # Check logs for more detailed output
 ```
 
@@ -245,7 +245,7 @@ echo "Redis DB: $(docker exec -it docker-api-1 printenv REDIS_URL 2>/dev/null | 
 
 ### Health Check with Environment Info
 ```bash
-curl http://206.81.2.168:8000/health | jq '.environment'
+curl https://vadimcastro.com/health | jq '.environment'
 ```
 
 ## ⚠️ Common Issues & Solutions

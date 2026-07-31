@@ -1,4 +1,4 @@
-# vadimcastro.me Makefile
+# vadimcastro.com Makefile
 # Personal Website & Cloud Storage Stack
 
 PROJECT_NAME ?= vadimcastro
@@ -82,7 +82,7 @@ setup-prod-env:
 	./scripts/setup-production-env.sh
 
 help:
-	@echo "Available commands for vadimcastro.me:"
+	@echo "Available commands for vadimcastro.com:"
 	@echo "Core:"
 	@echo "  make dev                     - Start dev stack (reuse cached images)"
 	@echo "  make dev REBUILD=1           - Rebuild images, then start dev stack"

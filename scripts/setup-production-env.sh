@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Production Environment Setup Script for vadimcastro.me
+# Production Environment Setup Script for vadimcastro.com
 # Generates secure production secrets and outputs .env.production.local
 
 set -e
@@ -30,8 +30,8 @@ echo "✅ Secrets generated successfully!"
 echo
 
 echo "👤 Admin User Configuration:"
-read -p "Admin Email [admin@vadimcastro.me]: " ADMIN_EMAIL
-ADMIN_EMAIL=${ADMIN_EMAIL:-admin@vadimcastro.me}
+read -p "Admin Email [admin@vadimcastro.com]: " ADMIN_EMAIL
+ADMIN_EMAIL=${ADMIN_EMAIL:-admin@vadimcastro.com}
 
 echo
 echo "🔒 Admin Password Options:"
@@ -65,9 +65,9 @@ read -p "Admin Display Name [Vadim Castro]: " ADMIN_NAME
 ADMIN_NAME=${ADMIN_NAME:-"Vadim Castro"}
 
 echo
-read -p "Allowed CORS origins (comma-separated, e.g. https://vadimcastro.me,https://www.vadimcastro.me) []: " CORS_ORIGINS
+read -p "Allowed CORS origins (comma-separated, e.g. https://vadimcastro.com,https://www.vadimcastro.com) []: " CORS_ORIGINS
 if [ -z "$CORS_ORIGINS" ]; then
-    CORS_ORIGINS="https://vadimcastro.me,https://www.vadimcastro.me"
+    CORS_ORIGINS="https://vadimcastro.com,https://www.vadimcastro.com"
 fi
 
 echo

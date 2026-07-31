@@ -1,17 +1,17 @@
 # Gemini CLI - Project Reference & Task List
 
 ## 🛠️ Project Context
-- **Frontend**: Next.js 14 (App Router)
-- **Backend**: FastAPI (Python 3.11)
-- **Status**: Transitioning from personal "vadimOS" integration to a standalone portable project.
+- **Frontend**: Next.js 16 (App Router), React 19, Tailwind CSS v4
+- **Backend**: FastAPI (Python 3.11+), Pydantic v2, SQLAlchemy, Alembic
+- **Status**: Standalone portable portfolio & admin platform targeting production deployment at `vadimcastro.com`.
 
 ## 🧹 De-personalization Checklist
 - [x] **Makefile**: Removed vadimOS branding and hardcoded production IP/aliases.
 - [x] **Docker**: Fixed `docker-compose.dev.ultra.yml` (removed `../../vadimOS` refs).
 - [x] **Scripts**: Removed redundant `droplet-bashrc`.
-- [x] **Documentation**: Fixed `README.md` and consolidated all docs into `docs/`.
+- [x] **Documentation**: Fixed `README.md`, updated all guides for `vadimcastro.com`, and consolidated into `docs/`.
 - [x] **Shell**: Removed `.zshrc`.
-- [x] **Environment**: Updated `.env.development` to use `admin@vadimcastro.me`.
+- [x] **Environment**: Updated `.env.development` to use `admin@vadimcastro.com`.
 
 ## 🏗️ Architecture & Infrastructure Changes
 

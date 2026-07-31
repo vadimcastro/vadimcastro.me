@@ -19,7 +19,7 @@ COPY frontend/tsconfig.json ./
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ARG NEXT_PUBLIC_API_URL=https://vadimcastro.me
+ARG NEXT_PUBLIC_API_URL=https://vadimcastro.com
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 RUN npm run build

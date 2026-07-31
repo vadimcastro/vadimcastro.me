@@ -1,5 +1,5 @@
-# Dockerfile for vadimcastro-me-frontend-base
-# Pre-built base image for vadimcastro.me frontend with resume-specific dependencies
+# Dockerfile for vadimcastro-com-frontend-base
+# Pre-built base image for vadimcastro.com frontend with resume-specific dependencies
 
 FROM node:18-alpine
 
@@ -15,7 +15,7 @@ COPY frontend/package.json frontend/package-lock.json ./
 # Install Node.js dependencies (resume/portfolio specific)
 RUN npm ci
 
-# Pre-install vadimcastro.me specific packages
+# Pre-install vadimcastro.com specific packages
 RUN npm install \
     @headlessui/react \
     @radix-ui/react-toast \

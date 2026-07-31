@@ -7,10 +7,10 @@
 ./scripts/setup-production-env.sh
 
 # Deploy with your new secure configuration
-make deploy
+make prod
 
 # Test your deployment
-curl http://206.81.2.168:8000/health
+curl https://vadimcastro.com/health
 ```
 
 **That's it!** The script will:
@@ -54,26 +54,26 @@ ADMIN_PASSWORD=PASTE_FOURTH_GENERATED_SECRET_OR_YOUR_PASSWORD
 
 ### Step 4: Deploy
 ```bash
-make deploy
+make prod
 ```
 
 ## 🔍 Verification Steps
 
 ### 1. Check Environment is Production
 ```bash
-curl http://206.81.2.168:8000/health | grep production
+curl https://vadimcastro.com/health | grep production
 # Should return: "environment":"production"
 ```
 
 ### 2. Verify Database Separation
 ```bash
-docker logs docker-api-1 | grep vadimcastrome_prod
-# Should show: connecting to vadimcastrome_prod database
+docker logs docker-api-1 | grep vadimcastro_prod
+# Should show: connecting to vadimcastro_prod database
 ```
 
 ### 3. Test Admin Login
 ```bash
-# Try logging in at: http://206.81.2.168:3000
+# Try logging in at: https://vadimcastro.com
 # Use your ADMIN_EMAIL and ADMIN_PASSWORD from .env.production.local
 ```
 
@@ -91,7 +91,7 @@ docker exec -it docker-api-1 printenv | grep SECRET | head -1
 ## 📋 What You Get
 
 ### 🔒 Security Features
-- **Separate production database**: `vadimcastrome_prod` 
+- **Separate production database**: `vadimcastro_prod` 
 - **Strong generated secrets**: 256-bit entropy
 - **Git-ignored secrets**: No accidental commits
 - **Environment isolation**: Dev vs prod separation
@@ -109,7 +109,6 @@ docker exec -it docker-api-1 printenv | grep SECRET | head -1
 ### Quick References
 - 📖 **Detailed Guide**: `docs/SECRET_MANAGEMENT_GUIDE.md`
 - 📋 **Environment Reference**: `docs/ENVIRONMENT_REFERENCE.md`
-- 🔧 **Original Setup**: `ENVIRONMENT_SETUP.md`
 
 ### Common Commands
 ```bash
@@ -120,7 +119,7 @@ cat .env.production.local
 ./scripts/setup-production-env.sh
 
 # Reset deployment
-make down && make deploy
+make down && make prod
 
 # View deployment logs
 make logs
@@ -135,7 +134,7 @@ docker ps
 docker logs docker-api-1
 
 # Test database connection
-curl -X POST http://206.81.2.168:8000/admin/init-db
+curl -X POST https://vadimcastro.com/admin/init-db
 
 # Check environment variables
 docker exec -it docker-api-1 printenv | grep -E "(ENVIRONMENT|POSTGRES_DB)"
@@ -145,9 +144,9 @@ docker exec -it docker-api-1 printenv | grep -E "(ENVIRONMENT|POSTGRES_DB)"
 
 Your deployment is successful when:
 
-- ✅ `curl http://206.81.2.168:8000/health` returns `"environment":"production"`
-- ✅ Admin login works at `http://206.81.2.168:3000`
-- ✅ Database is `vadimcastrome_prod` (not `vadimcastro`)
+- ✅ `curl https://vadimcastro.com/health` returns `"environment":"production"`
+- ✅ Admin login works at `https://vadimcastro.com`
+- ✅ Database is `vadimcastro_prod` (not `vadimcastro`)
 - ✅ `.env.production.local` is not tracked by git
 - ✅ All containers are running (`docker ps`)
 

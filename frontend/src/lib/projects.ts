@@ -87,8 +87,8 @@ const INITIAL_PROJECTS: Project[] = [
     id: "2",
     slug: "dlm",
     title: "DLM Photo Gallery",
-    shortDescription: "A high-performance personal photo gallery with Google Photos API integration, masonry layouts, and production-ready Docker infrastructure.",
-    longDescription: "DLM Photo Gallery v2 combines custom photography management with seamless Google Photos OAuth2 integration. Built with Next.js 14 and FastAPI, it features dynamic masonry layouts, category filtering, fullscreen touch-optimized lightbox views, and image caching.",
+    shortDescription: "[Freelance / Client Contract] High-performance photo gallery system engineered for a private client with Google Photos API integration, masonry layouts, and Docker infrastructure.",
+    longDescription: "DLM Photo Gallery is a custom freelance client contract project engineered for a private client (Dan). It combines bespoke photo management with direct Google Photos OAuth2 API integration. Built with Next.js 14 and FastAPI, it features dynamic masonry layouts, category filtering, fullscreen touch-optimized lightbox views, and Redis image caching.",
     techStack: {
       Frontend: ["Next.js 14", "React", "TypeScript", "Tailwind CSS"],
       Backend: ["FastAPI", "Python", "SQLAlchemy", "Alembic"],
@@ -112,7 +112,7 @@ const INITIAL_PROJECTS: Project[] = [
         icon: "Zap"
       }
     ],
-    imageUrl: "/images/dlm_pic.jpg",
+    imageUrl: "/images/dlm_pic.png",
     iconUrl: "/images/browser.svg",
     githubUrl: "https://github.com/vadimcastro/DLM-Photo-Gallery",
     status: "active",
@@ -211,7 +211,7 @@ const INITIAL_PROJECTS: Project[] = [
         icon: "Terminal"
       }
     ],
-    imageUrl: "/images/fulldock_pic.jpg",
+    imageUrl: "/images/fulldock_pic.png",
     iconUrl: "/images/browser.svg",
     githubUrl: "https://github.com/vadimcastro/FullDock",
     status: "active",
@@ -260,7 +260,7 @@ const INITIAL_PROJECTS: Project[] = [
         icon: "Command"
       }
     ],
-    imageUrl: "/images/soundfox_pic.jpg",
+    imageUrl: "/images/soundfox_pic.png",
     iconUrl: "/images/browser.svg",
     githubUrl: "https://github.com/vadimcastro/SoundFox",
     status: "active",

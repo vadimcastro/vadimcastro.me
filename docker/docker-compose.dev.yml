@@ -1,4 +1,4 @@
-# vadimcastro.me development overrides
+# vadimcastro.com development overrides
 # Combined development overrides for standalone project
 
 services:
@@ -18,7 +18,7 @@ services:
     env_file:
       - ../.env.development
     environment:
-      - POSTGRES_DB=vadimcastrome
+      - POSTGRES_DB=vadimcastro_dev
       - PYTHONPATH=/app
     working_dir: /app
 
